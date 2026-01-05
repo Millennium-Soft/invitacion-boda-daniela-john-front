@@ -1,0 +1,86 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Confirmación de Asistencia (RSVP)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+            <!-- Step 1: Find Guest -->
+            <div *ngIf="!selectedGuest">
+                <h3>Paso 1: Busca tu nombre</h3>
+                <form [formGroup]="searchForm" (ngSubmit)="searchGuest()" class="search-form">
+                    <mat-form-field appearance="fill" class="full-width">
+                        <mat-label>Ingresa tu nombre completo</mat-label>
+                        <input matInput formControlName="searchTerm" placeholder="Ej. Juan Pérez">
+                        <mat-icon matSuffix (click)="searchGuest()" style="cursor: pointer;">search</mat-icon>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" type="submit">Buscar</button>
+                </form>
+
+                <div *ngIf="foundGuests.length > 0" class="results-list">
+                    <h4>Resultados:</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let guest of foundGuests">
+                            <span mat-line>{{ guest.name }}</span>
+                            <button mat-stroked-button color="accent" (click)="selectGuest(guest)">Soy yo</button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+
+            <!-- Step 2: RSVP Form -->
+            <div *ngIf="selectedGuest">
+                <h3>Hola, {{ selectedGuest.name }}</h3>
+                <p>Por favor completa tus datos de contacto y confirma tu asistencia.</p>
+
+                <form [formGroup]="rsvpForm" (ngSubmit)="onSubmitRsvp()">
+
+                    <div class="contact-section">
+                        <h4>Datos de Contacto (Obligatorios)</h4>
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Teléfono / Celular</mat-label>
+                            <input matInput formControlName="phone" required>
+                            <mat-error *ngIf="rsvpForm.get('phone')?.hasError('required')">El teléfono es
+                                obligatorio</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Correo Electrónico</mat-label>
+                            <input matInput formControlName="email" required>
+                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('required')">El email es
+                                obligatorio</mat-error>
+                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('email')">Ingresa un email
+                                válido</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="rsvp-section">
+                        <h4>Detalles de la Boda</h4>
+                        <div class="checkbox-container">
+                            <mat-checkbox formControlName="attending" color="primary">¡Sí, asistiré!</mat-checkbox>
+                        </div>
+
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Restricciones Alimentarias / Alergias</mat-label>
+                            <textarea matInput formControlName="dietaryRestrictions"
+                                placeholder="Ej. Vegetariano, Alergia al maní..."></textarea>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>¿Qué canción no puede faltar?</mat-label>
+                            <input matInput formControlName="song">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="actions">
+                        <button mat-button (click)="reset()">Volver</button>
+                        <button mat-raised-button color="primary" type="submit" [disabled]="rsvpForm.invalid">Enviar
+                            Confirmación</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -1,0 +1,344 @@
+<mat-sidenav-container class="sidenav-container" id="page-container">
+  <mat-sidenav
+    #drawer
+    style="width: 220px"
+    *ngIf="navbarHiddenService.visibleSideBar"
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+    #target
+  >
+    <mat-toolbar style="display: flex; justify-content: center">
+      <img style="width: 100px" src="assets/msoft.png" />
+    </mat-toolbar>
+    <mat-nav-list style="padding-bottom: 0">
+      <a class="list" mat-list-item [routerLink]="['/inicio']">
+        <small class="pl-2 item-principal text-white">
+          <i class="fas fa-home"></i> Inicio
+        </small>
+      </a>
+    </mat-nav-list>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 100%"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <small class="text-white mt-2">
+              <i class="fa-solid fa-school"></i> Estructura interna
+            </small>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/institucion']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-building-columns"></i> Institución
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/sede']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-landmark-flag"></i> Sede
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/facultad']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-building-flag"></i> Facultad
+            </small>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!--   <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 100%"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <small class="text-white mt-2">
+              <i class="fa-solid fa-people-group"></i> Cuerpos colegiados
+            </small>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/cuerpos-colegiados']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-circle-plus"></i> Crear
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/inicio']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-user-gear"></i> Integrantes
+            </small>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion> -->
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 100%"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <small class="text-white mt-2">
+              <i class="fa-solid fa-scale-balanced"></i> Marco normativo
+            </small>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/norma']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-file-circle-plus"></i> Norma
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/norma-grupo']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-folder-tree"></i> Grupos
+            </small>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 100%"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <small class="text-white mt-2">
+              <i class="fa-solid fa-users"></i> Personal y usuarios
+            </small>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/persona']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-user-pen"></i> Persona
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/inicio']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-user-plus"></i> Usuario
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/inicio']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-lock"></i> Contraseña
+            </small>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel
+        class="sidenav"
+        style="width: 100%"
+        (opened)="panelOpenState = true"
+        (closed)="panelOpenState = false"
+      >
+        <mat-expansion-panel-header class="disable_ripple specific-class">
+          <mat-panel-title>
+            <small class="text-white mt-2">
+              <i class="fa-solid fa-chalkboard"></i> Programas
+            </small>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/cine']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-list"></i> Clasificación CINE
+            </small>
+          </a>
+          <a
+            class="pl-5 sidenav-accordion"
+            mat-list-item
+            style="width: 300px"
+            [routerLink]="['/programa']"
+            routerLinkActive="router-link-active"
+          >
+            <small class="text-white">
+              <i class="fa-solid fa-user-pen"></i> Programa
+            </small>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-nav-list>
+      <!--  <a
+        class="list"
+        mat-list-item
+        [routerLink]="['/desarrollo']"
+        routerLinkActive="router-link-active"
+      >
+        <small class="pl-2 item-principal text-white">
+          <i class="fa-solid fa-earth-americas"></i> División política
+        </small>
+      </a> -->
+      <a
+        class="list"
+        mat-list-item
+        [routerLink]="['/inicio']"
+        routerLinkActive="router-link-active"
+      >
+        <small class="pl-2 item-principal text-white">
+          <i class="fa-solid fa-chart-simple"></i> Reportes
+        </small>
+      </a>
+      <a
+        class="list"
+        mat-list-item
+        [routerLink]="['/reserva']"
+        routerLinkActive="router-link-active"
+      >
+        <small class="pl-2 item-principal text-white">
+          <i class="fa-solid fa-calendar-day"></i> Reserva
+        </small>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <!--  -->
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar">
+      <button
+        type="button"
+        class="btn btn-usco-vt m-1 text-white"
+        aria-label="Toggle sidenav"
+        (click)="toggle()"
+        *ngIf="isHandset$"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h6 class="font-corhuila">Sistema de Información Interno</h6>
+      <ul class="navbar-nav ml-auto cursor-select">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle text-white"
+            id="navbarDropdownMenu"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <img
+              src="assets/foto-m.png"
+              width="40"
+              height="40"
+              class="rounded-circle d-inline-block align-top"
+              style="border: solid 3px white"
+              alt="avatar image" />
+            <span class="pl-2"></span
+          ></a>
+          <div
+            class="dropdown-menu dropdown-menu-right dropdown-info"
+            aria-labelledby="navbarDropdownMenu"
+            id="gradiante"
+          >
+            <div class="text-center">
+              <a class="dropdown-info"
+                ><img
+                  src="assets/foto-m.png"
+                  class="rounded-circle z-depth-0"
+                  style="border: solid 3px white"
+                  alt="avatar image"
+                  height="100"
+              /></a>
+              <a class="dropdown-item font-usco-default"><b></b></a>
+              <a class="dropdown-item font-usco-default"
+                >Dependencia u Oficina</a
+              >
+              <div class="dropdown-divider"></div>
+              <a class="dropdown"
+                ><button
+                  (click)="logout()"
+                  class="btn btn-usco-vt"
+                  type="button"
+                >
+                  Cerrar Sesión
+                </button></a
+              >
+            </div>
+          </div>
+        </li>
+      </ul>
+    </mat-toolbar>
+    <ng-content (validarToken)="receiveMessage($event)"></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

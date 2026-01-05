@@ -1,0 +1,320 @@
+.card {
+  display: inline-block !important;
+  position: relative !important;
+  width: 100%;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 14%) !important;
+  border-radius: 10px !important;
+  color: rgba(0, 0, 0, 0.87);
+  background: #fff;
+  padding-top: 0px !important;
+}
+
+.card-header-usco {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #4d626c;
+  color: #fff;
+  height: 40px !important;
+}
+
+.btn-header-usco {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #8f141b;
+  color: #fff;
+  height: 40px !important;
+}
+.btn-header-usco:hover {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #1e262b;
+  color: #fff;
+  height: 35px !important;
+}
+
+fieldset.scheduler-border {
+  border: 1px groove #ddd !important;
+  padding: 0 1.4em 1.4em 1.4em !important;
+  margin: 0 0 1.5em 0 !important;
+  -webkit-box-shadow: 0px 0px 0px 0px #000;
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+  font-size: 1.2em !important;
+  font-weight: bold !important;
+  text-align: left !important;
+  width: auto;
+  padding: 0 10px;
+  border-bottom: none;
+}
+
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+
+.example-container mat-form-field {
+  width: 220px;
+}
+
+.example-container form {
+  margin-bottom: 20px;
+}
+
+.example-container form > * {
+  margin: 12px 0;
+}
+
+.example-container .mat-radio-button {
+  margin: 0 12px;
+}
+
+.example-form-fields {
+  display: flex;
+  align-items: flex-start;
+}
+
+.example-action-buttons {
+  padding-bottom: 20px;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  padding: 8px !important; /* Elimina el padding */
+  min-height: 40px !important; /* Permite que el tamaño sea automático */
+  font-size: 12px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper
+  .mat-mdc-form-field-flex
+  .mat-mdc-floating-label {
+  top: 12px !important;
+  padding-top: 8px !important; /* Elimina el padding */
+  font-size: 12px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper
+  .mat-mdc-form-field-flex
+  .mat-mdc-floating-label {
+  top: 12px !important;
+  padding-top: 12px !important; /* Elimina el padding */
+  font-size: 15px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  --mat-mdc-form-field-label-transform: translateY(-24.75px)
+    scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
+  font-size: 12px !important;
+  padding-top: 8px !important; /* Elimina el padding */
+}
+
+::ng-deep .mat-mdc-icon-button .mat-mdc-button-touch-target {
+  position: absolute;
+  top: 50%;
+  height: 100px;
+  left: 50%;
+  width: 48px;
+  transform: translate(-50%, -50%);
+}
+
+::ng-deep .mat-mdc-icon-button.mat-mdc-button-base {
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+}
+
+::ng-deep .mat-mdc-select-value-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+::ng-deep label {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+::ng-deep .mdc-form-field > label {
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0px;
+  padding-right: 0;
+  order: 0;
+}
+.card {
+  display: inline-block !important;
+  position: relative !important;
+  width: 100%;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 14%) !important;
+  border-radius: 10px !important;
+  color: rgba(0, 0, 0, 0.87);
+  background: #fff;
+  padding-top: 0px !important;
+}
+
+.card-header-usco {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #4d626c;
+  color: #fff;
+  height: 40px !important;
+}
+
+.btn-header-usco {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #8f141b;
+  color: #fff;
+  height: 40px !important;
+}
+.btn-header-usco:hover {
+  box-shadow: 0 5px 20px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%),
+    0 8px 10px -5px rgb(0 0 0 / 20%);
+  border-radius: 10px;
+  background-color: #1e262b;
+  color: #fff;
+  height: 35px !important;
+}
+
+fieldset.scheduler-border {
+  border: 1px groove #ddd !important;
+  padding: 0 1.4em 1.4em 1.4em !important;
+  margin: 0 0 1.5em 0 !important;
+  -webkit-box-shadow: 0px 0px 0px 0px #000;
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+legend.scheduler-border {
+  font-size: 1.2em !important;
+  font-weight: bold !important;
+  text-align: left !important;
+  width: auto;
+  padding: 0 10px;
+  border-bottom: none;
+}
+
+.example-container mat-form-field + mat-form-field {
+  margin-left: 8px;
+}
+
+.example-container mat-form-field {
+  width: 220px;
+}
+
+.example-container form {
+  margin-bottom: 20px;
+}
+
+.example-container form > * {
+  margin: 12px 0;
+}
+
+.example-container .mat-radio-button {
+  margin: 0 12px;
+}
+
+.example-form-fields {
+  display: flex;
+  align-items: flex-start;
+}
+
+.example-action-buttons {
+  padding-bottom: 20px;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  padding: 8px !important; /* Elimina el padding */
+  min-height: 40px !important; /* Permite que el tamaño sea automático */
+  font-size: 12px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper
+  .mat-mdc-form-field-flex
+  .mat-mdc-floating-label {
+  top: 12px !important;
+  padding-top: 8px !important; /* Elimina el padding */
+  font-size: 12px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper
+  .mat-mdc-form-field-flex
+  .mat-mdc-floating-label {
+  top: 12px !important;
+  padding-top: 12px !important; /* Elimina el padding */
+  font-size: 15px !important;
+}
+
+::ng-deep
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  --mat-mdc-form-field-label-transform: translateY(-24.75px)
+    scale(var(--mat-mdc-form-field-floating-label-scale, 0.75));
+  font-size: 12px !important;
+  padding-top: 8px !important; /* Elimina el padding */
+}
+
+::ng-deep .mat-mdc-icon-button .mat-mdc-button-touch-target {
+  position: absolute;
+  top: 50%;
+  height: 100px;
+  left: 50%;
+  width: 48px;
+  transform: translate(-50%, -50%);
+}
+
+::ng-deep .mat-mdc-icon-button.mat-mdc-button-base {
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+}
+
+::ng-deep .mat-mdc-select-value-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+::ng-deep label {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+::ng-deep .mdc-form-field > label {
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0px;
+  padding-right: 0;
+  order: 0;
+}

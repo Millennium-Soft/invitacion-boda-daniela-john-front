@@ -1,0 +1,44 @@
+<div class="fondo min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="content w-100" style="max-width: 400px;">
+    <mat-card class="card-login shadow-lg p-4">
+      <div class="header-usco-card text-center mb-4">
+        <h2 class="mb-0 text-primary">Iniciar sesión</h2>
+        <hr class="punteada mt-2 mb-0" />
+      </div>
+      <form (ngSubmit)="onLogin()" class="d-flex flex-column gap-3">
+        <mat-form-field appearance="outline" class="example-full-width">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            [(ngModel)]="email"
+            name="email"
+            required
+            type="email"
+            autocomplete="username"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="example-full-width">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            [(ngModel)]="password"
+            type="password"
+            name="password"
+            required
+            autocomplete="current-password"
+          />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="w-100 fw-bold"
+        >
+          <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+        </button>
+      </form>
+    </mat-card>
+  </div>
+</div>

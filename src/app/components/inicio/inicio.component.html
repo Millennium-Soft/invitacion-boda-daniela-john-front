@@ -1,0 +1,87 @@
+<!-- Pantalla Inicial (Landing con Sobre) -->
+<div class="landing-container" [class.slide-out]="isEnvelopeOpen">
+
+    <div class="landing-content text-center">
+        <h2 class="welcome-text">¡Nuestra Boda!</h2>
+        <h1 class="couple-names-landing">Daniela & John David</h1>
+        <p class="wedding-date">15 - AGOSTO - 2026</p>
+
+        <div class="envelope-area">
+            <div class="envelope" [class.open]="isEnvelopeOpen">
+                <div class="flap left"></div>
+                <div class="flap right"></div>
+                <div class="flap bottom"></div>
+                <div class="flap top"></div>
+
+                <div class="wax-seal" (click)="openEnvelope()">
+                    <span>D&J</span>
+                </div>
+            </div>
+            <!-- Flecha y texto indicativo (CSS pseudo-elements or svg) -->
+            <p class="click-instruction" [class.fade-text]="isEnvelopeOpen">¡CLICK PARA ABRIR LA INVITACIÓN!</p>
+        </div>
+
+        <div class="reservation-info" *ngIf="nombreFamilia || cantidadCupos > 0" [class.fade-text]="isEnvelopeOpen">
+            <p class="family-name" *ngIf="nombreFamilia">Para: {{ nombreFamilia }}</p>
+            <div class="reservation-details" *ngIf="cantidadCupos > 0">
+                <p class="reservation-label">HEMOS RESERVADO</p>
+                <div class="reservation-badge">{{ cantidadCupos }}</div>
+                <p class="reservation-label">LUGARES EN SU HONOR</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenido Principal (Invitación Abierta) -->
+<div class="main-content" [class.visible]="isEnvelopeOpen">
+
+    <!-- YouTube Video Container (Hidden) -->
+    <div id="youtube-player"></div>
+
+    <!-- Music Toggle Button -->
+    <button class="music-control" (click)="toggleMusic()" [class.playing]="isAudioPlaying" title="Música de fondo">
+        <i class="material-icons">{{ isAudioPlaying ? 'music_note' : 'music_off' }}</i>
+    </button>
+
+    <section class="hero text-center d-flex align-items-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">{{ profile.name }}</h1>
+            <p class="lead">{{ profile.title }}</p>
+            <p class="mt-3">{{ profile.description }}</p>
+            <div class="mt-4">
+                <a class="btn btn-outline-light me-2" href="mailto:{{ profile.email }}">Contacto</a>
+                <a class="btn btn-primary" href="#skills">Ver perfil</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Habilidades Técnicas</h2>
+            <div class="row">
+                <div class="col-md-3 mb-3" *ngFor="let skill of skills">
+                    <div class="card skill-card text-center p-3 shadow-sm">
+                        {{ skill }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Experiencia Profesional</h2>
+            <div class="timeline">
+                <div class="timeline-item" *ngFor="let exp of experience">
+                    <h5>{{ exp.role }}</h5>
+                    <small class="text-muted">{{ exp.org }} | {{ exp.period }}</small>
+                    <p class="mt-2">{{ exp.details }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer text-center">
+        <p>{{ profile.email }} | {{ profile.phone }}</p>
+    </footer>
+</div>

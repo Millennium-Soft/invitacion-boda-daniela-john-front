@@ -1,0 +1,39 @@
+.container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.results-list {
+    margin-top: 20px;
+}
+
+.contact-section,
+.rsvp-section {
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.checkbox-container {
+    margin: 15px 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

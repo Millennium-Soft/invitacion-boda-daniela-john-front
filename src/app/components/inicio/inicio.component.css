@@ -1,0 +1,425 @@
+/* =========================================
+   LANDING PAGE (VISTA DE SOBRE)
+   ========================================= */
+.landing-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow-y: auto;
+    z-index: 9999;
+    transition: opacity 1s ease-in-out 1.5s, transform 1s ease-in-out 1.5s;
+    /* Delay to show envelope opening */
+}
+
+/* Animación de Salida del Landing */
+.landing-container.slide-out {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    /* Slight move up and shrink */
+    pointer-events: none;
+}
+
+/* Hide text immediately when opening to focus on envelope */
+.fade-text {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Contenido Central del Landing */
+.landing-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Tipografía de Encabezado */
+.welcome-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: #8B6F47;
+    /* Dorado oscuro */
+    margin-bottom: 5px;
+}
+
+.couple-names-landing {
+    font-family: 'Playfair Display', serif;
+    /* Si no carga, fallback serif */
+    font-size: 2.8rem;
+    color: #5D4037;
+    /* Marrón elegante */
+    margin: 10px 0;
+    line-height: 1.1;
+    font-weight: bold;
+}
+
+.wedding-date {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #8B6F47;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* Área del Sobre */
+.envelope-area {
+    position: relative;
+    margin: 20px 0 40px;
+}
+
+.envelope {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    background: #583648;
+    /* Color Ciruela Oscuro */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+/* Flaps del Sobre */
+.flap {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.flap.bottom {
+    bottom: 0;
+    left: 0;
+    border-width: 0 160px 115px 160px;
+    border-color: transparent transparent #6a4156 transparent;
+    /* Lighter Plum */
+    z-index: 3;
+}
+
+.flap.left {
+    top: 0;
+    left: 0;
+    border-width: 110px 0 110px 160px;
+    border-color: transparent transparent transparent #633d51;
+    z-index: 2;
+}
+
+.flap.right {
+    top: 0;
+    right: 0;
+    border-width: 110px 160px 110px 0;
+    border-color: transparent #633d51 transparent transparent;
+    z-index: 2;
+}
+
+.flap.top {
+    top: 0;
+    left: 0;
+    border-width: 125px 160px 0 160px;
+    border-color: #4f3040 transparent transparent transparent;
+    /* Darker Plum */
+    z-index: 4;
+    transform-origin: top;
+    transition: transform 0.8s ease-in-out 0.4s;
+    /* Delay for seal */
+}
+
+/* Animación de apertura */
+.envelope.open .flap.top {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+/* Sello */
+.wax-seal {
+    position: absolute;
+    z-index: 10;
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle at 30% 30%, #FFD700, #DAA520);
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-family: 'Great Vibes', cursive;
+    color: #5D4037;
+    font-weight: bold;
+    font-size: 1.5rem;
+    border: 3px solid #B8860B;
+    transition: transform 0.4s ease-in, opacity 0.4s ease-in;
+}
+
+.wax-seal:hover {
+    transform: scale(1.05);
+}
+
+.envelope.open .wax-seal {
+    transform: scale(2);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Instrucción de Clic */
+.click-instruction {
+    margin-top: 25px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+/* Información de Reserva */
+.reservation-info {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.family-name {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2rem;
+    color: #5D4037;
+    margin-bottom: 10px;
+}
+
+.reservation-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reservation-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #8B6F47;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.reservation-badge {
+    background: #F3E5D0;
+    /* Crema suave */
+    color: #5D4037;
+    font-size: 1.8rem;
+    font-weight: bold;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   CONTENIDO PRINCIPAL (POST-APERTURA)
+   ========================================= */
+/* Main Content Transition */
+.main-content {
+    opacity: 0;
+    transition: opacity 1.5s ease-in 1.5s;
+    /* Wait for envelope */
+    display: block;
+    /* Always block, just invisible */
+    position: absolute;
+    /* Behind landing */
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.main-content.visible {
+    opacity: 1;
+    position: relative;
+    /* Return to flow */
+    z-index: 10;
+}
+
+/* Reusing hero styles for consistency */
+.hero {
+    background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/assets/images/rapunzel-bg.png') no-repeat center center/cover;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5c3a21;
+}
+
+.section {
+    padding: 60px 0;
+}
+
+.section-title {
+    margin-bottom: 40px;
+    text-align: center;
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+    color: #A865C9;
+}
+
+.skill-card {
+    transition: transform 0.3s;
+    border: 1px solid #D8B4E2;
+    background: #fff;
+}
+
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.timeline-item {
+    margin-bottom: 30px;
+    border-left: 2px solid #A865C9;
+    padding-left: 20px;
+}
+
+.footer {
+    background: #A865C9;
+    color: #fdf6ec;
+    padding: 20px 0;
+}
+
+/* =========================================
+   MUSIC CONTROL
+   ========================================= */
+#youtube-player {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+.music-control {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #5D4037;
+    /* Marrón elegante */
+    border: 2px solid #FFD700;
+    /* Borde dorado */
+    color: #FFD700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.music-control:hover {
+    transform: scale(1.1);
+    background: #6D4C41;
+}
+
+.music-control i {
+    font-size: 24px;
+}
+
+.music-control.playing {
+    background: #8B6F47;
+    animation: musicPulse 2s infinite;
+}
+
+@keyframes musicPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+/* Responsive Landing */
+@media (max-width: 576px) {
+    .music-control {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .floral-header {
+        height: 80px;
+    }
+
+    .floral-footer {
+        height: 80px;
+    }
+
+    .welcome-text {
+        font-size: 2rem;
+    }
+
+    .couple-names-landing {
+        font-size: 2.2rem;
+    }
+
+    .envelope {
+        width: 260px;
+        height: 180px;
+    }
+
+    .flap.bottom {
+        border-width: 0 130px 95px 130px;
+    }
+
+    .flap.left {
+        border-width: 90px 0 90px 130px;
+    }
+
+    .flap.right {
+        border-width: 90px 130px 90px 0;
+    }
+
+    .flap.top {
+        border-width: 105px 130px 0 130px;
+    }
+
+    .reservation-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    .family-name {
+        font-size: 1.6rem;
+    }
+}
