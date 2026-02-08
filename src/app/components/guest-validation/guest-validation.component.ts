@@ -19,6 +19,10 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
     isValid = false;
     isManualMode = false;
     isScanning = false;
+    isSearchingByName = false;
+    searchTerm: string = '';
+    allGuests: Guest[] = [];
+    filteredGuests: Guest[] = [];
 
     statusMessage = '';
     statusIcon = '';
@@ -33,8 +37,51 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
 
     ngOnInit(): void {
         this.guestId = this.route.snapshot.paramMap.get('id');
+        this.loadAllGuests();
         if (this.guestId) {
             this.validateGuest(this.guestId);
+        } else {
+            this.prepareManualValidation();
+        }
+    }
+
+    loadAllGuests() {
+        this.weddingService.getGuests().subscribe({
+            next: (guests) => {
+                this.allGuests = guests;
+                console.log('Total guests loaded for search:', guests.length);
+            }
+        });
+    }
+
+    onSearchInput() {
+        const term = this.searchTerm.trim().toLowerCase();
+        if (term.length < 2) {
+            this.filteredGuests = [];
+            return;
+        }
+
+        this.filteredGuests = this.allGuests.filter(g =>
+            g.name.toLowerCase().includes(term)
+        ).slice(0, 5); // Limit to top 5 results for clarity
+    }
+
+    selectGuestFromSearch(guest: Guest) {
+        if (guest.id) {
+            this.searchTerm = '';
+            this.filteredGuests = [];
+            this.isSearchingByName = false;
+            this.validateGuest(guest.id);
+        }
+    }
+
+    toggleNameSearch() {
+        this.isSearchingByName = !this.isSearchingByName;
+        if (this.isSearchingByName) {
+            this.isScanning = false;
+            this.isManualMode = false;
+            this.searchTerm = '';
+            this.filteredGuests = [];
         } else {
             this.prepareManualValidation();
         }
@@ -51,6 +98,7 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
     prepareManualValidation() {
         this.isManualMode = true;
         this.isScanning = false;
+        this.isSearchingByName = false;
         this.statusMessage = 'Validar invitado';
         this.statusIcon = 'qr_code_scanner';
         this.statusColor = '#DAA520';
@@ -59,6 +107,7 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
     async startScanner() {
         this.isScanning = true;
         this.isManualMode = false;
+        this.isSearchingByName = false;
         this.guest = undefined;
         this.isValid = false;
 

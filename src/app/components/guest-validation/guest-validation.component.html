@@ -15,7 +15,7 @@
             </div>
 
             <!-- Manual/Camera Selection Mode -->
-            <div *ngIf="isManualMode && !isLoading && !isScanning" class="action-selection text-center fade-in">
+            <div *ngIf="!isLoading && !isScanning && !guest" class="action-selection text-center fade-in">
                 <div class="status-icon" [style.color]="statusColor">
                     <i class="material-icons">{{ statusIcon }}</i>
                 </div>
@@ -28,21 +28,50 @@
                     <small>💡 Tip: Verifica los permisos de cámara en tu navegador</small>
                 </div>
 
-                <div class="row g-2 mt-3">
-                    <div class="col-12">
-                        <button class="btn btn-primary-gold w-100" (click)="startScanner()">
-                            <i class="material-icons">photo_camera</i> ESCANEAR QR
+                <div class="row g-2 mt-3" *ngIf="!isSearchingByName">
+                    <div class="col-6">
+                        <button class="btn btn-primary-gold w-100 h-100" (click)="startScanner()">
+                            <i class="material-icons d-block">photo_camera</i> ESCANEAR QR
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-primary-gold w-100 h-100" (click)="toggleNameSearch()">
+                            <i class="material-icons d-block">person_search</i> BUSCAR NOMBRE
                         </button>
                     </div>
                 </div>
 
-                <div class="divider"><span>O INGRESA ID</span></div>
+                <!-- Búsqueda por Nombre -->
+                <div *ngIf="isSearchingByName" class="name-search-container fade-in mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="material-icons text-gold">search</i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" [(ngModel)]="searchTerm"
+                            (input)="onSearchInput()" placeholder="Escribe nombre del invitado...">
+                        <button class="btn btn-outline-secondary" (click)="toggleNameSearch()">
+                            <i class="material-icons" style="font-size: 1.2rem;">close</i>
+                        </button>
+                    </div>
 
-                <div class="form-group">
+                    <div *ngIf="filteredGuests.length > 0" class="search-results shadow-sm">
+                        <div *ngFor="let g of filteredGuests" class="search-item" (click)="selectGuestFromSearch(g)">
+                            <div class="search-item-name">{{ g.name }}</div>
+                            <i class="material-icons">chevron_right</i>
+                        </div>
+                    </div>
+                    <div *ngIf="searchTerm.length >= 2 && filteredGuests.length === 0" class="no-results-small mt-2">
+                        No se encontraron resultados
+                    </div>
+                </div>
+
+                <div class="divider" *ngIf="!isSearchingByName"><span>O INGRESA ID MANUAL</span></div>
+
+                <div class="form-group" *ngIf="!isSearchingByName">
                     <input type="text" class="form-control-minimal" [(ngModel)]="enteredId"
                         placeholder="ID del invitado" (keyup.enter)="onManualSubmit()">
                     <button class="btn btn-outline-gold w-100 mt-2" (click)="onManualSubmit()">
-                        VERIFICAR POR ID
+                        VALIDAR POR ID
                     </button>
                 </div>
             </div>

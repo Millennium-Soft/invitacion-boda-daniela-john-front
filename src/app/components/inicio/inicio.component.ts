@@ -23,6 +23,7 @@ export class InicioComponent implements OnInit {
   isLoadingGuests = false;
   isLoadingFamily = false;
   isAlreadyConfirmed = false;
+  hasScrolled = false;
 
   // Countdown properties
   countdown = {
@@ -95,6 +96,14 @@ export class InicioComponent implements OnInit {
     this.anio = this.fecha.getUTCFullYear();
     this.loadYoutubeAPI();
     this.startCountdown();
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        this.hasScrolled = true;
+      } else {
+        this.hasScrolled = false;
+      }
+    });
   }
 
   loadFamilyDetails() {
@@ -124,16 +133,22 @@ export class InicioComponent implements OnInit {
     this.isLoadingGuests = true;
     this.weddingService.getGuestsByFamily(this.familyId).subscribe({
       next: (guests) => {
+        console.log('Guests loaded from Firebase:', guests);
         this.familyGuests = guests.map((guest: any) => ({
           ...guest,
           confirmed: guest.confirmed || false,
           attending: guest.attending !== undefined ? guest.attending : undefined, // Force choice
           favoriteSong: guest.favoriteSong || '',
           email: guest.email || '',
-          phone: guest.phone || ''
+          phone: guest.phone || '',
+          allergies: guest.allergies || [],
+          otherAllergies: guest.otherAllergies || '',
+          message: guest.message || ''
         }));
+        console.log('Processed familyGuests:', this.familyGuests);
         // Only consider "Already Confirmed" if EVERYONE has confirmed.
         this.isAlreadyConfirmed = guests.length > 0 && guests.every((guest: any) => guest.confirmed);
+        console.log('isAlreadyConfirmed:', this.isAlreadyConfirmed);
         this.isLoadingGuests = false;
       },
       error: (error) => {
@@ -257,20 +272,6 @@ export class InicioComponent implements OnInit {
 
       await Promise.all(updatePromises);
 
-      // Locally mark them as confirmed so the UI updates (locks them)
-      guestsToConfirm.forEach((g: any) => g.confirmed = true);
-
-      // Re-calculate if everyone is done
-      this.isAlreadyConfirmed = this.familyGuests.every((g: any) => g.confirmed);
-
-      // Update family confirmed count based on ALL guests
-      const attendingCount = this.familyGuests.filter((g: any) => g.attending).length;
-      if (this.familyId) {
-        await this.weddingService.updateFamily(this.familyId, {
-          confirmedAttending: attendingCount
-        });
-      }
-
       // --- SEND EMAILS WITH QR CODES ---
       const emailPromises = guestsToConfirm.map(async (guest: any) => {
         if (guest.attending && guest.email) {
@@ -301,6 +302,21 @@ export class InicioComponent implements OnInit {
 
       await Promise.all(emailPromises);
       // ---------------------------------
+
+      // Reload guests from Firebase to get the updated state
+      console.log('Reloading guests from Firebase after confirmation...');
+      this.loadFamilyGuests();
+
+      // Update family confirmed count based on ALL guests (including newly confirmed)
+      // We need to wait a bit for Firebase to update
+      setTimeout(async () => {
+        const attendingCount = this.familyGuests.filter((g: any) => g.confirmed && g.attending).length;
+        if (this.familyId) {
+          await this.weddingService.updateFamily(this.familyId, {
+            confirmedAttending: attendingCount
+          });
+        }
+      }, 1000);
 
       this.mensajeSuccses();
     } catch (error: any) {
