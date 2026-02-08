@@ -10,5 +10,9 @@ export const environment = {
   },
 
   production: true,
-
+  emailjs: {
+    serviceId: 'service_d7cjdcv', // Reemplazar con tu Service ID
+    templateId: 'template_l31lkvo', // Reemplazar con tu Template ID
+    publicKey: 'ch8UbA8fZtWv4jnk-' // Reemplazar con tu Public Key
+  }
 };

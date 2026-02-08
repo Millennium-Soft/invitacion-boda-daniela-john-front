@@ -1,0 +1,427 @@
+/* =========================================
+   RESPONSIVE DESIGN - MEDIA QUERIES
+   ========================================= */
+
+/* Tablets y Laptops Pequeñas (Punto de quiebre estándar) */
+@media (max-width: 1024px) {
+    .names-wedding {
+        font-size: 4.5rem;
+    }
+
+    /* Remove scale to avoid ghostly spacing issues, relying on flex layout */
+    .envelope-area {
+        transform: none;
+        margin: 10px auto;
+    }
+}
+
+/* Tablets (Medianas) */
+@media (max-width: 768px) {
+    .names-wedding {
+        font-size: 3.5rem;
+    }
+
+    .section-title-wedding {
+        font-size: 2.2rem;
+    }
+
+    .formal-announcement {
+        font-size: 1rem;
+        padding: 0 15px;
+    }
+
+    .hero-wedding {
+        height: auto !important;
+        min-height: 100vh;
+        padding: 80px 15px;
+    }
+
+    .countdown-item {
+        min-width: 70px;
+        padding: 15px 10px;
+    }
+
+    .location-card,
+    .dress-code-card,
+    .gift-card,
+    .rsvp-card {
+        padding: 30px 20px;
+    }
+
+    .envelope {
+        width: 400px;
+        height: 280px;
+    }
+
+    .flap.bottom {
+        border-width: 0 200px 145px 200px;
+    }
+
+    .flap.left {
+        border-width: 140px 0 140px 200px;
+    }
+
+    .flap.right {
+        border-width: 140px 200px 140px 0;
+    }
+
+    .flap.top {
+        border-width: 160px 200px 0 200px;
+    }
+}
+
+/* Teléfonos (Móviles Estándar) */
+@media (max-width: 576px) {
+    .landing-content {
+        padding-top: 35px !important;
+        /* Proper breathing room from top frame */
+        padding-bottom: 10px !important;
+        justify-content: center !important;
+    }
+
+    .landing-family-title {
+        font-size: 1.6rem !important;
+        margin: 40px 0 10px !important;
+    }
+
+    .landing-container {
+        padding: 10px !important;
+        /* Reduce padding to fit envelope on narrow screens */
+    }
+
+    .landing-formal-subtitle {
+        font-size: 0.85rem !important;
+    }
+
+    .landing-couple-names {
+        font-size: 1.9rem !important;
+        margin: 3px 0 !important;
+    }
+
+    .landing-formal-date {
+        font-size: 1.05rem !important;
+        padding: 4px 12px !important;
+        margin: 8px 0 !important;
+    }
+
+    .envelope-area {
+        margin: 30px auto 40px !important;
+        /* Removed transform: scale(0.9) as we are resizing the envelope explicitly below */
+    }
+
+    .click-instruction {
+        bottom: 12px !important;
+        font-size: 0.9rem !important;
+        /* More readable */
+        letter-spacing: 1.5px !important;
+    }
+
+    .envelope {
+        width: 360px !important;
+        /* Enlarged */
+        height: 250px !important;
+    }
+
+    .flap.bottom {
+        border-width: 0 180px 130px 180px !important;
+    }
+
+    .flap.left {
+        border-width: 125px 0 125px 180px !important;
+    }
+
+    .flap.right {
+        border-width: 125px 180px 125px 0 !important;
+    }
+
+    .flap.top {
+        border-width: 150px 180px 0 180px !important;
+    }
+
+    .landing-closing-quote {
+        font-size: 0.95rem !important;
+        padding-bottom: 20px !important;
+    }
+
+    /* Main Content Mobile */
+    .names-wedding {
+        font-size: 2.5rem;
+    }
+
+    .section-title-wedding {
+        font-size: 1.8rem;
+    }
+
+    .countdown-grid {
+        gap: 5px;
+    }
+
+    .corner-accent {
+        width: 60px !important;
+        height: 60px !important;
+        opacity: 0.6 !important;
+    }
+
+    .corner-accent.top-left {
+        top: -2px !important;
+        left: -2px !important;
+    }
+
+    .corner-accent.top-right {
+        top: -2px !important;
+        right: -2px !important;
+    }
+
+    .corner-accent.bottom-left {
+        bottom: -2px !important;
+        left: -2px !important;
+    }
+
+    .corner-accent.bottom-right {
+        bottom: -2px !important;
+        right: -2px !important;
+    }
+
+    .countdown-item {
+        min-width: 65px;
+        padding: 10px 5px;
+    }
+}
+
+/* Teléfonos Muy Pequeños o Estrechos */
+@media (max-width: 380px) {
+    .landing-couple-names {
+        font-size: 1.6rem !important;
+    }
+
+    .landing-family-title {
+        font-size: 1.4rem !important;
+    }
+
+    .envelope-area {
+        margin: 10px auto !important;
+        transform: scale(0.8) !important;
+        /* Slightly larger than before */
+    }
+
+    .landing-container::after {
+        top: 8px !important;
+        left: 8px !important;
+        right: 8px !important;
+        bottom: 8px !important;
+    }
+
+    .click-instruction {
+        bottom: 5px !important;
+        /* Even lower for tiny screens */
+    }
+
+    .envelope {
+        width: 320px !important;
+        height: 220px !important;
+    }
+
+    .click-instruction {
+        bottom: 8px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .flap.bottom {
+        border-width: 0 160px 115px 160px !important;
+    }
+
+    .flap.left {
+        border-width: 110px 0 110px 160px !important;
+    }
+
+    .flap.right {
+        border-width: 110px 160px 110px 0 !important;
+    }
+
+    .flap.top {
+        border-width: 130px 160px 0 160px !important;
+    }
+
+    /* --- NUESTROS MOMENTOS RESPONSIVE --- */
+    .moments-section {
+        padding: 40px 15px !important;
+    }
+
+    .carousel-photo {
+        padding: 10px !important;
+    }
+
+    .photo-frame-embossed {
+        padding: 8px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* RSVP Responsive */
+    .rsvp-card {
+        padding: 30px 20px !important;
+    }
+
+    .section-title-wedding {
+        font-size: 2.2rem !important;
+    }
+
+    .guest-card-refined {
+        padding: 15px !important;
+    }
+
+    .guest-name-text {
+        font-size: 1.2rem !important;
+    }
+
+    .btn-att {
+        padding: 12px 5px !important;
+        font-size: 0.85rem !important;
+        gap: 5px !important;
+    }
+
+    .btn-att i {
+        font-size: 20px !important;
+    }
+
+    .btn-rsvp-premium {
+        padding: 15px 30px !important;
+        font-size: 0.9rem !important;
+        width: 100% !important;
+    }
+
+    .family-name-title {
+        font-size: 1.5rem !important;
+    }
+
+    .honor-text {
+        font-size: 1rem !important;
+    }
+
+    .instruction-main {
+        font-size: 1rem !important;
+    }
+
+    .alert-qr-notice {
+        padding: 8px 15px !important;
+        font-size: 0.8rem !important;
+    }
+
+
+
+}
+
+/* OPTIMIZACIÓN POR ALTURA (Para que siempre quepa en una pantalla) */
+@media (max-height: 750px) {
+    .landing-content {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        justify-content: center !important;
+        gap: 2px !important;
+    }
+
+    .landing-family-title {
+        margin: 2px 0 5px !important;
+    }
+
+    .landing-couple-names {
+        margin: 2px 0 !important;
+    }
+
+    .envelope-area {
+        margin: 5px auto !important;
+        /* Scale slightly if really needed, but handle margins */
+        transform: scale(0.85);
+        transform-origin: center center;
+    }
+
+    /* Compensa el espacio vacío dejado por scale */
+    .envelope-area {
+        margin-top: -15px !important;
+        margin-bottom: -15px !important;
+    }
+}
+
+@media (max-height: 600px) {
+    .landing-content {
+        justify-content: center !important;
+    }
+
+    .envelope-area {
+        transform: scale(0.7) !important;
+        margin-top: -30px !important;
+        margin-bottom: -30px !important;
+    }
+
+    .landing-closing-quote {
+        margin-top: 0 !important;
+        padding-bottom: 5px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .landing-sacrament-title {
+        margin: 5px 0 !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* PANTALLAS GRANDES Y ULTRA-WIDE */
+@media (min-width: 1400px) {
+    .landing-couple-names {
+        font-size: 3.5rem;
+    }
+
+    .landing-family-title {
+        font-size: 3.2rem;
+    }
+
+    .envelope-area {
+        transform: scale(1.1);
+    }
+
+    .names-wedding {
+        font-size: 8rem;
+    }
+}
+
+/* Optimization for Laptops/Desktops with shorter screens (e.g. 1366x768 or 1080p with zoom) */
+@media (min-width: 1024px) and (max-height: 900px) {
+    .landing-content {
+        justify-content: center !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+
+    .landing-couple-names {
+        font-size: 2.5rem !important;
+        margin: 2px 0 !important;
+    }
+
+    .landing-family-title {
+        font-size: 2.2rem !important;
+        margin: 5px 0 !important;
+    }
+
+    .landing-formal-subtitle {
+        font-size: 0.9rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .envelope-area {
+        transform: scale(0.9);
+        margin: -10px auto !important;
+    }
+
+    .landing-sacrament-title {
+        margin: 10px 0 5px !important;
+    }
+
+    .landing-formal-date {
+        margin: 5px 0 !important;
+        font-size: 1.2rem !important;
+    }
+
+    .landing-closing-quote {
+        margin-top: 5px !important;
+        padding-bottom: 15px !important;
+    }
+}

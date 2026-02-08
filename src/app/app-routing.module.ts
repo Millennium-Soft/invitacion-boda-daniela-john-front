@@ -3,26 +3,27 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { InicioComponent } from './components/inicio/inicio.component';
 import { DataRegistrationComponent } from './components/data-registration/data-registration.component';
-import { RsvpComponent } from './components/rsvp/rsvp.component';
+import { GuestValidationComponent } from './components/guest-validation/guest-validation.component';
 
 const routes: Routes = [
   //COMPONENTES DEL SISTEMA
   { path: 'login', component: LoginComponent },
 
+  { path: '', component: InicioComponent },
   { path: 'inicio', component: InicioComponent },
   { path: 'registro-datos', component: DataRegistrationComponent },
-  { path: 'confirmar-asistencia', component: RsvpComponent },
+  { path: 'validate', component: GuestValidationComponent },
+  { path: 'validate/:id', component: GuestValidationComponent },
 
   //REDIRECCIONAMIENTO COMOPONENTE POR DEFECTO PARA RUTAS INEXISTENTES EN EL NAVEGADOR
-  { path: '', pathMatch: 'full', redirectTo: '/inicio' },
-  { path: '**', pathMatch: 'full', redirectTo: '/inicio' },
+  { path: '**', component: InicioComponent },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: true,
-      onSameUrlNavigation: 'reload',
+      useHash: false,
+      onSameUrlNavigation: 'reload'
     }),
   ],
   exports: [RouterModule],

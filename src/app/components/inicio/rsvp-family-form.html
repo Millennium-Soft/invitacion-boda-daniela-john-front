@@ -1,0 +1,97 @@
+<!-- Family Guests RSVP Form -->
+<div class="rsvp-card shadow-lg">
+    <h2 class="section-title-wedding">Confirma tu Asistencia</h2>
+    <p class="text-center mb-4" *ngIf="nombreFamilia">Familia {{ nombreFamilia }}</p>
+    <p class="text-center mb-4">Sería un honor contar con tu presencia</p>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoadingGuests" class="text-center py-5">
+        <div class="spinner-border text-purple" role="status">
+            <span class="sr-only">Cargando invitados...</span>
+        </div>
+        <p class="mt-3">Cargando invitados...</p>
+    </div>
+
+    <!-- Family Guests Form -->
+    <div *ngIf="!isLoadingGuests && familyGuests.length > 0">
+        <p class="text-center mb-4 formal-body-text">
+            Por favor confirma la asistencia de cada miembro de tu familia:
+        </p>
+
+        <!-- Guest Cards -->
+        <div class="guests-list">
+            <div *ngFor="let guest of familyGuests; let i = index" class="guest-card mb-4">
+                <div class="guest-header">
+                    <h4 class="guest-name">
+                        <i class="material-icons">person</i>
+                        {{ guest.name }}
+                    </h4>
+                    <div class="attendance-toggle">
+                        <button type="button" class="btn-attendance" [class.attending]="guest.attending"
+                            [class.not-attending]="!guest.attending" (click)="toggleGuestAttending(guest)">
+                            <i class="material-icons">{{ guest.attending ? 'check_circle' : 'cancel' }}</i>
+                            {{ guest.attending ? 'Asistiré' : 'No asistiré' }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Guest Details (only if attending) -->
+                <div *ngIf="guest.attending" class="guest-details">
+                    <!-- Allergies -->
+                    <div class="mb-3">
+                        <label class="form-label">Alergias e intolerancias alimentarias</label>
+                        <div class="row">
+                            <div class="col-6 col-md-4"
+                                *ngFor="let allergy of ['Sin gluten', 'Vegetariano', 'Sin lactosa', 'Vegano', 'Frutos secos', 'Mariscos']">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                        [checked]="guest.allergies?.includes(allergy)"
+                                        (change)="toggleAllergy(guest, allergy)" [id]="'allergy-' + i + '-' + allergy">
+                                    <label class="form-check-label" [for]="'allergy-' + i + '-' + allergy">
+                                        {{ allergy }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Allergies -->
+                    <div class="mb-3">
+                        <label class="form-label">Otras alergias o restricciones</label>
+                        <textarea class="form-control" rows="2" [(ngModel)]="guest.otherAllergies"
+                            [name]="'otherAllergies-' + i"
+                            placeholder="Cuéntanos si tienes alguna otra necesidad"></textarea>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="mb-3">
+                        <label class="form-label">Mensaje especial (opcional)</label>
+                        <textarea class="form-control" rows="2" [(ngModel)]="guest.message" [name]="'message-' + i"
+                            placeholder="Déjanos un mensaje"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="button" class="btn-rsvp" (click)="onSubmitRSVP()" [disabled]="isSubmitting">
+                <span *ngIf="!isSubmitting">
+                    <i class="material-icons">send</i>
+                    Confirmar Asistencia
+                </span>
+                <span *ngIf="isSubmitting">
+                    <span class="spinner-border spinner-border-sm mr-2"></span>
+                    Enviando...
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- No Guests Found -->
+    <div *ngIf="!isLoadingGuests && familyGuests.length === 0" class="text-center py-5">
+        <i class="material-icons" style="font-size: 4rem; color: #A865C9;">info</i>
+        <p class="mt-3">No se encontraron invitados para esta familia.</p>
+        <p class="text-muted">Por favor verifica el enlace de invitación.</p>
+    </div>
+</div>

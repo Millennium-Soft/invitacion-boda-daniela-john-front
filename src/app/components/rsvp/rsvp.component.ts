@@ -81,7 +81,10 @@ export class RsvpComponent implements OnInit {
                 // 2. Create RSVP
                 const rsvp: Rsvp = {
                     guestId: this.selectedGuest.id,
+                    fullName: this.selectedGuest.name,
                     attending: formValue.attending,
+                    guestCount: 1, // Default to 1 for this component
+                    allergies: [], // Default empty
                     dietaryRestrictions: formValue.dietaryRestrictions,
                     song: formValue.song,
                     timestamp: Timestamp.now()

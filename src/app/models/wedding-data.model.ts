@@ -14,13 +14,23 @@ export interface Guest {
     phone?: string;
     email?: string;
     familyId: string;
+    confirmed?: boolean;
+    attending?: boolean;
+    favoriteSong?: string;
 }
 
 export interface Rsvp {
     id?: string;
-    guestId: string;
+    guestId?: string; // Optional if we allow manual entry of full name
+    fullName: string;
+    email?: string;
     attending: boolean;
+    guestCount: number;
+    allergies: string[];
+    otherAllergies?: string;
+    message?: string;
     timestamp: Timestamp;
-    dietaryRestrictions?: string;
-    song?: string;
+    dietaryRestrictions?: string; // Kept for backward compatibility if needed
+    song?: string; // Kept for backward compatibility if needed
 }
+

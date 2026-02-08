@@ -1,15 +1,119 @@
 <div class="container">
     <mat-card>
         <mat-card-header>
-            <mat-card-title>Registro de Datos de Boda</mat-card-title>
+            <mat-card-title>Gestión de Invitaciones de Boda</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <mat-tab-group>
+            <div *ngIf="errorMsg" class="error-banner mb-3 p-3 bg-danger text-white rounded">
+                {{ errorMsg }}
+            </div>
+            <mat-tab-group [selectedIndex]="currentTabIndex" (selectedIndexChange)="currentTabIndex = $event">
+
+                <!-- Tab Lista de Familias -->
+                <mat-tab label="📋 Lista de Familias">
+                    <div class="tab-content">
+                        <h3>Familias e Invitaciones</h3>
+                        <p class="subtitle">Aquí puedes ver todas las familias, sus miembros y copiar los enlaces de
+                            invitación</p>
+
+                        <mat-accordion *ngIf="familiesWithGuests$ | async as families" class="families-accordion"
+                            multi="false">
+                            <div *ngIf="families.length === 0" class="empty-state">
+                                <mat-icon>family_restroom</mat-icon>
+                                <p>No hay familias registradas aún</p>
+                                <p class="hint">Ve a la pestaña "Familias" para registrar una nueva familia</p>
+                            </div>
+
+                            <mat-expansion-panel *ngFor="let family of families" class="family-panel">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <mat-icon class="me-2 text-primary">family_restroom</mat-icon>
+                                        <strong>{{ family.familyName }}</strong>
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        {{ family.invitedCount }} invitados |
+                                        {{ getConfirmedCount(family.guests) }} conf. |
+                                        {{ getAttendingCount(family.guests) }} asist.
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
+                                <!-- Panel Content -->
+                                <div class="panel-inner-content">
+                                    <div class="family-actions-bar">
+                                        <button mat-stroked-button color="primary"
+                                            (click)="editFamily(family); $event.stopPropagation()">
+                                            <mat-icon>edit</mat-icon>
+                                            Editar
+                                        </button>
+                                        <button mat-stroked-button color="warn"
+                                            (click)="deleteFamily(family.id!); $event.stopPropagation()">
+                                            <mat-icon>delete</mat-icon>
+                                            Eliminar
+                                        </button>
+                                    </div>
+
+                                    <!-- Guests List -->
+                                    <div class="guests-section pt-3">
+                                        <h4>Miembros de la Familia:</h4>
+                                        <div *ngIf="family.guests.length === 0" class="no-guests">
+                                            <mat-icon>person_off</mat-icon>
+                                            <span>No hay invitados registrados</span>
+                                        </div>
+                                        <div class="guests-flex-container" *ngIf="family.guests.length > 0">
+                                            <div *ngFor="let guest of family.guests" class="guest-chip-container">
+                                                <mat-chip
+                                                    [color]="guest.confirmed ? (guest.attending ? 'primary' : 'warn') : 'accent'"
+                                                    highlighted>
+                                                    <mat-icon matChipAvatar
+                                                        *ngIf="guest.confirmed && guest.attending">check_circle</mat-icon>
+                                                    <mat-icon matChipAvatar
+                                                        *ngIf="guest.confirmed && !guest.attending">cancel</mat-icon>
+                                                    <mat-icon matChipAvatar
+                                                        *ngIf="!guest.confirmed">help_outline</mat-icon>
+                                                    {{ guest.name }}
+                                                </mat-chip>
+                                                <div class="guest-actions">
+                                                    <button mat-icon-button (click)="editGuest(guest)">
+                                                        <mat-icon>edit</mat-icon>
+                                                    </button>
+                                                    <button mat-icon-button color="warn"
+                                                        (click)="deleteGuest(guest.id!)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invitation Link -->
+                                    <div class="invitation-link-section">
+                                        <h4>Enlace de Invitación:</h4>
+                                        <div class="link-container">
+                                            <input matInput [value]="family.invitationUrl" readonly
+                                                class="invitation-url">
+                                            <button mat-raised-button color="primary"
+                                                (click)="copyInvitationLink(family.invitationUrl, family.familyName)">
+                                                <mat-icon>content_copy</mat-icon>
+                                                Copiar
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Notes -->
+                                    <div *ngIf="family.notes" class="notes-section">
+                                        <h4>Notas:</h4>
+                                        <p class="notes-display">{{ family.notes }}</p>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </div>
+                </mat-tab>
 
                 <!-- Tab Familias -->
-                <mat-tab label="1. Familias">
+                <mat-tab [label]="isEditingFamily ? '✏️ Editar Familia' : '➕ Registrar Familia'">
                     <div class="tab-content">
-                        <h3>Registrar Familia</h3>
+                        <h3>{{ isEditingFamily ? 'Editar Familia' : 'Registrar Nueva Familia' }}</h3>
                         <form [formGroup]="familyForm" (ngSubmit)="onSubmitFamily()">
                             <mat-form-field appearance="fill" class="full-width">
                                 <mat-label>Nombre de la Familia</mat-label>
@@ -26,17 +130,25 @@
                                 <textarea matInput formControlName="notes"></textarea>
                             </mat-form-field>
 
-                            <button mat-raised-button color="primary" type="submit" [disabled]="familyForm.invalid">
-                                Guardar Familia
-                            </button>
+                            <div class="form-actions">
+                                <button mat-raised-button color="primary" type="submit" [disabled]="familyForm.invalid">
+                                    <mat-icon>{{ isEditingFamily ? 'update' : 'save' }}</mat-icon>
+                                    {{ isEditingFamily ? 'Actualizar Familia' : 'Guardar Familia' }}
+                                </button>
+                                <button *ngIf="isEditingFamily" mat-stroked-button color="warn" type="button"
+                                    (click)="cancelEditFamily()" class="ms-2">
+                                    <mat-icon>cancel</mat-icon>
+                                    Cancelar
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </mat-tab>
 
                 <!-- Tab Invitados -->
-                <mat-tab label="2. Invitados">
+                <mat-tab [label]="isEditingGuest ? '✏️ Editar Invitado' : '👤 Registrar Invitado'">
                     <div class="tab-content">
-                        <h3>Registrar Invitado</h3>
+                        <h3>{{ isEditingGuest ? 'Editar Invitado' : 'Registrar Nuevo Invitado' }}</h3>
                         <form [formGroup]="guestForm" (ngSubmit)="onSubmitGuest()">
                             <mat-form-field appearance="fill" class="full-width">
                                 <mat-label>Seleccionar Familia</mat-label>
@@ -62,14 +174,20 @@
                                 <input matInput formControlName="email">
                             </mat-form-field>
 
-                            <button mat-raised-button color="primary" type="submit" [disabled]="guestForm.invalid">
-                                Guardar Invitado
-                            </button>
+                            <div class="form-actions">
+                                <button mat-raised-button color="primary" type="submit" [disabled]="guestForm.invalid">
+                                    <mat-icon>{{ isEditingGuest ? 'person_save' : 'person_add' }}</mat-icon>
+                                    {{ isEditingGuest ? 'Actualizar Invitado' : 'Guardar Invitado' }}
+                                </button>
+                                <button *ngIf="isEditingGuest" mat-stroked-button color="warn" type="button"
+                                    (click)="cancelEditGuest()" class="ms-2">
+                                    <mat-icon>cancel</mat-icon>
+                                    Cancelar
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </mat-tab>
-
-
 
             </mat-tab-group>
         </mat-card-content>

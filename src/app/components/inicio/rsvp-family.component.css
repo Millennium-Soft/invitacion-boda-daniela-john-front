@@ -1,0 +1,159 @@
+/* =========================================
+   FAMILY RSVP STYLES
+   ========================================= */
+
+.guests-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.guest-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow:
+        inset 2px 2px 5px rgba(0, 0, 0, 0.03),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.8),
+        5px 5px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(168, 101, 201, 0.1);
+    transition: all 0.3s ease;
+}
+
+.guest-card:hover {
+    box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.03),
+        inset -1px -1px 3px rgba(255, 255, 255, 0.8),
+        8px 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.guest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(168, 101, 201, 0.1);
+}
+
+.guest-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #5D4037;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.guest-name i {
+    color: #A865C9;
+    font-size: 1.8rem;
+}
+
+.attendance-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.btn-attendance {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: 2px solid;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-attendance.attending {
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.btn-attendance.attending:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-attendance.not-attending {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-attendance.not-attending:hover {
+    background: #ff6b6b;
+    color: white;
+}
+
+.btn-attendance i {
+    font-size: 1.2rem;
+}
+
+.guest-details {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(168, 101, 201, 0.03);
+    border-radius: 10px;
+    border-left: 3px solid #A865C9;
+}
+
+.guest-details .form-label {
+    color: #8B6F47;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.guest-details .form-check-label {
+    color: #5D4037;
+    font-size: 0.9rem;
+}
+
+.text-purple {
+    color: #A865C9;
+}
+
+.spinner-border.text-purple {
+    border-color: #A865C9;
+    border-right-color: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .guest-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .attendance-toggle {
+        width: 100%;
+    }
+
+    .btn-attendance {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .guest-name {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .guest-card {
+        padding: 15px;
+    }
+
+    .guest-details {
+        padding: 15px;
+    }
+
+    .btn-attendance {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+}

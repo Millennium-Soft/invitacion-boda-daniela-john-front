@@ -23,6 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNativeDateModule,
     MatTableModule,
     MatTooltipModule,
+    MatChipsModule,
   ],
   exports: [
     MatButtonModule,
@@ -74,7 +76,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNativeDateModule,
     MatTableModule,
     MatTooltipModule,
+    MatChipsModule,
   ],
   providers: [MatDatepickerModule, MatNativeDateModule],
 })
-export class MaterialModules {}
+export class MaterialModules { }

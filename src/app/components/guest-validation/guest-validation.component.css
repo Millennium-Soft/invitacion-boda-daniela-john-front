@@ -1,0 +1,250 @@
+.validation-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fdf6ec;
+    padding: 20px;
+    font-family: 'Playfair Display', serif;
+}
+
+.validation-card {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    /* Acortado el ancho */
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    box-shadow: 0 15px 35px rgba(93, 64, 55, 0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.title {
+    color: #DAA520;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.date-badge {
+    font-size: 0.8rem;
+    color: #888;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+.status-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+}
+
+.status-icon-small {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+.status-title {
+    font-size: 1.1rem;
+    color: #5D4037;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Forms and Buttons */
+.form-control-minimal {
+    border: none;
+    border-bottom: 2px solid #eee;
+    border-radius: 0;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 10px;
+    transition: all 0.3s;
+}
+
+.form-control-minimal:focus {
+    box-shadow: none;
+    border-bottom-color: #DAA520;
+}
+
+.divider {
+    margin: 20px 0;
+    text-align: center;
+    position: relative;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #eee;
+}
+
+.divider span {
+    background: white;
+    padding: 0 15px;
+    color: #aaa;
+    font-size: 0.7rem;
+    position: relative;
+    letter-spacing: 1px;
+}
+
+.btn-primary-gold {
+    background: #DAA520;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 600;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.btn-primary-gold:active {
+    transform: scale(0.98);
+}
+
+.btn-outline-gold {
+    color: #DAA520;
+    border: 1px solid #DAA520;
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    background: transparent;
+}
+
+/* Result Styles */
+.result-status {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.guest-details-box {
+    background: #fcf9f5;
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 4px solid #DAA520;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+}
+
+.detail-label {
+    font-size: 0.65rem;
+    color: #999;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 700;
+}
+
+.gold-italic {
+    color: #DAA520;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.access-tag {
+    display: inline-flex;
+    align-items: center;
+    background: #4CAF50;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.access-tag i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.guest-id-small {
+    font-size: 0.7rem;
+    color: #bbb;
+}
+
+.btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid #ddd;
+    color: #666;
+    border-radius: 30px;
+    padding: 8px 24px;
+    font-size: 0.85rem;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+    background: #f8f8f8;
+    border-color: #ccc;
+}
+
+.btn-refresh i {
+    font-size: 18px;
+}
+
+/* Scanner Specific */
+#reader {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none !important;
+}
+
+.scanner-wrapper video {
+    border-radius: 10px;
+}
+
+.alert-camera-error {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #856404;
+    font-size: 0.75rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .validation-card {
+        padding: 20px;
+        margin-top: 0;
+    }
+}

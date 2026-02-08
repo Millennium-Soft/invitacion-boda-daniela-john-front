@@ -7,15 +7,130 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #fff;
+    /* Soft Lavender/Cream Gradient with floral pattern */
+    background: linear-gradient(-45deg, #ffffff, #fdf6ec, #f7e9ff, #fcf0ff);
+    background-size: 400% 400%;
+    animation: gradient-flow 15s ease infinite;
+    background-attachment: fixed;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 5px;
+    /* Reduced from 15px */
+    /* Add gap for consistent vertical spacing */
     align-items: center;
     overflow-y: auto;
+    overflow-x: hidden;
     z-index: 9999;
     transition: opacity 1s ease-in-out 1.5s, transform 1s ease-in-out 1.5s;
-    /* Delay to show envelope opening */
+    padding: 20px;
+}
+
+/* Elegant Golden Frame */
+.landing-container::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid rgba(218, 165, 32, 0.4);
+    /* Thin subtle gold */
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: inset 0 0 0 2px rgba(255, 215, 0, 0.1);
+    border-radius: 2px;
+}
+
+/* Base style for corner accents */
+.corner-accent {
+    position: absolute;
+    width: 100px;
+    /* Increased for detail */
+    height: 100px;
+    z-index: 101;
+    pointer-events: none;
+    opacity: 0.8;
+    /* More visible for the detail */
+    transition: opacity 0.5s ease-out;
+    /* Intricate Baroque Filigree Mask */
+    background: radial-gradient(circle at 15% 15%, #FFD700 0%, #DAA520 100%);
+    /* Golden gradient */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M5 5 L 40 5 M5 5 L 5 40 M10 10 Q 30 10 30 30 Q 10 30 10 10 M15 5 Q 15 25 35 25 M5 15 Q 25 15 25 35' fill='none' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='15' cy='15' r='4'/%3E%3Cpath d='M40 5 Q 50 5 50 15 Q 50 25 40 25 M5 40 Q 5 50 15 50 Q 25 50 25 40' fill='none' stroke='black' stroke-width='1'/%3E%3Cpath d='M30 10 A 10 10 0 1 1 20 20 L 20 20 Z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M5 5 L 40 5 M5 5 L 5 40 M10 10 Q 30 10 30 30 Q 10 30 10 10 M15 5 Q 15 25 35 25 M5 15 Q 25 15 25 35' fill='none' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='15' cy='15' r='4'/%3E%3Cpath d='M40 5 Q 50 5 50 15 Q 50 25 40 25 M5 40 Q 5 50 15 50 Q 25 50 25 40' fill='none' stroke='black' stroke-width='1'/%3E%3Cpath d='M30 10 A 10 10 0 1 1 20 20 L 20 20 Z' fill='none' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* Position each corner - more precise overlap with border */
+.corner-accent.top-left {
+    top: 0;
+    left: 0;
+}
+
+.corner-accent.top-right {
+    top: 0;
+    right: 0;
+    transform: rotate(90deg);
+}
+
+.corner-accent.bottom-left {
+    bottom: 0;
+    left: 0;
+    transform: rotate(-90deg);
+}
+
+.corner-accent.bottom-right {
+    bottom: 0;
+    right: 0;
+    transform: rotate(180deg);
+}
+
+/* Fade accents when opening */
+.slide-out .corner-accent {
+    opacity: 0;
+}
+
+/* Corner Accents for the frame */
+.landing-container::before {
+    /* Merged with previous silk texture - using as an overlay container */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://www.transparenttextures.com/patterns/silk.png");
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Floral Decorations */
+.floral-header {
+    width: 100%;
+    height: 120px;
+    background: url('https://www.transparenttextures.com/patterns/floral-paper.png') repeat-x center;
+    background-size: contain;
+    opacity: 0.4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.floral-footer {
+    width: 100%;
+    height: 120px;
+    background: url('https://www.transparenttextures.com/patterns/floral-paper.png') repeat-x center;
+    background-size: contain;
+    opacity: 0.4;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    transform: rotate(180deg);
 }
 
 /* Animación de Salida del Landing */
@@ -24,6 +139,50 @@
     transform: translateY(-20px) scale(0.95);
     /* Slight move up and shrink */
     pointer-events: none;
+}
+
+/* Petals Animation */
+.petals-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.petal {
+    position: absolute;
+    top: -50px;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #fff7ad 0%, #ffd700 100%);
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.6;
+    animation: petal-fall 10s linear infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
+}
+
+@keyframes petal-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+    }
 }
 
 /* Hide text immediately when opening to focus on envelope */
@@ -44,48 +203,127 @@
     max-width: 600px;
 }
 
-/* Tipografía de Encabezado */
-.welcome-text {
+/* --- NUEVA TIPOGRAFÍA FORMAL --- */
+.landing-family-title {
     font-family: 'Great Vibes', cursive;
-    font-size: 2.5rem;
-    color: #8B6F47;
-    /* Dorado oscuro */
-    margin-bottom: 5px;
-}
-
-.couple-names-landing {
-    font-family: 'Playfair Display', serif;
-    /* Si no carga, fallback serif */
     font-size: 2.8rem;
-    color: #5D4037;
-    /* Marrón elegante */
-    margin: 10px 0;
-    line-height: 1.1;
-    font-weight: bold;
+    color: #8B6F47;
+    margin: 50px 0 10px;
+    /* Reduced from 15px 0 10px */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.wedding-date {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 500;
+.landing-formal-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
     color: #8B6F47;
+    /* Reverted to a more golden brown */
+    margin-bottom: 5px;
+    line-height: 1.6;
+    /* Better breathing room between lines */
+    letter-spacing: 0.5px;
+}
+
+.landing-sacrament-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    /* Increased for elegance */
+    color: #8B6F47;
+    /* Replaced lilac with golden brown */
+    margin: 15px 0 10px;
+    /* More defined space */
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.landing-couple-names {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.8rem;
+    /* Restored size for impact */
+    color: #5D4037;
+    margin: 5px 0;
     letter-spacing: 2px;
-    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.landing-formal-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #8B6F47;
+    margin: 10px 0;
+    letter-spacing: 2px;
+    font-weight: 600;
+    border-top: 1px solid rgba(139, 111, 71, 0.2);
+    border-bottom: 1px solid rgba(139, 111, 71, 0.2);
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+.landing-closing-quote {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.35rem;
+    color: #8B6F47;
+    font-style: italic;
+    margin-top: 10px;
+    /* Reduced from 25px */
+    padding: 0 15px 30px;
+    /* Added padding bottom for safety on mobile */
+    line-height: 1.3;
+}
+
+/* Área del Sobre (Ajustada para que quepa todo) */
+.formal-entry,
+.post-loading-info {
+    width: 100%;
+    animation: fadeInDown 1.2s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.landing-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.envelope-area {
+    margin: 15px auto;
 }
 
 /* Área del Sobre */
 .envelope-area {
     position: relative;
-    margin: 20px 0 40px;
+    margin: 40px 0 50px;
+    /* Reduced from 20px 0 40px */
 }
 
 .envelope {
     position: relative;
-    width: 320px;
-    height: 220px;
+    width: 500px;
+    /* Increased from 450px */
+    height: 340px;
+    /* Increased from 310px */
     background: #583648;
     /* Color Ciruela Oscuro */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,7 +341,8 @@
 .flap.bottom {
     bottom: 0;
     left: 0;
-    border-width: 0 160px 115px 160px;
+    border-width: 0 250px 180px 250px;
+    /* Adjusted for 500x340 */
     border-color: transparent transparent #6a4156 transparent;
     /* Lighter Plum */
     z-index: 3;
@@ -112,7 +351,8 @@
 .flap.left {
     top: 0;
     left: 0;
-    border-width: 110px 0 110px 160px;
+    border-width: 170px 0 170px 250px;
+    /* Adjusted for 500x340 */
     border-color: transparent transparent transparent #633d51;
     z-index: 2;
 }
@@ -120,7 +360,8 @@
 .flap.right {
     top: 0;
     right: 0;
-    border-width: 110px 160px 110px 0;
+    border-width: 170px 250px 170px 0;
+    /* Adjusted for 500x340 */
     border-color: transparent #633d51 transparent transparent;
     z-index: 2;
 }
@@ -128,7 +369,8 @@
 .flap.top {
     top: 0;
     left: 0;
-    border-width: 125px 160px 0 160px;
+    border-width: 200px 250px 0 250px;
+    /* Adjusted for 500x340 */
     border-color: #4f3040 transparent transparent transparent;
     /* Darker Plum */
     z-index: 4;
@@ -143,25 +385,72 @@
     z-index: 1;
 }
 
-/* Sello */
+/* Sello con efecto de cera derretida */
 .wax-seal {
     position: absolute;
     z-index: 10;
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle at 30% 30%, #FFD700, #DAA520);
+    width: 75px;
+    height: 75px;
+    background: radial-gradient(circle at 35% 35%, #FFD700 0%, #DAA520 100%);
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     font-family: 'Great Vibes', cursive;
-    color: #5D4037;
+    color: rgba(93, 64, 55, 0.7);
+    /* Efecto grabado suave */
     font-weight: bold;
-    font-size: 1.5rem;
-    border: 3px solid #B8860B;
-    transition: transform 0.4s ease-in, opacity 0.4s ease-in;
+    font-size: 1.7rem;
+    box-shadow:
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+    transition: all 0.4s ease-in-out;
+    animation: seal-pulse 2s infinite ease-in-out;
+}
+
+@keyframes seal-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow:
+            inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+            inset -2px -2px 4px rgba(255, 255, 255, 0.3),
+            0 0 0 0 rgba(218, 165, 32, 0.4);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow:
+            inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+            inset -2px -2px 4px rgba(255, 255, 255, 0.3),
+            0 0 20px 10px rgba(218, 165, 32, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow:
+            inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+            inset -2px -2px 4px rgba(255, 255, 255, 0.3),
+            0 0 0 0 rgba(218, 165, 32, 0);
+    }
+}
+
+/* El "charco" o desbordamiento de cera */
+.wax-seal::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: #DAA520;
+    background: radial-gradient(circle at 30% 30%, #FFD700 0%, #B8860B 80%);
+    /* Forma irregular orgánica */
+    border-radius: 44% 56% 40% 60% / 45% 42% 58% 55%;
+    box-shadow:
+        3px 5px 12px rgba(0, 0, 0, 0.4),
+        inset 1px 1px 3px rgba(255, 255, 255, 0.2);
 }
 
 .wax-seal:hover {
@@ -176,18 +465,24 @@
 
 /* Instrucción de Clic */
 .click-instruction {
-    margin-top: 25px;
-    font-family: 'Roboto', sans-serif;
+    margin-top: 45px;
+    /* Increased from 25px */
+    font-family: 'Playfair Display', serif;
+    /* More elegant font */
     font-size: 0.9rem;
     font-weight: bold;
-    color: #fff;
+    color: #ffd700;
+    /* Golden color to match seal */
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
+    /* Lowered from 30px to clear the seal */
     width: 100%;
     text-align: center;
     z-index: 20;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     pointer-events: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 /* Información de Reserva */
@@ -220,89 +515,1446 @@
 
 .reservation-badge {
     background: #F3E5D0;
-    /* Crema suave */
     color: #5D4037;
     font-size: 1.8rem;
     font-weight: bold;
     width: 50px;
     height: 50px;
-    border-radius: 10px;
+    border-radius: 50%;
+    /* Make it round as per current design in image */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    /* Centered with auto margins */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Magic Loader Animation */
+.magic-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+}
+
+.tangled-sun-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+}
+
+.tangled-sun-svg {
+    width: 100%;
+    height: 100%;
+    animation: rotate-sun 10s linear infinite, sun-glow 2s ease-in-out infinite;
+}
+
+@keyframes rotate-sun {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sun-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px #FFD700) brightness(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 25px #FFD700) brightness(1.2);
+    }
+}
+
+.magic-stars {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    pointer-events: none;
+}
+
+.magic-stars i {
+    color: #FFD700;
+    font-size: 24px;
+    text-shadow: 0 0 10px #FFD700;
+    opacity: 0;
+    animation: star-sparkle 3s ease-in-out infinite;
+}
+
+.star-1 {
+    animation-delay: 0s !important;
+}
+
+.star-2 {
+    animation-delay: 1s !important;
+}
+
+.star-3 {
+    animation-delay: 2s !important;
+}
+
+.magic-text {
+    font-family: 'Dancing Script', cursive;
+    color: #8B6F47;
+    font-size: 1.2rem;
+    animation: fade-text-pulse 2s ease-in-out infinite;
+}
+
+.animated-info {
+    animation: magic-reveal 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes star-sparkle {
+
+    0%,
+    100% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-text-pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes magic-reveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+        filter: blur(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
 }
 
 /* =========================================
    CONTENIDO PRINCIPAL (POST-APERTURA)
    ========================================= */
-/* Main Content Transition */
 .main-content {
     opacity: 0;
     transition: opacity 1.5s ease-in 1.5s;
-    /* Wait for envelope */
-    display: block;
-    /* Always block, just invisible */
-    position: absolute;
-    /* Behind landing */
-    top: 0;
-    width: 100%;
-    z-index: 1;
+    background: linear-gradient(-45deg, #ffffff, #fdf6ec, #f7e9ff, #fcf0ff);
+    background-size: 400% 400%;
+    animation: gradient-flow 15s ease infinite;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    color: #5D4037;
+    overflow-x: hidden;
 }
+
+@keyframes gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Silk Texture Overlay (moved logic to top for clarity) */
 
 .main-content.visible {
     opacity: 1;
     position: relative;
-    /* Return to flow */
     z-index: 10;
 }
 
-/* Reusing hero styles for consistency */
-.hero {
-    background: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/assets/images/rapunzel-bg.png') no-repeat center center/cover;
+/* Floating Lanterns Background (ONLY FOR HERO) */
+.stars-container {
+    position: absolute;
+    /* Changed from fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.lantern {
+    position: absolute;
+    bottom: -100px;
+    background: #FFD700;
+    border-radius: 4px;
+    box-shadow:
+        0 0 20px #FFD700,
+        0 0 40px rgba(255, 215, 0, 0.6),
+        0 0 60px rgba(255, 165, 0, 0.4);
+    animation: float-lantern 20s linear infinite, flicker 2s ease-in-out infinite;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes flicker {
+
+    0%,
+    100% {
+        opacity: 0.9;
+    }
+
+    50% {
+        opacity: 0.6;
+        box-shadow: 0 0 15px #FFD700, 0 0 30px rgba(255, 215, 0, 0.4);
+    }
+}
+
+.lantern::before {
+    content: '☀️';
+    /* Subtle sun symbol like in Tangled */
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.2);
+    opacity: 0.5;
+}
+
+.lantern::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* Animation for Lanterns */
+@keyframes float-lantern {
+    0% {
+        transform: translateY(0) rotate(0deg) translateX(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: translateY(-50vh) rotate(15deg) translateX(20px);
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-120vh) rotate(-15deg) translateX(-20px);
+        opacity: 0;
+    }
+}
+
+.stars-container::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(2px 2px at 20px 30px, #eee, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 130px 80px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0, 0, 0, 0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.3;
+}
+
+/* Creating individual lanterns via pseudo-elements or multiple box-shadows is hard, 
+   so I'll use a few "lantern" divs if I can, but for now, let's use a nice gradient overlay */
+.hero-wedding {
     height: 100vh;
-    min-height: 600px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    color: #fdf6ec;
+    background-color: #0b0213;
+    /* Fallback dark purple */
+    background-image: url('https://w0.peakpx.com/wallpaper/419/559/HD-wallpaper-tangled-lanterns-sky-castle-lake.jpg') !important;
+    background-size: cover !important;
+    background-position: center bottom !important;
+    background-repeat: no-repeat !important;
+}
+
+/* Dark overlay moved to a separate layer for better control */
+.hero-wedding::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(11, 2, 19, 0.3), rgba(11, 2, 19, 0.7));
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    /* Ensure content is above overlay and lanterns */
+    animation: fadeInScale 2.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.wedding-rings-graphic {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 40px;
+}
+
+.wedding-rings-graphic .ring {
+    width: 35px;
+    height: 35px;
+    border: 3px solid #FFD700;
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    animation: rings-float 4s ease-in-out infinite;
+    background: linear-gradient(135deg, transparent 45%, rgba(255, 215, 0, 0.4) 50%, transparent 55%);
+    background-size: 200% 200%;
+}
+
+@keyframes rings-float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+        filter: brightness(1.2);
+    }
+}
+
+.wedding-rings-graphic .ring::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    animation: rings-shine 3s linear infinite;
+}
+
+@keyframes rings-shine {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.wedding-rings-graphic .ring:first-child {
+    left: calc(50% - 25px);
+    z-index: 2;
+    animation-delay: 0s;
+}
+
+.wedding-rings-graphic .ring:last-child {
+    left: calc(50% - 10px);
+    z-index: 1;
+    animation-delay: 0.5s;
+}
+
+.formal-announcement {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+    color: #fff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    /* Stronger shadow for legibility */
+}
+
+.subtitle-wedding {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    color: #FFD700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    animation: sun-glow 4s ease-in-out infinite;
+}
+
+.names-wedding {
+    font-family: 'Great Vibes', cursive;
+    font-size: 6rem;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+}
+
+.date-divider {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #5c3a21;
+    gap: 20px;
+}
+
+.date-divider .line {
+    width: 60px;
+    height: 2px;
+    background: #FFD700;
+}
+
+.date-divider .date {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #FFD700;
+}
+
+/* Sections */
+.section-title-wedding {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3.5rem;
+    color: #A865C9;
+    /* Rapunzel Purple */
+    margin-bottom: 3rem;
+    text-shadow: 0 0 10px rgba(168, 101, 201, 0.3);
 }
 
 .section {
-    padding: 60px 0;
+    padding: 100px 20px;
+    background: transparent;
+    position: relative;
+    z-index: 2;
 }
 
-.section-title {
-    margin-bottom: 40px;
-    text-align: center;
-    font-family: 'Great Vibes', cursive;
+.section::before,
+.section::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(168, 101, 201, 0.2);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.section::before {
+    top: 40px;
+    left: 40px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.section::after {
+    bottom: 40px;
+    right: 40px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Tangled Section Divider */
+.tangled-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px auto;
+    width: 80%;
+    max-width: 400px;
+}
+
+.tangled-divider::before,
+.tangled-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #FFD700, transparent);
+}
+
+.tangled-divider .sun-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 15px;
+    background: #FFD700;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10l5 15h15l-12 10 5 15-13-10-13 10 5-15-12-10h15z'/%3E%3Ccircle cx='50' cy='50' r='20'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(30 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(60 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(90 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(120 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(150 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(180 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(210 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(240 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(270 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(300 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(330 50 50)'/%3E%3C/svg%3E") no-repeat center;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10l5 15h15l-12 10 5 15-13-10-13 10 5-15-12-10h15z'/%3E%3Ccircle cx='50' cy='50' r='20'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(30 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(60 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(90 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(120 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(150 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(180 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(210 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(240 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(270 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(300 50 50)'/%3E%3Cpath d='M50 5l3 10h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z' transform='rotate(330 50 50)'/%3E%3C/svg%3E") no-repeat center;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.formal-body-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #5D4037;
+    line-height: 1.8;
+}
+
+/* Countdown */
+.countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.countdown-item {
+    background: #fdf6ec;
+    /* Cream paper */
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 120px;
+    color: #5D4037;
+    /* Embossed Effect */
+    box-shadow:
+        inset 2px 2px 5px rgba(0, 0, 0, 0.05),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.8),
+        5px 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-item::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px solid rgba(168, 101, 201, 0.1);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.countdown-item .number {
+    display: block;
     font-size: 3rem;
+    font-weight: bold;
+    color: #8B6F47;
+    /* Replaced lilac with golden brown */
+    font-family: 'Playfair Display', serif;
+}
+
+.countdown-item .label {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: #8B6F47;
+}
+
+/* Locations */
+.location-card {
+    background: #fdf6ec;
+    /* Cream paper */
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+    padding: 40px;
+    border-radius: 20px;
+    border: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+    color: #5D4037;
+    position: relative;
+    /* Embossed Effect */
+    box-shadow:
+        inset 3px 3px 7px rgba(0, 0, 0, 0.05),
+        inset -3px -3px 7px rgba(255, 255, 255, 0.8),
+        10px 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.location-card::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid rgba(168, 101, 201, 0.1);
+    border-radius: 15px;
+    pointer-events: none;
+}
+
+.location-card:hover {
+    transform: translateY(-10px);
+    box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.05),
+        inset -1px -1px 3px rgba(255, 255, 255, 0.8),
+        15px 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.location-icon {
+    font-size: 3rem;
+    color: #FFD700;
+    margin-bottom: 20px;
+}
+
+.location-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.location-time {
+    color: #8B6F47;
+    /* Replaced lilac with golden brown */
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.btn-location {
+    display: inline-block;
+    padding: 12px 30px;
+    background: transparent;
+    border: 2px solid #A865C9;
+    color: #A865C9;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    margin-top: 15px;
+}
+
+.btn-location:hover {
+    background: #A865C9;
+    color: #fff;
+    border-color: #A865C9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(168, 101, 201, 0.3);
+    text-decoration: none;
+}
+
+/* Timeline */
+.timeline-wedding {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline-wedding::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, #A865C9, #D8B4E2);
+    transform: translateX(-50%);
+}
+
+.timeline-event {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.timeline-event .time {
+    width: 45%;
+    text-align: right;
+    padding-right: 30px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #FFD700;
+}
+
+.timeline-event .event-details {
+    width: 45%;
+    padding-left: 30px;
+    text-align: left;
+}
+
+.timeline-event::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    background: #A865C9;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(168, 101, 201, 0.5);
+}
+
+/* Dress Code Elegant */
+.dress-code-container-elegant {
+    max-width: 650px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(93, 64, 55, 0.08);
+    position: relative;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+.dress-code-inner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.dress-category {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dress-icon-circle {
+    width: 70px;
+    height: 70px;
+    background: #fdf6ec;
+    border: 1px solid rgba(218, 165, 32, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #DAA520;
+    transition: all 0.3s ease;
+}
+
+.dress-category:hover .dress-icon-circle {
+    transform: translateY(-5px);
+    background: #DAA520;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.3);
+}
+
+.dress-icon-circle i {
+    font-size: 32px;
+}
+
+.dress-category h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    color: #8B6F47;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.dress-category p {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.4rem;
+    color: #5D4037;
+    margin: 0;
+}
+
+.dress-separator {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(218, 165, 32, 0.4), transparent);
+    margin: 0 20px;
+}
+
+.dress-important-notice {
+    background: rgba(211, 47, 47, 0.03);
+    border-top: 1px solid rgba(211, 47, 47, 0.1);
+    margin: 0 -40px -40px;
+    padding: 20px;
+    border-radius: 0 0 30px 30px;
+}
+
+.dress-important-notice p {
+    margin: 0;
+    color: #d32f2f;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.dress-important-notice i {
+    font-size: 18px;
+}
+
+@media (max-width: 576px) {
+    .dress-code-inner {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .dress-separator {
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(218, 165, 32, 0.4), transparent);
+        margin: 5px auto;
+    }
+
+    .dress-code-container-elegant {
+        padding: 30px 15px 0;
+        /* Padding inferior 0 porque el notice tiene margen negativo */
+        margin: 20px 10px;
+    }
+
+    .dress-important-notice {
+        margin: 20px -15px 0;
+        /* Coincidir con el padding lateral de 15px */
+        padding: 15px;
+        border-radius: 0 0 30px 30px;
+    }
+
+    .dress-important-notice p {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 0.85rem;
+    }
+
+    .qr-bank-img {
+        width: 100%;
+        max-width: 250px;
+        height: auto;
+    }
+}
+
+/* RSVP Form */
+.rsvp-card {
+    background: #fdf6ec;
+    /* Cream paper color */
+    color: #5D4037;
+    padding: 50px;
+    border-radius: 30px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.rsvp-card .section-title-wedding {
+    color: #8B6F47;
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #8B6F47;
+}
+
+.form-control {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #D8B4E2;
+    border-radius: 0;
+    padding: 10px 0;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #A865C9;
+    background: transparent;
+}
+
+.btn-rsvp {
+    background: #A865C9;
+    color: white;
+    padding: 15px;
+    border-radius: 30px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.btn-rsvp:hover {
+    background: #8e44ad;
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(168, 101, 201, 0.4);
+}
+
+/* Redesigned RSVP Elements */
+.confirmed-success-view {
+    animation: fadeInScale 0.8s ease-out;
+}
+
+.success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.success-icon-wrapper i {
+    font-size: 50px;
+    color: #28a745;
+}
+
+.gold-text {
+    color: #8B6F47;
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+}
+
+.family-name-title {
+    font-family: 'Playfair Display', serif;
+    color: #5D4037;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.honor-text {
+    font-style: italic;
+    color: #8B6F47;
+    font-size: 1.1rem;
+}
+
+.instruction-main {
+    font-weight: 600;
+    color: #5D4037;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.alert-qr-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 30px;
+    color: #8B6F47;
+    font-size: 0.9rem;
+}
+
+.alert-qr-notice i {
+    font-size: 1.2rem;
+}
+
+.btn-group-attendance {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-opt {
+    flex: 1;
+    max-width: 180px;
+    padding: 12px 15px;
+    border-radius: 30px;
+    border: 2px solid #eee;
+    background: #fff;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-opt i {
+    font-size: 20px;
+}
+
+.active-attending {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+    color: #28a745;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
+}
+
+.active-declining {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.05);
+    color: #dc3545;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+}
+
+.btn-opt:not(.active-attending):not(.active-declining):hover {
+    border-color: #ddd;
+    background: #f9f9f9;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- REFINED RSVP DESIGN SYSTEM --- */
+.guest-card-refined {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(168, 101, 201, 0.05);
+    transition: all 0.3s ease;
+}
+
+.guest-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.guest-avatar {
+    color: #A865C9;
+    font-size: 24px;
+    background: rgba(168, 101, 201, 0.1);
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.guest-name-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #5D4037;
+    font-weight: 600;
+}
+
+.attendance-selection-refined .selection-label {
+    text-align: center;
+    color: #8B6F47;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.btn-group-attendance {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-att {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 10px;
+    border-radius: 15px;
+    border: 2px solid #f0f0f0;
+    background: #fff;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.btn-att i {
+    font-size: 24px;
+}
+
+.btn-confirm.active {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+    color: #28a745;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.1);
+}
+
+.btn-decline.active {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.05);
+    color: #dc3545;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.1);
+}
+
+.bg-light-gold {
+    background: rgba(255, 215, 0, 0.04);
+    border: 1px dashed rgba(255, 215, 0, 0.3);
+    margin-top: 20px;
+}
+
+.form-label-refined {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: #8B6F47;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.form-label-refined i {
+    font-size: 18px;
     color: #A865C9;
 }
 
-.skill-card {
-    transition: transform 0.3s;
-    border: 1px solid #D8B4E2;
-    background: #fff;
+.form-control-refined {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 2px solid rgba(168, 101, 201, 0.2);
+    background: transparent;
+    color: #5D4037;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    border-radius: 0;
+    transition: border-color 0.3s;
 }
 
-.skill-card:hover {
+.form-control-refined:focus {
+    outline: none;
+    border-color: #A865C9;
+}
+
+.helper-text {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+.btn-rsvp-premium {
+    background: linear-gradient(135deg, #A865C9 0%, #8e44ad 100%);
+    color: #fff;
+    padding: 18px 45px;
+    border-radius: 40px;
+    border: none;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-rsvp-premium:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(168, 101, 201, 0.3);
+}
+
+.btn-rsvp-premium:disabled {
+    background: #ccc;
+    transform: none;
+    box-shadow: none;
+}
+
+.text-gold-spinner {
+    color: #DAA520;
+}
+
+.info-icon-large {
+    font-size: 4rem;
+    color: #DAA520;
+    opacity: 0.5;
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Gifts */
+.gifts-intro {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #5D4037;
+}
+
+.gift-card {
+    background: #fdf6ec;
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+    padding: 40px;
+    border-radius: 20px;
+    border: none;
+    height: 100%;
+    transition: all 0.3s;
+    color: #5D4037;
+    position: relative;
+    box-shadow:
+        inset 3px 3px 7px rgba(0, 0, 0, 0.05),
+        inset -3px -3px 7px rgba(255, 255, 255, 0.8),
+        10px 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.gift-card::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid rgba(168, 101, 201, 0.1);
+    border-radius: 15px;
+    pointer-events: none;
+}
+
+.gift-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.05),
+        inset -1px -1px 3px rgba(255, 255, 255, 0.8),
+        15px 15px 40px rgba(0, 0, 0, 0.1);
 }
 
-.timeline-item {
-    margin-bottom: 30px;
-    border-left: 2px solid #A865C9;
-    padding-left: 20px;
+.gift-icon {
+    font-size: 3.5rem;
+    color: #DAA520;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.footer {
-    background: #A865C9;
-    color: #fdf6ec;
-    padding: 20px 0;
+.qr-bank-container {
+    margin: 20px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 15px;
+    display: inline-block;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.3s ease;
 }
+
+.qr-bank-container:hover {
+    transform: scale(1.05);
+    border-color: #DAA520;
+    box-shadow: 0 10px 25px rgba(218, 165, 32, 0.2);
+}
+
+.qr-bank-img {
+    width: 250px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    display: block;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 0 auto;
+}
+
+.qr-overlay-text {
+    margin-top: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: #8B6F47;
+    font-weight: 700;
+}
+
+.bank-details {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fcf8f2;
+    border-radius: 10px;
+    text-align: left;
+    display: inline-block;
+    border: 1px solid #eee;
+}
+
+.bank-details p {
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.bank-details strong {
+    color: #8B6F47;
+    /* Replaced lilac with golden brown */
+}
+
+.envelope-notice-container {
+    margin-top: 15px;
+    padding: 10px;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #5D4037;
+}
+
+.footer-wedding {
+    padding: 40px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: #fff;
+    color: #8B6F47;
+}
+
+/* =========================================
+   MOMENTS SECTION & PHOTO FRAMES
+   ========================================= */
+.moments-section {
+    padding: 80px 20px;
+    background: #fdf6ec;
+    background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+}
+
+.photo-frame-embossed {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    position: relative;
+    /* Deep Embossed Effect */
+    box-shadow:
+        inset 5px 5px 10px rgba(0, 0, 0, 0.05),
+        inset -5px -5px 10px rgba(255, 255, 255, 0.8),
+        10px 15px 35px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.photo-frame-embossed img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Gold Foil Decoration for main portrait */
+.main-portrait {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.main-portrait::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 2px solid #FFD700;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+}
+
+.main-portrait .frame-decoration {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 1px solid rgba(168, 101, 201, 0.1);
+    pointer-events: none;
+}
+
+.italic {
+    font-style: italic;
+    color: #8B6F47;
+    /* Replaced lilac with golden brown */
+}
+
+/* Carousel Specific Styles */
+#coupleCarousel {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.carousel-photo {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 18px;
+}
+
+.carousel-photo img {
+    max-height: 500px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Gold border for first carousel item */
+.carousel-item.active .photo-frame-embossed::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 2px solid #FFD700;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+}
+
+
 
 /* =========================================
    MUSIC CONTROL
@@ -376,12 +2028,9 @@
         height: 45px;
     }
 
-    .floral-header {
-        height: 80px;
-    }
-
+    .floral-header,
     .floral-footer {
-        height: 80px;
+        height: 60px;
     }
 
     .welcome-text {
@@ -389,7 +2038,7 @@
     }
 
     .couple-names-landing {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .envelope {
@@ -422,4 +2071,103 @@
     .family-name {
         font-size: 1.6rem;
     }
+}
+
+/* =========================================
+   LOCKED GUEST STYLES
+   ========================================= */
+
+.guest-card-refined {
+    position: relative;
+    /* Ensure badge positioning works */
+}
+
+.guest-card-refined.guest-locked {
+    background: #fdfdfd;
+    border-color: #e0e0e0;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+}
+
+.guest-locked .guest-identity-block {
+    opacity: 0.9;
+}
+
+.confirmed-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    z-index: 5;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+.confirmed-badge i {
+    font-size: 1.1rem;
+}
+
+.disabled-block {
+    pointer-events: none;
+    opacity: 0.7;
+    filter: grayscale(0.5);
+}
+
+.guest-locked .guest-details {
+    background: #f8f8f8;
+    border-left-color: #ccc;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.whatsapp-support {
+    border: 1px dashed rgba(168, 101, 201, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+
+.whatsapp-support:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Status Badges */
+.status-display {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.success-status {
+    background: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.error-status {
+    background: rgba(211, 47, 47, 0.1);
+    color: #c62828;
+    border: 1px solid #ffcdd2;
 }

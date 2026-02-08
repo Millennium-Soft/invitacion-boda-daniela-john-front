@@ -1,11 +1,30 @@
 <!-- Pantalla Inicial (Landing con Sobre) -->
 <div class="landing-container" [class.slide-out]="isEnvelopeOpen">
+    <div class="floral-header"></div>
+
+    <!-- Decorative Corner Accents -->
+    <div class="corner-accent top-left"></div>
+    <div class="corner-accent top-right"></div>
+    <div class="corner-accent bottom-left"></div>
+    <div class="corner-accent bottom-right"></div>
 
     <div class="landing-content text-center">
-        <h2 class="welcome-text">¡Nuestra Boda!</h2>
-        <h1 class="couple-names-landing">Daniela & John David</h1>
-        <p class="wedding-date">15 - AGOSTO - 2026</p>
+        <div class="formal-entry" [class.fade-text]="isEnvelopeOpen">
 
+            <!-- 2. Formal Blessing -->
+
+            <p class="landing-formal-subtitle">Con la bendición de Dios y de nuestros padres</p>
+            <p class="landing-formal-subtitle">tenemos el honor de invitarte a celebrar el</p>
+
+            <!-- 3. Sacrament -->
+            <h2 class="landing-sacrament-title">Sacramento del Matrimonio de</h2>
+
+            <!-- 4. Couple Names -->
+            <h3 class="landing-couple-names">Daniela & John David</h3>
+            <p class="landing-formal-date">15 de agosto de 2026</p>
+        </div>
+
+        <!-- 5. Envelope -->
         <div class="envelope-area">
             <div class="envelope" [class.open]="isEnvelopeOpen">
                 <div class="flap left"></div>
@@ -17,19 +36,49 @@
                     <span>D&J</span>
                 </div>
             </div>
-            <!-- Flecha y texto indicativo (CSS pseudo-elements or svg) -->
             <p class="click-instruction" [class.fade-text]="isEnvelopeOpen">¡CLICK PARA ABRIR LA INVITACIÓN!</p>
         </div>
 
-        <div class="reservation-info" *ngIf="nombreFamilia || cantidadCupos > 0" [class.fade-text]="isEnvelopeOpen">
-            <p class="family-name" *ngIf="nombreFamilia">Para: {{ nombreFamilia }}</p>
-            <div class="reservation-details" *ngIf="cantidadCupos > 0">
-                <p class="reservation-label">HEMOS RESERVADO</p>
-                <div class="reservation-badge">{{ cantidadCupos }}</div>
-                <p class="reservation-label">LUGARES EN SU HONOR</p>
+        <div class="registration-area" [class.fade-text]="isEnvelopeOpen">
+            <!-- Loader -->
+            <div class="magic-loader" *ngIf="isLoadingFamily">
+                <div class="magic-stars">
+                    <i class="material-icons star-1">auto_awesome</i>
+                    <i class="material-icons star-2">auto_awesome</i>
+                    <i class="material-icons star-3">auto_awesome</i>
+                </div>
+                <div class="tangled-sun-container">
+                    <svg viewBox="0 0 100 100" class="tangled-sun-svg">
+                        <circle cx="50" cy="50" r="18" fill="#FFD700" />
+                        <g class="sun-rays">
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(0 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(45 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(90 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(135 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(180 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(225 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(270 50 50)" />
+                            <path d="M50,15 Q55,25 50,32 Q45,25 50,15" fill="#FFD700" transform="rotate(315 50 50)" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 6. Date & Reservation (Shown after magic loading) -->
+            <div class="post-loading-info animated-info"
+                *ngIf="!isLoadingFamily && (nombreFamilia || cantidadCupos > 0)">
+                <br>
+                <h1 class="landing-family-title" *ngIf="nombreFamilia">{{ nombreFamilia }}</h1>
+
+                <div class="reservation-info" *ngIf="cantidadCupos > 0">
+                    <p class="reservation-label">HEMOS RESERVADO</p>
+                    <div class="reservation-badge">{{ cantidadCupos }}</div>
+                    <p class="reservation-label">LUGARES EN SU HONOR</p>
+                </div>
             </div>
         </div>
     </div>
+    <div class="floral-footer"></div>
 </div>
 
 <!-- Contenido Principal (Invitación Abierta) -->
@@ -43,45 +92,460 @@
         <i class="material-icons">{{ isAudioPlaying ? 'music_note' : 'music_off' }}</i>
     </button>
 
-    <section class="hero text-center d-flex align-items-center">
-        <div class="container">
-            <h1 class="display-4 fw-bold">{{ profile.name }}</h1>
-            <p class="lead">{{ profile.title }}</p>
-            <p class="mt-3">{{ profile.description }}</p>
-            <div class="mt-4">
-                <a class="btn btn-outline-light me-2" href="mailto:{{ profile.email }}">Contacto</a>
-                <a class="btn btn-primary" href="#skills">Ver perfil</a>
+    <!-- Hero Section -->
+    <section class="hero-wedding text-center d-flex align-items-center justify-content-center">
+        <!-- Floating Lanterns (Tangled Style) -->
+        <div class="stars-container">
+            <div class="lantern" style="left: 10%; animation-delay: 0s; width: 30px; height: 40px;"></div>
+            <div class="lantern" style="left: 25%; animation-delay: 2s; width: 25px; height: 35px;"></div>
+            <div class="lantern" style="left: 45%; animation-delay: 5s; width: 35px; height: 45px;"></div>
+            <div class="lantern" style="left: 65%; animation-delay: 3s; width: 20px; height: 30px;"></div>
+            <div class="lantern" style="left: 85%; animation-delay: 7s; width: 40px; height: 50px;"></div>
+            <div class="lantern" style="left: 15%; animation-delay: 10s; width: 25px; height: 35px;"></div>
+            <div class="lantern" style="left: 35%; animation-delay: 12s; width: 30px; height: 40px;"></div>
+            <div class="lantern" style="left: 55%; animation-delay: 8s; width: 20px; height: 30px;"></div>
+            <div class="lantern" style="left: 75%; animation-delay: 15s; width: 35px; height: 45px;"></div>
+            <div class="lantern" style="left: 90%; animation-delay: 4s; width: 30px; height: 40px;"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="wedding-rings-graphic">
+                <span class="ring"></span>
+                <span class="ring"></span>
+            </div>
+            <h2 class="subtitle-wedding">NUESTRA BODA</h2>
+            <h1 class="names-wedding">Daniela & John David</h1>
+            <p class="formal-announcement">"Con la bendición de Dios y nuestros padres, tenemos el honor de invitarles a
+                celebrar nuestra unión matrimonial."</p>
+            <div class="date-divider">
+                <span class="line"></span>
+                <span class="date">15 . 08 . 2026</span>
+                <span class="line"></span>
             </div>
         </div>
     </section>
 
-    <section id="skills" class="section bg-light">
+    <!-- Our Moments Section -->
+    <section class="moments-section section">
         <div class="container">
-            <h2 class="section-title">Habilidades Técnicas</h2>
-            <div class="row">
-                <div class="col-md-3 mb-3" *ngFor="let skill of skills">
-                    <div class="card skill-card text-center p-3 shadow-sm">
-                        {{ skill }}
+            <div class="moments-header text-center mb-5">
+                <h2 class="section-title-wedding">Nuestros Momentos</h2>
+                <p class="formal-body-text italic">Cada capítulo de nuestra historia nos trajo hasta aquí...</p>
+            </div>
+
+            <!-- Carousel -->
+            <div id="coupleCarousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="4000">
+
+
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="photo-frame-embossed carousel-photo">
+                            <img src="assets/images/foto_principal.jpg" class="d-block w-100"
+                                alt="Daniela y John David">
+                            <div class="frame-decoration"></div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="photo-frame-embossed carousel-photo">
+                            <img src="assets/images/foto_1.jpg" class="d-block w-100" alt="Momento 1">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="photo-frame-embossed carousel-photo">
+                            <img src="assets/images/foto_2.jpg" class="d-block w-100" alt="Momento 2">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="photo-frame-embossed carousel-photo">
+                            <img src="assets/images/foto_3.jpg" class="d-block w-100" alt="Momento 3">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="photo-frame-embossed carousel-photo">
+                            <img src="assets/images/foto_4.jpg" class="d-block w-100" alt="Momento 4">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section section text-center">
+        <div class="container">
+            <h2 class="section-title-wedding">Solo faltan...</h2>
+            <div class="countdown-grid">
+                <div class="countdown-item">
+                    <span class="number">{{ countdown.days }}</span>
+                    <span class="label">Días</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number">{{ countdown.hours }}</span>
+                    <span class="label">Horas</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number">{{ countdown.minutes }}</span>
+                    <span class="label">Minutos</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number">{{ countdown.seconds }}</span>
+                    <span class="label">Segundos</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- Locations Section -->
+    <section class="locations-section section">
+        <div class="container text-center">
+            <h2 class="section-title-wedding"><i class="material-icons">favorite</i> SACRAMENTO MATRIMONIAL</h2>
+            <div class="row mt-5">
+                <div class="col-md-6 mb-5">
+                    <div class="location-card">
+                        <i class="material-icons location-icon">church</i>
+                        <h3>CEREMONIA</h3>
+                        <p class="location-name">Parroquia Nuestra Señora del Perpetuo Socorro</p>
+                        <p class="location-time">Cra. 8a #1720, Neiva, Huila</p>
+                        <p class="location-time">4:00 PM</p>
+                        <a href="https://maps.app.goo.gl/S3QdFrJSkoho19U46" target="_blank" class="btn-location">VER
+                            MAPA</a>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <div class="location-card">
+                        <i class="material-icons location-icon">celebration</i>
+                        <h3>RECEPCIÓN</h3>
+                        <p class="location-name">Eventos Magenta</p>
+                        <p class="location-time">Cra. 6 #36-15, Comuna 2, Neiva, Huila</p>
+                        <p class="location-time">7:00 PM</p>
+                        <a href="https://maps.app.goo.gl/r4Pk5TdErYW1G2J76" target="_blank" class="btn-location">VER
+                            MAPA</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section">
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section section">
         <div class="container">
-            <h2 class="section-title">Experiencia Profesional</h2>
-            <div class="timeline">
-                <div class="timeline-item" *ngFor="let exp of experience">
-                    <h5>{{ exp.role }}</h5>
-                    <small class="text-muted">{{ exp.org }} | {{ exp.period }}</small>
-                    <p class="mt-2">{{ exp.details }}</p>
+            <h2 class="section-title-wedding"><i class="material-icons">access_time</i> ITINERARIO</h2>
+            <div class="timeline-wedding">
+                <div class="timeline-event">
+                    <div class="time">17:00</div>
+                    <div class="event-details">
+                        <h4>Llegada de invitados</h4>
+                        <p>Recepción y bienvenida</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="time">17:30</div>
+                    <div class="event-details">
+                        <h4>Welcome Drink</h4>
+                        <p>Coctel de bienvenida</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="time">18:00</div>
+                    <div class="event-details">
+                        <h4>Ceremonia</h4>
+                        <p>El momento más especial</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="time">19:00</div>
+                    <div class="event-details">
+                        <h4>Cóctel</h4>
+                        <p>Bebidas y aperitivos</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="time">21:00</div>
+                    <div class="event-details">
+                        <h4>Banquete</h4>
+                        <p>Cena y celebración</p>
+                    </div>
+                </div>
+                <div class="timeline-event">
+                    <div class="time">00:00</div>
+                    <div class="event-details">
+                        <h4>Fiesta</h4>
+                        <p>¡A bailar hasta el amanecer!</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="footer text-center">
-        <p>{{ profile.email }} | {{ profile.phone }}</p>
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- Dress Code Section -->
+    <section class="dress-code-section section text-center">
+        <div class="container">
+            <h2 class="section-title-wedding">CÓDIGO DE VESTIMENTA</h2>
+            <div class="dress-code-container-elegant">
+                <div class="dress-code-inner">
+                    <div class="dress-category">
+                        <div class="dress-icon-circle">
+                            <i class="material-icons">dry_cleaning</i>
+                        </div>
+                        <h3>MUJERES</h3>
+                        <p>Vestido Largo</p>
+                    </div>
+                    <div class="dress-separator"></div>
+                    <div class="dress-category">
+                        <div class="dress-icon-circle">
+                            <i class="material-icons">straighten</i>
+                        </div>
+                        <h3>HOMBRES</h3>
+                        <p>Traje Formal</p>
+                    </div>
+                </div>
+                <div class="dress-important-notice">
+                    <p><i class="material-icons">info</i> <strong>IMPORTANTE:</strong> El color blanco es exclusivo para
+                        la novia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- Gifts Section -->
+    <section class="gifts-section section text-center">
+        <div class="container">
+            <h2 class="section-title-wedding"><i class="material-icons">redeem</i> DETALLES DE CORAZÓN</h2>
+            <p class="gifts-intro">Tu presencia es nuestro mejor regalo, pero si deseas hacernos un detalle especial...
+            </p>
+
+            <div class="gift-options row justify-content-center mt-5">
+                <div class="col-md-6 mb-4">
+                    <div class="gift-card">
+                        <i class="material-icons gift-icon">auto_stories</i>
+                        <h3>LLUVIA DE SOBRES</h3>
+                        <div class="envelope-notice-container">
+                            <p>Tu presencia es lo más importante, pero si deseas darnos un detalle, contaremos con una
+                                urna para sobres el día del evento.</p>
+                            <div class="qr-bank-container">
+                                <img src="assets/images/card.jpg" alt="QR Transferencia" class="qr-bank-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="gift-card">
+                        <i class="material-icons gift-icon">account_balance</i>
+                        <h3>TRANSFERENCIA BANCARIA</h3>
+                        <p>Si prefieres realizar una transferencia:</p>
+                        <div class="qr-bank-container">
+                            <img src="assets/images/qr_transfer.jpeg" alt="QR Transferencia" class="qr-bank-img">
+                            <div class="qr-overlay-text">ESCANEA PARA TRANSFERIR</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="tangled-divider">
+        <div class="sun-icon"></div>
+    </div>
+
+    <!-- RSVP Section -->
+    <section class="rsvp-section section">
+        <div class="container">
+            <!-- Include Family RSVP Form -->
+            <ng-container *ngTemplateOutlet="familyRsvpForm"></ng-container>
+        </div>
+    </section>
+
+    <!-- Family RSVP Form Template -->
+    <ng-template #familyRsvpForm>
+        <div class="rsvp-card shadow-lg">
+            <h2 class="section-title-wedding">Confirmar Asistencia</h2>
+
+            <!-- Already Confirmed Message -->
+            <div *ngIf="isAlreadyConfirmed && !isLoadingGuests" class="confirmed-success-view text-center py-5 fade-in">
+                <div class="success-icon-wrapper mb-4">
+                    <i class="material-icons">check_circle</i>
+                </div>
+                <h3 class="gold-text mb-3">¡Gracias por confirmar!</h3>
+                <p class="formal-body-text px-3">Tu respuesta ha sido registrada exitosamente. Estamos muy felices de
+                    que nos acompañes en este día tan especial.</p>
+                <div class="qr-info-box mt-4 mx-auto p-3"
+                    style="max-width: 300px; background: rgba(255, 215, 0, 0.05); border: 1px dashed #FFD700; border-radius: 15px;">
+                    <i class="material-icons" style="color: #8B6F47;">qr_code_2</i>
+                    <p class="mb-0" style="font-size: 0.9rem; color: #8B6F47;">Recibirás tu pase QR en el correo
+                        electrónico registrado.</p>
+                </div>
+            </div>
+
+            <!-- Pending Confirmation Form -->
+            <div *ngIf="!isAlreadyConfirmed && !isLoadingGuests && familyGuests.length > 0">
+                <div class="family-intro text-center mb-4">
+                    <h3 class="family-name-title" *ngIf="nombreFamilia"> {{ nombreFamilia.replace('Familia ',
+                        '').replace('familia ', '') }}</h3>
+                    <p class="honor-text">Sería un honor contar con tu presencia</p>
+                </div>
+
+                <div class="instruction-banner text-center mb-5">
+                    <p class="instruction-main">Por favor confirma la asistencia de cada persona:</p>
+                    <div class="alert-qr-notice shadow-sm">
+                        <i class="material-icons">info</i>
+                        <span>Solo al seleccionar <b>"Asistiré"</b> se generará tu pase QR.</span>
+                    </div>
+                </div>
+
+                <!-- Guest Cards -->
+                <div class="guests-list">
+                    <div *ngFor="let guest of familyGuests; let i = index" class="guest-card-refined mb-5 fade-in"
+                        [style.animation-delay]="(i * 0.1) + 's'" [class.guest-locked]="guest.confirmed">
+
+                        <!-- Confirmed Badge -->
+                        <div *ngIf="guest.confirmed" class="confirmed-badge">
+                            <i class="material-icons">lock</i> Confirmado
+                        </div>
+
+                        <!-- Guest Identity -->
+                        <div class="guest-identity-block text-center mb-4">
+                            <div class="guest-avatar-wrapper mb-2">
+                                <i class="material-icons">person</i>
+                            </div>
+                            <h4 class="guest-name-text">{{ guest.name }}</h4>
+
+                            <!-- Pending Question -->
+                            <p class="selection-query" *ngIf="!guest.confirmed">¿Nos acompañas?</p>
+
+                            <!-- Confirmed Status Display -->
+                            <div *ngIf="guest.confirmed" class="status-display mt-3">
+                                <div *ngIf="guest.attending" class="status-badge success-status">
+                                    <i class="material-icons">check_circle</i>
+                                    <span>ASISTIRÁ</span>
+                                </div>
+                                <div *ngIf="!guest.attending" class="status-badge error-status">
+                                    <i class="material-icons">cancel</i>
+                                    <span>NO ASISTIRÁ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selection Buttons (Only visible if NOT confirmed) -->
+                        <div class="btn-group-attendance mb-4" *ngIf="!guest.confirmed">
+                            <button type="button" class="btn-att btn-confirm" [class.active]="guest.attending === true"
+                                (click)="guest.attending = true">
+                                <i class="material-icons">{{ guest.attending === true ? 'check_circle' :
+                                    'radio_button_unchecked' }}</i>
+                                Asistiré
+                            </button>
+                            <button type="button" class="btn-att btn-decline" [class.active]="guest.attending === false"
+                                (click)="guest.attending = false">
+                                <i class="material-icons">{{ guest.attending === false ? 'cancel' :
+                                    'radio_button_unchecked' }}</i>
+                                No podré asistir
+                            </button>
+                        </div>
+
+                        <!-- Details Form (Only visible if attending AND NOT confirmed) -->
+                        <div *ngIf="guest.attending && !guest.confirmed"
+                            class="guest-details fade-in bg-light-gold p-4 rounded-lg shadow-inner">
+                            <div class="mb-4">
+                                <label class="form-label-refined">
+                                    <i class="material-icons">music_note</i>
+                                    ¿Qué canción no debe faltar para bailar?
+                                </label>
+                                <input type="text" class="form-control-refined" [(ngModel)]="guest.favoriteSong"
+                                    [name]="'favoriteSong-' + i" placeholder="Tu canción favorita">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label-refined">
+                                    <i class="material-icons">email</i>
+                                    Correo para el pase QR <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" class="form-control-refined" [(ngModel)]="guest.email"
+                                    [name]="'email-' + i" placeholder="correo@ejemplo.com" required>
+                                <small class="helper-text">Tu código llegará a esta dirección.</small>
+                            </div>
+
+                            <div class="mb-1">
+                                <label class="form-label-refined">
+                                    <i class="material-icons">phone_iphone</i>
+                                    Celular (opcional)
+                                </label>
+                                <input type="tel" class="form-control-refined" [(ngModel)]="guest.phone"
+                                    [name]="'phone-' + i" placeholder="300 123 4567">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-5 mb-4">
+                    <button type="button" class="btn-rsvp-premium shadow" (click)="onSubmitRSVP()"
+                        [disabled]="isSubmitting">
+                        <span *ngIf="!isSubmitting">
+                            <i class="material-icons">send</i>
+                            Confirmar cambios
+                        </span>
+                        <span *ngIf="isSubmitting">
+                            <span class="spinner-border spinner-border-sm mr-2"></span>
+                            Enviando datos...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- WhatsApp Support Message -->
+                <div class="whatsapp-support mt-4 text-center p-3"
+                    style="background-color: rgba(255,255,255,0.5); border-radius: 10px;">
+                    <p class="mb-2 formal-body-text" style="font-size: 0.9rem;">
+                        <i class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">lock</i>
+                        Una vez confirmada la asistencia, la información no se puede editar.
+                    </p>
+                    <p class="mb-0 formal-body-text" style="font-size: 0.9rem;">
+                        Si tienes alguna dificultad o necesitas realizar cambios, por favor contáctanos:
+                    </p>
+                    <a href="https://wa.link/kgrow2" target="_blank" class="btn btn-sm btn-outline-success mt-2">
+                        <i class="material-icons" style="font-size: 1rem; vertical-align: text-bottom;">chat</i>
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="isLoadingGuests" class="text-center py-5">
+                <div class="spinner-border text-gold-spinner" role="status">
+                    <span class="sr-only">Cargando...</span>
+                </div>
+                <p class="mt-3 gold-text">Preparando tu invitación...</p>
+            </div>
+
+            <!-- No Guests Found -->
+            <div *ngIf="!isLoadingGuests && familyGuests.length === 0 && !isAlreadyConfirmed" class="text-center py-5">
+                <i class="material-icons info-icon-large">info</i>
+                <p class="mt-3 formal-body-text">No se encontraron invitados.</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <footer class="footer-wedding text-center">
+        <p>&copy; {{ anio }} Hecho con amor por MillenniumSoft.</p>
     </footer>
 </div>
