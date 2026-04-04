@@ -240,8 +240,8 @@
                         <p class="location-name">Eventos Magenta</p>
                         <p class="location-time">Cra. 6 #36-15, Comuna 2, Neiva, Huila</p>
                         <p class="location-time">7:00 PM</p>
-                        <a href="https://maps.app.goo.gl/r4Pk5TdErYW1G2J76" target="_blank" class="btn-location">VER
-                            MAPA</a>
+                        <p class="location-time" style="font-size: 0.8rem; opacity: 0.8;">(Cierre de puertas: 7:20 PM)</p>
+                        <a href="https://maps.app.goo.gl/r4Pk5TdErYW1G2J76" target="_blank" class="btn-location">VER MAPA</a>
                     </div>
                 </div>
             </div>
@@ -258,45 +258,38 @@
             <h2 class="section-title-wedding"><i class="material-icons">access_time</i> ITINERARIO</h2>
             <div class="timeline-wedding">
                 <div class="timeline-event">
-                    <div class="time">17:00</div>
+                    <div class="time">3:30 PM</div>
                     <div class="event-details">
                         <h4>Llegada de invitados</h4>
-                        <p>Recepción y bienvenida</p>
+                        <p>Bienvenidos a nuestra unión</p>
                     </div>
                 </div>
                 <div class="timeline-event">
-                    <div class="time">17:30</div>
+                    <div class="time">4:00 PM</div>
                     <div class="event-details">
-                        <h4>Welcome Drink</h4>
-                        <p>Coctel de bienvenida</p>
+                        <h4>Ceremonia Religiosa</h4>
+                        <p> El momento más especial</p>
                     </div>
                 </div>
                 <div class="timeline-event">
-                    <div class="time">18:00</div>
+                    <div class="time">7:00 PM</div>
                     <div class="event-details">
-                        <h4>Ceremonia</h4>
-                        <p>El momento más especial</p>
+                        <h4>Recepción</h4>
+                        <p>Cierre de puertas: 7:20 PM</p>
                     </div>
                 </div>
                 <div class="timeline-event">
-                    <div class="time">19:00</div>
+                    <div class="time">8:30 PM</div>
                     <div class="event-details">
-                        <h4>Cóctel</h4>
-                        <p>Bebidas y aperitivos</p>
+                        <h4>Celebración Especial</h4>
+                        <p>Brindis y protocolo</p>
                     </div>
                 </div>
                 <div class="timeline-event">
-                    <div class="time">21:00</div>
+                    <div class="time">11:00 PM</div>
                     <div class="event-details">
-                        <h4>Banquete</h4>
-                        <p>Cena y celebración</p>
-                    </div>
-                </div>
-                <div class="timeline-event">
-                    <div class="time">00:00</div>
-                    <div class="event-details">
-                        <h4>Fiesta</h4>
-                        <p>¡A bailar hasta el amanecer!</p>
+                        <h4>¡A Bailar!</h4>
+                        <p>Inicio de la gran fiesta</p>
                     </div>
                 </div>
             </div>
@@ -313,20 +306,22 @@
             <h2 class="section-title-wedding">CÓDIGO DE VESTIMENTA</h2>
             <div class="dress-code-container-elegant">
                 <div class="dress-code-inner">
-                    <div class="dress-category">
+                    <div class="dress-category dress-category-clickable" (click)="openDressModal('mujeres')">
                         <div class="dress-icon-circle">
                             <i class="material-icons">dry_cleaning</i>
                         </div>
                         <h3>MUJERES</h3>
                         <p>Vestido Largo</p>
+                        <span class="dress-hint"><i class="material-icons">photo_library</i> Ver ejemplos</span>
                     </div>
                     <div class="dress-separator"></div>
-                    <div class="dress-category">
+                    <div class="dress-category dress-category-clickable" (click)="openDressModal('hombres')">
                         <div class="dress-icon-circle">
                             <i class="material-icons">straighten</i>
                         </div>
                         <h3>HOMBRES</h3>
                         <p>Traje Formal</p>
+                        <span class="dress-hint"><i class="material-icons">photo_library</i> Ver ejemplos</span>
                     </div>
                 </div>
                 <div class="dress-important-notice">
@@ -560,4 +555,95 @@
     <footer class="footer-wedding text-center">
         <p>&copy; {{ anio }} Hecho con amor por MillenniumSoft.</p>
     </footer>
+</div>
+
+<!-- ===== MODAL CÓDIGO DE VESTIMENTA ===== -->
+<div class="dress-modal-overlay" [class.active]="isDressModalOpen" (click)="closeDressModal($event)">
+    <div class="dress-modal-container" id="dress-modal-container">
+
+        <!-- Close Button -->
+        <button class="dress-modal-close" (click)="closeDressModal(null)">
+            <i class="material-icons">close</i>
+        </button>
+
+        <!-- Header -->
+        <div class="dress-modal-header">
+            <div class="dress-modal-icon">
+                <i class="material-icons">{{ activeDressCategory === 'mujeres' ? 'dry_cleaning' : 'straighten' }}</i>
+            </div>
+            <h2 class="dress-modal-title">{{ activeDressCategory === 'mujeres' ? 'MUJERES' : 'HOMBRES' }}</h2>
+            <p class="dress-modal-subtitle">{{ activeDressCategory === 'mujeres' ? 'Vestido Largo Elegante' : 'Traje Formal' }}</p>
+        </div>
+
+        <!-- Content -->
+        <div class="dress-modal-body">
+
+            <!-- Tips section -->
+            <div class="dress-tips">
+                <ng-container *ngIf="activeDressCategory === 'mujeres'">
+                    <div class="dress-tip-item">
+                        <i class="material-icons">check_circle</i>
+                        <span>Vestidos largos, de cóctel o conjuntos elegantes</span>
+                    </div>
+                    <div class="dress-tip-item">
+                        <i class="material-icons">check_circle</i>
+                        <span>Complementa con tacones, clutch y joyería elegante</span>
+                    </div>
+                    <div class="dress-tip-item dress-tip-warning">
+                        <i class="material-icons">info</i>
+                        <span>El blanco es exclusivo para la novia</span>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activeDressCategory === 'hombres'">
+                    <div class="dress-tip-item">
+                        <i class="material-icons">check_circle</i>
+                        <span>Traje formal, smoking o camisa de vestir manga larga</span>
+                    </div>
+                    <div class="dress-tip-item">
+                        <i class="material-icons">check_circle</i>
+                        <span>Corbata o moño y zapatos de cuero</span>
+                    </div>
+                    <div class="dress-tip-item">
+                        <i class="material-icons">check_circle</i>
+                        <span>Acompañado de pañuelo de bolsillo es un plus</span>
+                    </div>
+                    <div class="dress-tip-item dress-tip-warning">
+                        <i class="material-icons">block</i>
+                        <span>Excluir jeans o sandalias</span>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- Image Gallery -->
+            <div class="dress-gallery">
+                <div class="dress-gallery-label">Ejemplos de vestimenta</div>
+                <div class="dress-gallery-image-wrapper">
+                    <img
+                        *ngIf="activeDressCategory === 'mujeres'"
+                        src="assets/images/vestimenta_mujeres.png"
+                        alt="Ejemplos de vestimenta para mujeres"
+                        class="dress-gallery-img"
+                    />
+                    <img
+                        *ngIf="activeDressCategory === 'hombres'"
+                        src="assets/images/vestimenta_hombres.png"
+                        alt="Ejemplos de vestimenta para hombres"
+                        class="dress-gallery-img"
+                    />
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tabs to switch category -->
+        <div class="dress-modal-tabs">
+            <button class="dress-tab" [class.active]="activeDressCategory === 'mujeres'" (click)="activeDressCategory = 'mujeres'">
+                <i class="material-icons">dry_cleaning</i> Mujeres
+            </button>
+            <button class="dress-tab" [class.active]="activeDressCategory === 'hombres'" (click)="activeDressCategory = 'hombres'">
+                <i class="material-icons">straighten</i> Hombres
+            </button>
+        </div>
+
+    </div>
 </div>

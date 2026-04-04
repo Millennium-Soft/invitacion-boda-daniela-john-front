@@ -43,6 +43,10 @@ export class InicioComponent implements OnInit {
   rsvpForm: any;
   isSubmitting = false;
 
+  // Dress Code Modal
+  isDressModalOpen = false;
+  activeDressCategory: 'mujeres' | 'hombres' = 'mujeres';
+
   constructor(
     public auth: AuthService,
     private router: Router,
@@ -335,6 +339,23 @@ export class InicioComponent implements OnInit {
 
 
 
+
+  // Dress Code Modal Methods
+  openDressModal(category: 'mujeres' | 'hombres') {
+    this.activeDressCategory = category;
+    this.isDressModalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDressModal(event: MouseEvent | null) {
+    if (event) {
+      const target = event.target as HTMLElement;
+      // Solo cerrar si se hace click en el overlay (fondo oscuro), no en el contenido
+      if (!target.classList.contains('dress-modal-overlay')) return;
+    }
+    this.isDressModalOpen = false;
+    document.body.style.overflow = 'auto';
+  }
 
   mensajeError() {
     Swal.fire({

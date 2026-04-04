@@ -2296,3 +2296,363 @@
         height: 32px;
     }
 }
+
+/* =========================================
+   DRESS CODE — TARJETAS CLICKEABLES
+   ========================================= */
+.dress-category-clickable {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 16px;
+    padding: 20px 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dress-category-clickable::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(218,165,32,0.08) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 16px;
+}
+
+.dress-category-clickable:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(139,111,71,0.2);
+}
+
+.dress-category-clickable:hover::after {
+    opacity: 1;
+}
+
+.dress-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    color: #DAA520;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 8px;
+    opacity: 0.8;
+    animation: pulse-hint 2.5s ease-in-out infinite;
+}
+
+.dress-hint .material-icons {
+    font-size: 0.95rem;
+}
+
+@keyframes pulse-hint {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.05); }
+}
+
+/* =========================================
+   DRESS CODE MODAL
+   ========================================= */
+.dress-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 15, 25, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.dress-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.dress-modal-container {
+    background: linear-gradient(145deg, #fdf6ec, #fff8f0);
+    border: 1px solid rgba(218,165,32,0.35);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(218,165,32,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.35s ease;
+    opacity: 0;
+    /* Custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(218,165,32,0.4) transparent;
+}
+
+.dress-modal-overlay.active .dress-modal-container {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.dress-modal-container::-webkit-scrollbar {
+    width: 5px;
+}
+.dress-modal-container::-webkit-scrollbar-thumb {
+    background: rgba(218,165,32,0.4);
+    border-radius: 4px;
+}
+
+/* Close Button */
+.dress-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(139,111,71,0.3);
+    background: rgba(255,255,255,0.8);
+    color: #8B6F47;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.dress-modal-close:hover {
+    background: #fff;
+    transform: scale(1.1) rotate(90deg);
+    color: #5D4037;
+}
+.dress-modal-close .material-icons {
+    font-size: 1.1rem;
+}
+
+/* Header */
+.dress-modal-header {
+    text-align: center;
+    padding: 36px 24px 20px;
+    background: linear-gradient(180deg, rgba(218,165,32,0.08) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(218,165,32,0.2);
+}
+
+.dress-modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD700, #DAA520);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    box-shadow: 0 8px 24px rgba(218,165,32,0.35);
+}
+
+.dress-modal-icon .material-icons {
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.dress-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    color: #5D4037;
+    margin: 0 0 4px;
+}
+
+.dress-modal-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #8B6F47;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Body */
+.dress-modal-body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Tips */
+.dress-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dress-tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: #6D4C41;
+    background: rgba(218,165,32,0.06);
+    border-radius: 10px;
+    padding: 10px 14px;
+    border-left: 3px solid rgba(218,165,32,0.5);
+}
+
+.dress-tip-item .material-icons {
+    font-size: 1.1rem;
+    color: #DAA520;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.dress-tip-warning {
+    background: rgba(218,165,32,0.12);
+    border-left-color: #C0392B;
+}
+.dress-tip-warning .material-icons {
+    color: #C0392B;
+}
+
+/* Gallery */
+.dress-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dress-gallery-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8B6F47;
+    text-align: center;
+}
+
+.dress-gallery-image-wrapper {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(218,165,32,0.25);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.dress-gallery-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.dress-gallery-img:hover {
+    transform: scale(1.02);
+}
+
+/* Tabs footer */
+.dress-modal-tabs {
+    display: flex;
+    border-top: 1px solid rgba(218,165,32,0.2);
+    background: rgba(253,246,236,0.8);
+    border-radius: 0 0 24px 24px;
+    overflow: hidden;
+}
+
+.dress-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #8B6F47;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.dress-tab:first-child {
+    border-right: 1px solid rgba(218,165,32,0.2);
+}
+
+.dress-tab .material-icons {
+    font-size: 1rem;
+}
+
+.dress-tab.active,
+.dress-tab:hover {
+    background: rgba(218,165,32,0.12);
+    color: #5D4037;
+    font-weight: 600;
+}
+
+.dress-tab.active {
+    background: linear-gradient(135deg, rgba(218,165,32,0.15), rgba(255,215,0,0.08));
+    color: #5D4037;
+}
+
+/* =========================================
+   RESPONSIVE MODAL
+   ========================================= */
+@media (max-width: 600px) {
+    .dress-modal-container {
+        max-height: 92vh;
+        border-radius: 18px;
+    }
+
+    .dress-modal-header {
+        padding: 28px 16px 16px;
+    }
+
+    .dress-modal-icon {
+        width: 52px;
+        height: 52px;
+    }
+
+    .dress-modal-icon .material-icons {
+        font-size: 1.4rem;
+    }
+
+    .dress-modal-title {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+    }
+
+    .dress-modal-body {
+        padding: 16px;
+        gap: 14px;
+    }
+
+    .dress-tip-item {
+        font-size: 0.83rem;
+        padding: 9px 12px;
+    }
+
+    .dress-tab {
+        font-size: 0.75rem;
+        padding: 12px 8px;
+    }
+}
+
+@media (max-width: 380px) {
+    .dress-modal-tabs {
+        flex-direction: column;
+    }
+    .dress-tab:first-child {
+        border-right: none;
+        border-bottom: 1px solid rgba(218,165,32,0.2);
+    }
+}
