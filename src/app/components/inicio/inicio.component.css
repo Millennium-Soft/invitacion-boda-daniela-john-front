@@ -908,7 +908,7 @@
 .formal-announcement {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     max-width: 600px;
     margin: 0 auto 2rem;
     line-height: 1.6;
@@ -1027,7 +1027,7 @@
 
 .formal-body-text {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     color: #5D4037;
     line-height: 1.8;
 }
@@ -1200,7 +1200,8 @@
     padding-right: 30px;
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
-    color: #FFD700;
+    color: #8B6F47;
+    font-weight: 600;
 }
 
 .timeline-event .event-details {
@@ -1698,7 +1699,7 @@
 
 /* Gifts */
 .gifts-intro {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     max-width: 600px;
     margin: 0 auto;
     color: #5D4037;
@@ -2042,6 +2043,21 @@
     .family-name {
         font-size: 1.6rem;
     }
+
+    .formal-body-text {
+        font-size: 1.25rem !important;
+        line-height: 1.7;
+    }
+
+    .formal-announcement {
+        font-size: 1.25rem !important;
+        line-height: 1.6;
+    }
+
+    .gifts-intro {
+        font-size: 1.25rem !important;
+        line-height: 1.6;
+    }
 }
 
 
@@ -2277,7 +2293,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(218,165,32,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(218, 165, 32, 0.08) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
     border-radius: 16px;
@@ -2285,7 +2301,7 @@
 
 .dress-category-clickable:hover {
     transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 12px 32px rgba(139,111,71,0.2);
+    box-shadow: 0 12px 32px rgba(139, 111, 71, 0.2);
 }
 
 .dress-category-clickable:hover::after {
@@ -2312,8 +2328,17 @@
 }
 
 @keyframes pulse-hint {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50%       { opacity: 1;   transform: scale(1.05); }
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
 }
 
 /* =========================================
@@ -2342,7 +2367,7 @@
 
 .dress-modal-container {
     background: linear-gradient(145deg, #fdf6ec, #fff8f0);
-    border: 1px solid rgba(218,165,32,0.35);
+    border: 1px solid rgba(218, 165, 32, 0.35);
     border-radius: 24px;
     width: 100%;
     max-width: 540px;
@@ -2350,16 +2375,16 @@
     overflow-y: auto;
     position: relative;
     box-shadow:
-        0 30px 80px rgba(0,0,0,0.35),
-        0 0 0 1px rgba(218,165,32,0.15),
-        inset 0 1px 0 rgba(255,255,255,0.8);
+        0 30px 80px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(218, 165, 32, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     transform: scale(0.88) translateY(20px);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                opacity 0.35s ease;
+        opacity 0.35s ease;
     opacity: 0;
     /* Custom scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(218,165,32,0.4) transparent;
+    scrollbar-color: rgba(218, 165, 32, 0.4) transparent;
 }
 
 .dress-modal-overlay.active .dress-modal-container {
@@ -2370,8 +2395,9 @@
 .dress-modal-container::-webkit-scrollbar {
     width: 5px;
 }
+
 .dress-modal-container::-webkit-scrollbar-thumb {
-    background: rgba(218,165,32,0.4);
+    background: rgba(218, 165, 32, 0.4);
     border-radius: 4px;
 }
 
@@ -2383,8 +2409,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: 1px solid rgba(139,111,71,0.3);
-    background: rgba(255,255,255,0.8);
+    border: 1px solid rgba(139, 111, 71, 0.3);
+    background: rgba(255, 255, 255, 0.8);
     color: #8B6F47;
     display: flex;
     align-items: center;
@@ -2393,11 +2419,13 @@
     z-index: 10;
     transition: background 0.2s ease, transform 0.2s ease;
 }
+
 .dress-modal-close:hover {
     background: #fff;
     transform: scale(1.1) rotate(90deg);
     color: #5D4037;
 }
+
 .dress-modal-close .material-icons {
     font-size: 1.1rem;
 }
@@ -2406,8 +2434,8 @@
 .dress-modal-header {
     text-align: center;
     padding: 36px 24px 20px;
-    background: linear-gradient(180deg, rgba(218,165,32,0.08) 0%, transparent 100%);
-    border-bottom: 1px solid rgba(218,165,32,0.2);
+    background: linear-gradient(180deg, rgba(218, 165, 32, 0.08) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
 }
 
 .dress-modal-icon {
@@ -2419,7 +2447,7 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 12px;
-    box-shadow: 0 8px 24px rgba(218,165,32,0.35);
+    box-shadow: 0 8px 24px rgba(218, 165, 32, 0.35);
 }
 
 .dress-modal-icon .material-icons {
@@ -2465,10 +2493,10 @@
     font-family: 'Playfair Display', serif;
     font-size: 0.9rem;
     color: #6D4C41;
-    background: rgba(218,165,32,0.06);
+    background: rgba(218, 165, 32, 0.06);
     border-radius: 10px;
     padding: 10px 14px;
-    border-left: 3px solid rgba(218,165,32,0.5);
+    border-left: 3px solid rgba(218, 165, 32, 0.5);
 }
 
 .dress-tip-item .material-icons {
@@ -2479,9 +2507,10 @@
 }
 
 .dress-tip-warning {
-    background: rgba(218,165,32,0.12);
+    background: rgba(218, 165, 32, 0.12);
     border-left-color: #C0392B;
 }
+
 .dress-tip-warning .material-icons {
     color: #C0392B;
 }
@@ -2505,8 +2534,8 @@
 .dress-gallery-image-wrapper {
     border-radius: 14px;
     overflow: hidden;
-    border: 1px solid rgba(218,165,32,0.25);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border: 1px solid rgba(218, 165, 32, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .dress-gallery-img {
@@ -2524,8 +2553,8 @@
 /* Tabs footer */
 .dress-modal-tabs {
     display: flex;
-    border-top: 1px solid rgba(218,165,32,0.2);
-    background: rgba(253,246,236,0.8);
+    border-top: 1px solid rgba(218, 165, 32, 0.2);
+    background: rgba(253, 246, 236, 0.8);
     border-radius: 0 0 24px 24px;
     overflow: hidden;
 }
@@ -2549,7 +2578,7 @@
 }
 
 .dress-tab:first-child {
-    border-right: 1px solid rgba(218,165,32,0.2);
+    border-right: 1px solid rgba(218, 165, 32, 0.2);
 }
 
 .dress-tab .material-icons {
@@ -2558,13 +2587,13 @@
 
 .dress-tab.active,
 .dress-tab:hover {
-    background: rgba(218,165,32,0.12);
+    background: rgba(218, 165, 32, 0.12);
     color: #5D4037;
     font-weight: 600;
 }
 
 .dress-tab.active {
-    background: linear-gradient(135deg, rgba(218,165,32,0.15), rgba(255,215,0,0.08));
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(255, 215, 0, 0.08));
     color: #5D4037;
 }
 
@@ -2615,8 +2644,9 @@
     .dress-modal-tabs {
         flex-direction: column;
     }
+
     .dress-tab:first-child {
         border-right: none;
-        border-bottom: 1px solid rgba(218,165,32,0.2);
+        border-bottom: 1px solid rgba(218, 165, 32, 0.2);
     }
-}
+}
