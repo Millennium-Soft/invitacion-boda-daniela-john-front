@@ -17,6 +17,8 @@ export interface Guest {
     confirmed?: boolean;
     attending?: boolean;
     favoriteSong?: string;
+    attendsCeremony?: boolean;
+    attendsReception?: boolean;
 }
 
 export interface Rsvp {
@@ -25,6 +27,8 @@ export interface Rsvp {
     fullName: string;
     email?: string;
     attending: boolean;
+    attendsCeremony?: boolean;
+    attendsReception?: boolean;
     guestCount: number;
     allergies: string[];
     otherAllergies?: string;
@@ -32,5 +36,6 @@ export interface Rsvp {
     timestamp: Timestamp;
     dietaryRestrictions?: string; // Kept for backward compatibility if needed
     song?: string; // Kept for backward compatibility if needed
+    phone?: string;
 }
 

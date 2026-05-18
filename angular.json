@@ -31,7 +31,8 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "sweetalert2"
+              "sweetalert2",
+              "qrcode"
             ]
           },
           "configurations": {
@@ -44,8 +45,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kb",
-                  "maximumError": "40kb"
+                  "maximumWarning": "45kb",
+                  "maximumError": "60kb"
                 }
               ],
               "outputHashing": "all"

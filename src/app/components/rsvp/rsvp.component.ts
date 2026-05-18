@@ -37,12 +37,44 @@ export class RsvpComponent implements OnInit {
         });
 
         this.rsvpForm = this.fb.group({
-            phone: ['', [Validators.required]],
-            email: ['', [Validators.required, Validators.email]],
+            phone: [''],
+            email: [''],
             attending: [false],
+            attendsCeremony: [true],
+            attendsReception: [true],
             dietaryRestrictions: [''],
             song: ['']
         });
+
+        // Escuchar cambios para actualizar validadores
+        this.rsvpForm.get('attending')?.valueChanges.subscribe(() => {
+            this.updateValidators();
+        });
+
+        this.rsvpForm.get('attendsReception')?.valueChanges.subscribe(() => {
+            this.updateValidators();
+        });
+
+        this.updateValidators();
+    }
+
+    updateValidators() {
+        const attending = this.rsvpForm.get('attending')?.value;
+        const attendsReception = this.rsvpForm.get('attendsReception')?.value;
+
+        const phoneControl = this.rsvpForm.get('phone');
+        const emailControl = this.rsvpForm.get('email');
+
+        if (attending && attendsReception) {
+            phoneControl?.setValidators([Validators.required]);
+            emailControl?.setValidators([Validators.required, Validators.email]);
+        } else {
+            phoneControl?.clearValidators();
+            emailControl?.clearValidators();
+        }
+
+        phoneControl?.updateValueAndValidity({ emitEvent: false });
+        emailControl?.updateValueAndValidity({ emitEvent: false });
     }
 
     // Helper method to find guest
@@ -62,31 +94,58 @@ export class RsvpComponent implements OnInit {
             phone: guest.phone || '',
             email: guest.email || '',
             attending: false,
+            attendsCeremony: guest.attendsCeremony ?? true,
+            attendsReception: guest.attendsReception ?? true,
             dietaryRestrictions: '',
             song: ''
-        });
+        }, { emitEvent: true });
+
+        this.updateValidators();
     }
 
     async onSubmitRsvp() {
         if (this.rsvpForm.valid && this.selectedGuest && this.selectedGuest.id) {
             const formValue = this.rsvpForm.value;
+            const isAttending = formValue.attending;
+            const isAttendingReception = isAttending && formValue.attendsReception;
+            const isAttendingCeremony = isAttending && formValue.attendsCeremony;
+
+            if (isAttending && !isAttendingCeremony && !isAttendingReception) {
+                alert('Por favor selecciona al menos un evento para confirmar tu asistencia.');
+                return;
+            }
 
             try {
-                // 1. Update Guest Contact Info
-                await this.weddingService.updateGuest(this.selectedGuest.id, {
-                    phone: formValue.phone,
-                    email: formValue.email
-                });
+                // 1. Update Guest Info
+                const guestUpdate: Partial<Guest> = {};
+                guestUpdate.confirmed = true;
+                guestUpdate.attending = isAttending;
+                guestUpdate.attendsCeremony = isAttending ? isAttendingCeremony : false;
+                guestUpdate.attendsReception = isAttending ? isAttendingReception : false;
+
+                if (isAttendingReception) {
+                    guestUpdate.phone = formValue.phone || '';
+                    guestUpdate.email = formValue.email || '';
+                    if (formValue.song) {
+                        guestUpdate.favoriteSong = formValue.song;
+                    }
+                }
+
+                await this.weddingService.updateGuest(this.selectedGuest.id, guestUpdate);
 
                 // 2. Create RSVP
                 const rsvp: Rsvp = {
                     guestId: this.selectedGuest.id,
                     fullName: this.selectedGuest.name,
-                    attending: formValue.attending,
+                    attending: isAttending,
+                    attendsCeremony: isAttending ? isAttendingCeremony : false,
+                    attendsReception: isAttending ? isAttendingReception : false,
                     guestCount: 1, // Default to 1 for this component
                     allergies: [], // Default empty
-                    dietaryRestrictions: formValue.dietaryRestrictions,
-                    song: formValue.song,
+                    dietaryRestrictions: isAttendingReception ? (formValue.dietaryRestrictions || '') : '',
+                    song: isAttendingReception ? (formValue.song || '') : '',
+                    phone: isAttendingReception ? (formValue.phone || '') : '',
+                    email: isAttendingReception ? (formValue.email || '') : '',
                     timestamp: Timestamp.now()
                 };
 

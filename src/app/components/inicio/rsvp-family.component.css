@@ -157,3 +157,186 @@
         font-size: 0.85rem;
     }
 }
+
+/* =========================================
+   NUEVOS ESTILOS PARA TARJETAS DE EVENTOS
+   ========================================= */
+.event-selection-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.event-selection-card {
+    flex: 1;
+    min-width: 140px;
+    background: #ffffff;
+    border: 2px solid #eae1d4;
+    border-radius: 12px;
+    padding: 15px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.event-selection-card:hover {
+    border-color: #A865C9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(168, 101, 201, 0.1);
+}
+
+.event-selection-card.active {
+    border-color: #A865C9;
+    background-color: rgba(168, 101, 201, 0.05);
+    box-shadow: 0 4px 12px rgba(168, 101, 201, 0.15);
+}
+
+.event-card-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 111, 71, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #8B6F47;
+    transition: all 0.3s ease;
+}
+
+.event-selection-card.active .event-card-icon-wrapper {
+    background: #A865C9;
+    color: #ffffff;
+}
+
+.event-card-icon-wrapper i {
+    font-size: 20px;
+}
+
+.event-card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.event-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #5D4037;
+}
+
+.event-card-subtitle {
+    font-size: 0.75rem;
+    color: #8B6F47;
+    font-weight: 500;
+}
+
+.event-card-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.event-selection-card.active .event-card-check {
+    color: #A865C9;
+    transform: scale(1.1);
+}
+
+.event-card-check i {
+    font-size: 22px;
+}
+
+.text-danger-custom {
+    color: #d32f2f;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+@media (max-width: 576px) {
+    .event-selection-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .event-selection-card {
+        width: 100%;
+        padding: 12px 10px;
+    }
+}
+
+/* ─── Event Tutorial Box (Compact & Elegant) ─── */
+.event-tutorial-box {
+    background: linear-gradient(135deg, #fdf6ec 0%, #f7ebdb 100%);
+    border-left: 3px solid #A865C9;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0 18px 0;
+    box-shadow: 0 2px 8px rgba(168, 101, 201, 0.05);
+}
+
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.info-tutorial-icon {
+    font-size: 16px !important;
+    width: 16px;
+    height: 16px;
+    color: #A865C9;
+    line-height: 16px;
+}
+
+.tutorial-title {
+    font-weight: 600;
+    color: #5D4037;
+    font-size: 0.82rem;
+}
+
+.tutorial-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tutorial-opt-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.tutorial-opt-icon {
+    font-size: 14px !important;
+    width: 14px;
+    height: 14px;
+    color: #8B6F47;
+    margin-top: 2px;
+    flex-shrink: 0;
+    line-height: 14px;
+}
+
+.tutorial-opt-item span {
+    font-size: 0.76rem;
+    color: #5D4037;
+    line-height: 1.4;
+}

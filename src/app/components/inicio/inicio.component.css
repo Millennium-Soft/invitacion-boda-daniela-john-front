@@ -198,7 +198,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     width: 100%;
     max-width: 600px;
 }
@@ -291,21 +291,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.landing-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    width: 100%;
-    max-width: 600px;
-}
-
-.envelope-area {
-    margin: 15px auto;
 }
 
 /* Área del Sobre */
@@ -1492,7 +1477,7 @@
 
 .btn-group-attendance {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: center;
 }
 
@@ -1554,6 +1539,7 @@
 
 /* --- REFINED RSVP DESIGN SYSTEM --- */
 .guest-card-refined {
+    position: relative;
     background: #fff;
     border-radius: 20px;
     padding: 25px;
@@ -1589,11 +1575,6 @@
     margin-bottom: 15px;
     font-size: 1rem;
     font-weight: 500;
-}
-
-.btn-group-attendance {
-    display: flex;
-    gap: 12px;
 }
 
 .btn-att {
@@ -1713,19 +1694,6 @@
     font-size: 4rem;
     color: #DAA520;
     opacity: 0.5;
-}
-
-/* Animations */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 /* Gifts */
@@ -1920,27 +1888,14 @@
     /* Replaced lilac with golden brown */
 }
 
-/* Carousel Specific Styles */
-#coupleCarousel {
+/* Video de Nuestros Momentos */
+.moments-video-wrapper {
     max-width: 850px;
-    margin: 0 auto;
-}
-
-.carousel-photo {
-    max-width: 800px;
     margin: 0 auto;
     padding: 18px;
 }
 
-.carousel-photo img {
-    max-height: 500px;
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-/* Gold border for first carousel item */
-.carousel-item.active .photo-frame-embossed::after {
+.moments-video-wrapper::after {
     content: '';
     position: absolute;
     top: 10px;
@@ -1951,7 +1906,23 @@
     pointer-events: none;
     z-index: 1;
     opacity: 0.6;
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.25);
+}
+
+.moments-video {
+    width: 100%;
+    max-height: 520px;
+    display: block;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    object-fit: contain;
+    background: #000;
+}
+
+@media (max-width: 576px) {
+    .moments-video {
+        max-height: 300px;
+    }
 }
 
 
@@ -2073,14 +2044,7 @@
     }
 }
 
-/* =========================================
-   LOCKED GUEST STYLES
-   ========================================= */
 
-.guest-card-refined {
-    position: relative;
-    /* Ensure badge positioning works */
-}
 
 .guest-card-refined.guest-locked {
     background: #fdfdfd;

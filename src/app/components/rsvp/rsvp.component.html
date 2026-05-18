@@ -35,31 +35,98 @@
 
                 <form [formGroup]="rsvpForm" (ngSubmit)="onSubmitRsvp()">
 
-                    <div class="contact-section">
-                        <h4>Datos de Contacto (Obligatorios)</h4>
-                        <mat-form-field appearance="fill" class="full-width">
-                            <mat-label>Teléfono / Celular</mat-label>
-                            <input matInput formControlName="phone" required>
-                            <mat-error *ngIf="rsvpForm.get('phone')?.hasError('required')">El teléfono es
-                                obligatorio</mat-error>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="fill" class="full-width">
-                            <mat-label>Correo Electrónico</mat-label>
-                            <input matInput formControlName="email" required>
-                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('required')">El email es
-                                obligatorio</mat-error>
-                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('email')">Ingresa un email
-                                válido</mat-error>
-                        </mat-form-field>
-                    </div>
-
                     <div class="rsvp-section">
                         <h4>Detalles de la Boda</h4>
                         <div class="checkbox-container">
                             <mat-checkbox formControlName="attending" color="primary">¡Sí, asistiré!</mat-checkbox>
                         </div>
 
+                        <!-- Si NO asiste -->
+                        <div *ngIf="!rsvpForm.get('attending')?.value" class="not-attending-notice">
+                            <mat-icon style="vertical-align: middle; color: #8B6F47; margin-right: 6px;">sentiment_dissatisfied</mat-icon>
+                            <span>Lamentamos mucho que no puedas acompañarnos. Haz clic en "Enviar Confirmación" abajo para registrar tu respuesta.</span>
+                        </div>
+
+                        <!-- Selección de eventos (solo visible si va a asistir) -->
+                        <div class="event-selection-block" *ngIf="rsvpForm.get('attending')?.value">
+                            
+                            <div class="tutorial-box">
+                                <div class="tutorial-header">
+                                    <mat-icon class="tutorial-icon">help_outline</mat-icon>
+                                    <span>¿Cómo elegir tus eventos? (Mini-Tutorial)</span>
+                                </div>
+                                <div class="tutorial-body">
+                                    <ul>
+                                        <li>
+                                            <mat-icon>church</mat-icon>
+                                            <span><strong>Solo Iglesia:</strong> Selecciona únicamente Ceremonia. ¡La confirmación es express y no requerirá contacto ni canción!</span>
+                                        </li>
+                                        <li>
+                                            <mat-icon>celebration</mat-icon>
+                                            <span><strong>Recepción o Ambos:</strong> Si vas a la fiesta. Te pediremos tus datos de contacto, restricciones y canción favorita.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p class="event-selection-label">
+                                <mat-icon>place</mat-icon>
+                                ¿A cuáles eventos asistirás?
+                            </p>
+                            
+                            <div class="event-cards-row">
+
+                                <!-- Iglesia / Ceremonia -->
+                                <div class="event-card"
+                                    [class.selected]="rsvpForm.get('attendsCeremony')?.value"
+                                    (click)="rsvpForm.get('attendsCeremony')?.setValue(!rsvpForm.get('attendsCeremony')?.value)">
+                                    <mat-icon class="event-icon">church</mat-icon>
+                                    <span class="event-name">Ceremonia</span>
+                                    <span class="event-time">4:00 PM (Iglesia)</span>
+                                    <mat-icon class="event-check">
+                                        {{ rsvpForm.get('attendsCeremony')?.value ? 'check_circle' : 'radio_button_unchecked' }}
+                                    </mat-icon>
+                                </div>
+
+                                <!-- Recepción / Fiesta -->
+                                <div class="event-card"
+                                    [class.selected]="rsvpForm.get('attendsReception')?.value"
+                                    (click)="rsvpForm.get('attendsReception')?.setValue(!rsvpForm.get('attendsReception')?.value)">
+                                    <mat-icon class="event-icon">celebration</mat-icon>
+                                    <span class="event-name">Recepción</span>
+                                    <span class="event-time">7:00 PM (Salón)</span>
+                                    <mat-icon class="event-check">
+                                        {{ rsvpForm.get('attendsReception')?.value ? 'check_circle' : 'radio_button_unchecked' }}
+                                    </mat-icon>
+                                </div>
+
+                            </div>
+                            
+                            <p class="event-hint" *ngIf="!rsvpForm.get('attendsCeremony')?.value && !rsvpForm.get('attendsReception')?.value">
+                                <mat-icon style="font-size:16px;vertical-align:middle;">info</mat-icon>
+                                Por favor selecciona al menos un evento para confirmar asistencia.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Datos de Contacto y Detalles de la Fiesta (solo si asiste a la recepción) -->
+                    <div class="contact-section" *ngIf="rsvpForm.get('attending')?.value && rsvpForm.get('attendsReception')?.value">
+                        <h4>Datos de Contacto (Obligatorios para la fiesta)</h4>
+                        
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Teléfono / Celular</mat-label>
+                            <input matInput formControlName="phone">
+                            <mat-error *ngIf="rsvpForm.get('phone')?.hasError('required')">El teléfono es obligatorio</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="full-width">
+                            <mat-label>Correo Electrónico</mat-label>
+                            <input matInput formControlName="email">
+                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('required')">El email es obligatorio</mat-error>
+                            <mat-error *ngIf="rsvpForm.get('email')?.hasError('email')">Ingresa un email válido</mat-error>
+                        </mat-form-field>
+
+                        <h4>Detalles Adicionales</h4>
                         <mat-form-field appearance="fill" class="full-width">
                             <mat-label>Restricciones Alimentarias / Alergias</mat-label>
                             <textarea matInput formControlName="dietaryRestrictions"
@@ -67,15 +134,25 @@
                         </mat-form-field>
 
                         <mat-form-field appearance="fill" class="full-width">
-                            <mat-label>¿Qué canción no puede faltar?</mat-label>
-                            <input matInput formControlName="song">
+                            <mat-label>¿Qué canción no puede faltar en la fiesta?</mat-label>
+                            <input matInput formControlName="song" placeholder="Ej. Vivir mi vida - Marc Anthony">
                         </mat-form-field>
                     </div>
 
+                    <!-- Mensaje para Confirmación Express (Solo Iglesia/Ceremonia) -->
+                    <div class="ceremony-only-notice" *ngIf="rsvpForm.get('attending')?.value && rsvpForm.get('attendsCeremony')?.value && !rsvpForm.get('attendsReception')?.value">
+                        <mat-icon>favorite</mat-icon>
+                        <h3>¡Confirmación Express!</h3>
+                        <p>Nos alegra de corazón que nos acompañes en la ceremonia religiosa.</p>
+                        <p>Dado que solo asistirás a la iglesia, <strong>no te pediremos correo, celular, canción ni restricciones de comida</strong>. Puedes enviar tu confirmación inmediatamente.</p>
+                    </div>
+
                     <div class="actions">
-                        <button mat-button (click)="reset()">Volver</button>
-                        <button mat-raised-button color="primary" type="submit" [disabled]="rsvpForm.invalid">Enviar
-                            Confirmación</button>
+                        <button mat-button type="button" (click)="reset()">Volver</button>
+                        <button mat-raised-button color="primary" type="submit" 
+                            [disabled]="rsvpForm.invalid || (rsvpForm.get('attending')?.value && !rsvpForm.get('attendsCeremony')?.value && !rsvpForm.get('attendsReception')?.value)">
+                            Enviar Confirmación
+                        </button>
                     </div>
 
                 </form>

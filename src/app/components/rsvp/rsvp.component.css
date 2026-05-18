@@ -37,3 +37,212 @@
     justify-content: space-between;
     margin-top: 20px;
 }
+
+/* ─── Selección de eventos ─── */
+.event-selection-block {
+    margin: 16px 0 20px;
+    animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.event-selection-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #5D4037;
+    margin-bottom: 12px;
+}
+
+.event-cards-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.event-card {
+    flex: 1;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 18px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+}
+
+.event-card:hover {
+    border-color: #A865C9;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(168, 101, 201, 0.12);
+}
+
+.event-card.selected {
+    border-color: #A865C9;
+    background: rgba(168, 101, 201, 0.06);
+    box-shadow: 0 4px 14px rgba(168, 101, 201, 0.18);
+}
+
+.event-icon {
+    font-size: 2.2rem !important;
+    color: #8B6F47;
+    transition: color 0.2s;
+}
+
+.event-card.selected .event-icon {
+    color: #A865C9;
+}
+
+.event-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #5D4037;
+}
+
+.event-time {
+    font-size: 0.78rem;
+    color: #999;
+    letter-spacing: 0.5px;
+}
+
+.event-check {
+    font-size: 1.4rem !important;
+    color: #ccc;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.event-card.selected .event-check {
+    color: #A865C9;
+    transform: scale(1.15);
+}
+
+.event-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.82rem;
+    color: #e57373;
+    margin-top: 8px;
+}
+
+/* ─── Tutorial Box ─── */
+.tutorial-box {
+    background: linear-gradient(135deg, #fdf6ec 0%, #f7ebdb 100%);
+    border-left: 3px solid #A865C9;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0 18px 0;
+    box-shadow: 0 2px 8px rgba(168, 101, 201, 0.05);
+    animation: fadeInDown 0.3s ease;
+}
+
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #5D4037;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+}
+
+.tutorial-icon {
+    font-size: 16px !important;
+    width: 16px;
+    height: 16px;
+    color: #A865C9;
+}
+
+.tutorial-body {
+    font-size: 0.76rem;
+    color: #5D4037;
+    line-height: 1.4;
+}
+
+.tutorial-body ul {
+    margin: 4px 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.tutorial-body li {
+    margin-bottom: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.tutorial-body li:last-child {
+    margin-bottom: 0;
+}
+
+.tutorial-body li mat-icon {
+    font-size: 14px !important;
+    width: 14px;
+    height: 14px;
+    color: #8B6F47;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.tutorial-body li span {
+    font-size: 0.76rem;
+}
+
+/* ─── Ceremony Only Notice ─── */
+.ceremony-only-notice {
+    background: rgba(168, 101, 201, 0.04);
+    border: 1px dashed #A865C9;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    color: #5D4037;
+    box-shadow: 0 4px 12px rgba(168, 101, 201, 0.04);
+    animation: fadeInDown 0.3s ease;
+}
+
+.ceremony-only-notice mat-icon {
+    font-size: 2.5rem !important;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #A865C9;
+    margin-bottom: 10px;
+}
+
+.ceremony-only-notice h3 {
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    color: #A865C9;
+}
+
+.ceremony-only-notice p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* ─── Not Attending Notice ─── */
+.not-attending-notice {
+    display: flex;
+    align-items: center;
+    background-color: #efebe9;
+    border-left: 4px solid #8B6F47;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+    color: #5D4037;
+    animation: fadeInDown 0.3s ease;
+}

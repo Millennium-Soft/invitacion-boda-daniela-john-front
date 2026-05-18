@@ -142,6 +142,8 @@ export class InicioComponent implements OnInit {
           ...guest,
           confirmed: guest.confirmed || false,
           attending: guest.attending !== undefined ? guest.attending : undefined, // Force choice
+          attendsCeremony: guest.attendsCeremony !== undefined ? guest.attendsCeremony : true,
+          attendsReception: guest.attendsReception !== undefined ? guest.attendsReception : true,
           favoriteSong: guest.favoriteSong || '',
           email: guest.email || '',
           phone: guest.phone || '',
@@ -254,18 +256,33 @@ export class InicioComponent implements OnInit {
       return;
     }
 
+    // Validation: if attending, they must select at least one event
+    const invalidSelection = guestsToConfirm.some((g: any) => g.attending && !g.attendsCeremony && !g.attendsReception);
+    if (invalidSelection) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Selección incompleta',
+        text: 'Por favor selecciona al menos un evento (Ceremonia o Recepción) para los invitados que asistirán.',
+        confirmButtonColor: '#A865C9'
+      });
+      this.isSubmitting = false;
+      return;
+    }
+
     try {
       // Update only the guests that are being confirmed in this batch
       const updatePromises = guestsToConfirm.map((guest: any) => {
         if (guest.id) {
-          // Validation for required email if attending
-          if (guest.attending && !guest.email) {
+          // Validation for required email if attending the reception
+          if (guest.attending && guest.attendsReception && !guest.email) {
             throw new Error(`Por favor ingresa un correo para ${guest.name}`);
           }
 
           return this.weddingService.updateGuest(guest.id, {
             confirmed: true,
             attending: guest.attending,
+            attendsCeremony: guest.attendsCeremony !== undefined ? guest.attendsCeremony : true,
+            attendsReception: guest.attendsReception !== undefined ? guest.attendsReception : true,
             favoriteSong: guest.favoriteSong || '',
             email: guest.email || '',
             phone: guest.phone || ''
