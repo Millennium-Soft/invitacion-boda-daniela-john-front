@@ -32,7 +32,9 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "sweetalert2",
-              "qrcode"
+              "qrcode",
+              "exceljs",
+              "file-saver"
             ]
           },
           "configurations": {
@@ -40,8 +42,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "2mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",

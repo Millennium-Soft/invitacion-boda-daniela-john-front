@@ -1750,7 +1750,6 @@
 
 .qr-bank-container {
     margin: 20px auto;
-    padding: 15px;
     background: #fff;
     border-radius: 15px;
     display: inline-block;
@@ -1767,9 +1766,9 @@
 }
 
 .qr-bank-img {
-    width: 250px;
+    width: 350px;
     max-width: 100%;
-    height: auto;
+    height: 400px;
     aspect-ratio: 1/1;
     display: block;
     object-fit: cover;

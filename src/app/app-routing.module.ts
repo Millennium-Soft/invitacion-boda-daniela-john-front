@@ -4,6 +4,7 @@ import { LoginComponent } from './components/login/login.component';
 import { InicioComponent } from './components/inicio/inicio.component';
 import { DataRegistrationComponent } from './components/data-registration/data-registration.component';
 import { GuestValidationComponent } from './components/guest-validation/guest-validation.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 const routes: Routes = [
   //COMPONENTES DEL SISTEMA
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'registro-datos', component: DataRegistrationComponent },
   { path: 'validate', component: GuestValidationComponent },
   { path: 'validate/:id', component: GuestValidationComponent },
+  { path: 'dashboard', component: DashboardComponent },
 
   //REDIRECCIONAMIENTO COMOPONENTE POR DEFECTO PARA RUTAS INEXISTENTES EN EL NAVEGADOR
   { path: '**', component: InicioComponent },

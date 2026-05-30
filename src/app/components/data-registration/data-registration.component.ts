@@ -25,6 +25,7 @@ export class DataRegistrationComponent implements OnInit {
     guests$!: Observable<Guest[]>;
     familiesWithGuests$!: Observable<FamilyWithGuests[]>;
     errorMsg: string = '';
+    familySearchText: string = '';
 
     baseUrl = window.location.origin; // Gets the current domain
     selectedTab: 'list' | 'register-family' | 'register-guest' = 'list';
@@ -86,6 +87,12 @@ export class DataRegistrationComponent implements OnInit {
                 });
             })
         );
+    }
+
+    getFilteredFamilies(families: FamilyWithGuests[]): FamilyWithGuests[] {
+        if (!this.familySearchText.trim()) return families;
+        const term = this.familySearchText.toLowerCase().trim();
+        return families.filter(f => f.familyName.toLowerCase().includes(term));
     }
 
     initForms() {

@@ -1,0 +1,451 @@
+<div class="dashboard-wrapper">
+  <!-- Top Navigation & Header -->
+  <header class="dashboard-header d-flex justify-content-between align-items-center">
+    <div class="header-logo-section">
+      <h1 class="header-title">Daniela & John David</h1>
+      <p class="header-subtitle">Panel de Control & Administración de la Boda</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action-nav btn-home mr-2" routerLink="/inicio" title="Ir a la Invitación">
+        <i class="material-icons">home</i>
+        <span>Ver Invitación</span>
+      </button>
+      <button class="btn-action-nav btn-export mr-2" (click)="exportToExcel()" [disabled]="isLoading" title="Exportar reporte Excel">
+        <i class="material-icons">download</i>
+        <span>Exportar Excel</span>
+      </button>
+      <button class="btn-action-nav btn-logout" (click)="logout()" title="Cerrar Sesión">
+        <i class="material-icons">logout</i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loader -->
+  <div class="dashboard-loader-container" *ngIf="isLoading">
+    <div class="elegant-spinner"></div>
+    <p>Cargando información en tiempo real...</p>
+  </div>
+
+  <div class="dashboard-content fade-in" *ngIf="!isLoading">
+    <!-- Statistics Widget Row -->
+    <section class="row stats-row mb-4">
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card card-families shadow-sm">
+          <div class="stat-icon-wrapper">
+            <i class="material-icons">groups</i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Familias Confirmadas</span>
+            <h3 class="stat-value">{{ stats.totalFamiliesConfirmed }} <span class="stat-sub">/ {{ stats.totalFamiliesInvited }}</span></h3>
+            <div class="stat-progress-bar">
+              <div class="progress-fill" [style.width.%]="(stats.totalFamiliesConfirmed / (stats.totalFamiliesInvited || 1)) * 100"></div>
+            </div>
+            <span class="stat-percentage">{{ ((stats.totalFamiliesConfirmed / (stats.totalFamiliesInvited || 1)) * 100) | number:'1.0-1' }}% completado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card card-guests shadow-sm">
+          <div class="stat-icon-wrapper">
+            <i class="material-icons">people</i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Invitados Confirmados</span>
+            <h3 class="stat-value">{{ stats.totalGuestsConfirmed }} <span class="stat-sub">/ {{ stats.totalGuestsInvited }}</span></h3>
+            <div class="stat-progress-bar">
+              <div class="progress-fill fill-gold" [style.width.%]="(stats.totalGuestsConfirmed / (stats.totalGuestsInvited || 1)) * 100"></div>
+            </div>
+            <span class="stat-percentage">{{ ((stats.totalGuestsConfirmed / (stats.totalGuestsInvited || 1)) * 100) | number:'1.0-1' }}% respondido</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card card-ceremony shadow-sm">
+          <div class="stat-icon-wrapper">
+            <i class="material-icons">church</i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Asistirán a Ceremonia</span>
+            <h3 class="stat-value text-purple">{{ stats.attendingCeremony }}</h3>
+            <span class="stat-hint">Invitados que confirmaron iglesia</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stat-card card-reception shadow-sm">
+          <div class="stat-icon-wrapper">
+            <i class="material-icons">celebration</i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Asistirán a Recepción</span>
+            <h3 class="stat-value text-gold">{{ stats.attendingReception }}</h3>
+            <span class="stat-hint">Invitados que confirmaron fiesta</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="dashboard-tabs d-flex mb-4">
+      <button class="tab-btn" [class.active]="activeTab === 'resumen'" (click)="activeTab = 'resumen'">
+        <i class="material-icons">dashboard</i>
+        <span>Resumen</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'invitados'" (click)="activeTab = 'invitados'">
+        <i class="material-icons">people</i>
+        <span>Invitados ({{ filteredGuests.length }})</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'familias'" (click)="activeTab = 'familias'">
+        <i class="material-icons">groups</i>
+        <span>Familias ({{ filteredFamilies.length }})</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'musica'" (click)="activeTab = 'musica'">
+        <i class="material-icons">music_note</i>
+        <span>Música ({{ stats.songsCount }})</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'alergias-mensajes'" (click)="activeTab = 'alergias-mensajes'">
+        <i class="material-icons">warning</i>
+        <span>Catering / Notas ({{ stats.allergiesCount }})</span>
+      </button>
+    </nav>
+
+    <!-- TAB: RESUMEN -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'resumen'">
+      <div class="row">
+        <!-- Attendance Breakdown -->
+        <div class="col-md-6 mb-4">
+          <div class="panel-card shadow-sm">
+            <h3 class="panel-card-title"><i class="material-icons text-purple mr-2">analytics</i> Detalle de Asistencia de Invitados</h3>
+            <div class="attendance-breakdown-list">
+              <div class="breakdown-item">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Asistirán</span>
+                  <strong class="text-success">{{ stats.totalGuestsAttending }} invitados</strong>
+                </div>
+                <div class="progress-bar-flat">
+                  <div class="bar-fill bg-success" [style.width.%]="(stats.totalGuestsAttending / (stats.totalGuestsInvited || 1)) * 100"></div>
+                </div>
+              </div>
+              <div class="breakdown-item mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>No asistirán</span>
+                  <strong class="text-danger">{{ stats.totalGuestsDeclined }} invitados</strong>
+                </div>
+                <div class="progress-bar-flat">
+                  <div class="bar-fill bg-danger" [style.width.%]="(stats.totalGuestsDeclined / (stats.totalGuestsInvited || 1)) * 100"></div>
+                </div>
+              </div>
+              <div class="breakdown-item mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Pendientes por responder</span>
+                  <strong class="text-warning">{{ stats.totalGuestsPending }} invitados</strong>
+                </div>
+                <div class="progress-bar-flat">
+                  <div class="bar-fill bg-warning" [style.width.%]="(stats.totalGuestsPending / (stats.totalGuestsInvited || 1)) * 100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions / Info -->
+        <div class="col-md-6 mb-4">
+          <div class="panel-card shadow-sm h-100 d-flex flex-column justify-content-between">
+            <div>
+              <h3 class="panel-card-title"><i class="material-icons text-gold mr-2">stars</i> Información del Evento</h3>
+              <ul class="event-details-list">
+                <li>
+                  <i class="material-icons">calendar_today</i>
+                  <div>
+                    <strong>Fecha:</strong> 15 de agosto de 2026
+                  </div>
+                </li>
+                <li>
+                  <i class="material-icons">place</i>
+                  <div>
+                    <strong>Ceremonia:</strong> Parroquia Nuestra Señora del Perpetuo Socorro (Neiva)
+                  </div>
+                </li>
+                <li>
+                  <i class="material-icons">celebration</i>
+                  <div>
+                    <strong>Recepción:</strong> Eventos Magenta (Neiva)
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="dashboard-banner mt-3">
+              <i class="material-icons banner-icon">info</i>
+              <div class="banner-text">
+                <strong>Consejo del Planificador:</strong> 
+                Usa la pestaña <em>Familias</em> para copiar y enviar enlaces de invitación rápida por WhatsApp a los invitados que aún no confirman.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: INVITADOS -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'invitados'">
+      <!-- Table Filters & Search -->
+      <div class="table-controls d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center mb-4">
+        <!-- Search bar -->
+        <div class="search-input-wrapper mb-3 mb-md-0">
+          <i class="material-icons search-icon">search</i>
+          <input type="text" class="search-field" placeholder="Buscar por nombre o familia..." 
+                 [(ngModel)]="guestSearchTerm" (ngModelChange)="applyGuestFilters()" />
+        </div>
+
+        <!-- Status filter chips -->
+        <div class="filter-chips-wrapper d-flex flex-wrap">
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'all'" (click)="setGuestFilter('all')">Todos</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'confirmed'" (click)="setGuestFilter('confirmed')">Confirmados</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'pending'" (click)="setGuestFilter('pending')">Sin Confirmar</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'attending'" (click)="setGuestFilter('attending')">Asistirán</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'declined'" (click)="setGuestFilter('declined')">No Asistirán</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'ceremony'" (click)="setGuestFilter('ceremony')"><i class="material-icons text-purple">church</i> Iglesia</button>
+          <button class="chip-btn" [class.active]="guestFilterStatus === 'reception'" (click)="setGuestFilter('reception')"><i class="material-icons text-gold">celebration</i> Fiesta</button>
+        </div>
+      </div>
+
+      <!-- Guests Table -->
+      <div class="table-responsive shadow-sm">
+        <table class="table-premium">
+          <thead>
+            <tr>
+              <th>Nombre del Invitado</th>
+              <th>Familia</th>
+              <th>Confirmó</th>
+              <th>¿Asistirá?</th>
+              <th>Eventos</th>
+              <th>Contacto</th>
+              <th>Canción</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let guest of filteredGuests" [class.row-not-attending]="guest.confirmed && !guest.attending">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="guest-table-avatar" [class.bg-confirmed]="guest.confirmed" [class.bg-attending]="guest.confirmed && guest.attending">
+                    {{ guest.name.charAt(0) }}
+                  </div>
+                  <strong class="guest-table-name ml-2">{{ guest.name }}</strong>
+                </div>
+              </td>
+              <td>{{ getFamilyName(guest.familyId) }}</td>
+              <td>
+                <span class="status-badge" [class.badge-success]="guest.confirmed" [class.badge-secondary]="!guest.confirmed">
+                  {{ guest.confirmed ? 'SÍ' : 'NO' }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" 
+                      [class.badge-success]="guest.confirmed && guest.attending" 
+                      [class.badge-danger]="guest.confirmed && !guest.attending"
+                      [class.badge-warning]="!guest.confirmed">
+                  {{ guest.confirmed ? (guest.attending ? 'ASISTIRÁ' : 'NO ASISTIRÁ') : 'PENDIENTE' }}
+                </span>
+              </td>
+              <td>
+                <div class="events-badge-group d-flex" *ngIf="guest.confirmed && guest.attending">
+                  <span class="event-icon-badge" *ngIf="guest.attendsCeremony" title="Ceremonia Religiosa">
+                    <i class="material-icons">church</i>
+                  </span>
+                  <span class="event-icon-badge bg-badge-gold" *ngIf="guest.attendsReception" title="Recepción">
+                    <i class="material-icons">celebration</i>
+                  </span>
+                </div>
+                <span *ngIf="!guest.confirmed || !guest.attending">-</span>
+              </td>
+              <td>
+                <div class="contact-details-table">
+                  <div *ngIf="guest.phone" class="contact-item"><i class="material-icons">phone</i> {{ guest.phone }}</div>
+                  <div *ngIf="guest.email" class="contact-item"><i class="material-icons">email</i> {{ guest.email }}</div>
+                  <span *ngIf="!guest.phone && !guest.email" class="text-muted">-</span>
+                </div>
+              </td>
+              <td>
+                <div class="song-table-cell" *ngIf="guest.favoriteSong">
+                  <i class="material-icons text-gold">music_note</i>
+                  <span class="song-name-text">{{ guest.favoriteSong }}</span>
+                </div>
+                <span *ngIf="!guest.favoriteSong" class="text-muted">-</span>
+              </td>
+              <td>
+                <div class="d-flex justify-content-center actions-group">
+                  <button class="btn-table-action btn-refresh" *ngIf="guest.confirmed" (click)="resetGuestConfirmation(guest)" title="Restablecer Confirmación (Permitir volver a confirmar)">
+                    <i class="material-icons">refresh</i>
+                  </button>
+                  <button class="btn-table-action btn-delete ml-1" (click)="deleteGuest(guest)" title="Eliminar Invitado">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredGuests.length === 0">
+              <td colspan="8" class="text-center py-5">
+                <i class="material-icons empty-icon">sentiment_dissatisfied</i>
+                <p class="empty-text">No se encontraron invitados con los filtros seleccionados.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: FAMILIAS -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'familias'">
+      <!-- Search -->
+      <div class="table-controls mb-4">
+        <div class="search-input-wrapper">
+          <i class="material-icons search-icon">search</i>
+          <input type="text" class="search-field" placeholder="Buscar por apellido familiar..." 
+                 [(ngModel)]="familySearchTerm" (ngModelChange)="applyFamilyFilters()" />
+        </div>
+      </div>
+
+      <!-- Families Grid/Table -->
+      <div class="table-responsive shadow-sm">
+        <table class="table-premium">
+          <thead>
+            <tr>
+              <th>Nombre de la Familia</th>
+              <th class="text-center">Lugares Reservados (Cupos)</th>
+              <th class="text-center">Invitados en BD</th>
+              <th class="text-center">Asistencias Confirmadas</th>
+              <th>Notas / Comentarios</th>
+              <th>Enlace de Invitación</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let family of filteredFamilies">
+              <td>
+                <strong class="family-table-name"><i class="material-icons text-purple mr-1" style="font-size:18px; vertical-align: middle;">groups</i> {{ family.familyName }}</strong>
+              </td>
+              <td class="text-center font-weight-bold">{{ family.invitedCount }}</td>
+              <td class="text-center">{{ getGuestsForFamily(family.id!).length }}</td>
+              <td class="text-center">
+                <span class="status-badge" [class.badge-success]="family.confirmedAttending > 0" [class.badge-secondary]="family.confirmedAttending === 0">
+                  {{ family.confirmedAttending }} asistirán
+                </span>
+              </td>
+              <td>
+                <div class="family-notes-cell" [title]="family.notes || ''">
+                  {{ family.notes || 'Sin notas' }}
+                </div>
+              </td>
+              <td>
+                <div class="invitation-link-container d-flex align-items-center">
+                  <span class="link-url-text">{{ getInvitationLink(family.id!) }}</span>
+                  <button class="btn-copy" (click)="copyLink(family.id!, family.familyName)" title="Copiar enlace de invitación">
+                    <i class="material-icons">content_copy</i>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-center">
+                  <button class="btn-action-nav btn-home" (click)="copyLink(family.id!, family.familyName)">
+                    <i class="material-icons">link</i>
+                    <span>Copiar Link</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredFamilies.length === 0">
+              <td colspan="7" class="text-center py-5">
+                <i class="material-icons empty-icon">sentiment_dissatisfied</i>
+                <p class="empty-text">No se encontraron familias registradas.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: MÚSICA -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'musica'">
+      <div class="moments-header text-center mb-5">
+        <h2 class="section-title-wedding"><i class="material-icons text-gold mr-2" style="font-size:32px;">queue_music</i> Playlist Sugerida por los Invitados</h2>
+        <p class="formal-body-text italic">
+          Canciones sugeridas para encender la pista de baile.
+        </p>
+      </div>
+
+      <!-- Playlist grid -->
+      <div class="songs-grid">
+        <div class="song-card" *ngFor="let guest of guests">
+          <ng-container *ngIf="guest.favoriteSong && guest.favoriteSong.trim()">
+            <div class="vinyl-record">
+              <div class="vinyl-inner"></div>
+            </div>
+            <div class="song-card-info">
+              <h4 class="song-title">{{ guest.favoriteSong }}</h4>
+              <span class="song-suggested-by">Sugerida por: <strong>{{ guest.name }}</strong></span>
+              <span class="song-family-badge">{{ getFamilyName(guest.familyId) }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: ALERGIAS Y MENSAJES -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'alergias-mensajes'">
+      <div class="row">
+        <!-- Catering section -->
+        <div class="col-lg-6 mb-4">
+          <div class="panel-card shadow-sm h-100">
+            <h3 class="panel-card-title text-danger"><i class="material-icons mr-2">restaurant</i> Alergias y Restricciones Alimenticias</h3>
+            <div class="diet-cards-list mt-3">
+              <div class="diet-card-item" *ngFor="let rsvp of rsvps">
+                <ng-container *ngIf="(rsvp.allergies && rsvp.allergies.length > 0) || rsvp.otherAllergies || rsvp.dietaryRestrictions">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <strong class="diet-guest-name">{{ rsvp.fullName }}</strong>
+                    <span class="contact-badge" *ngIf="rsvp.phone"><i class="material-icons">phone</i> {{ rsvp.phone }}</span>
+                  </div>
+                  
+                  <div class="allergies-content mt-2">
+                    <span class="allergy-chip" *ngFor="let allergy of rsvp.allergies">{{ allergy }}</span>
+                    <span class="allergy-chip chip-other" *ngIf="rsvp.otherAllergies">{{ rsvp.otherAllergies }}</span>
+                  </div>
+                  
+                  <div class="dietary-restriction-notes mt-2" *ngIf="rsvp.dietaryRestrictions">
+                    <strong>Notas de dieta:</strong> {{ rsvp.dietaryRestrictions }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages section -->
+        <div class="col-lg-6 mb-4">
+          <div class="panel-card shadow-sm h-100">
+            <h3 class="panel-card-title text-purple"><i class="material-icons mr-2">mail</i> Mensajes de Felicitaciones</h3>
+            <div class="messages-cards-list mt-3">
+              <div class="message-card-item" *ngFor="let rsvp of rsvps">
+                <ng-container *ngIf="rsvp.message && rsvp.message.trim()">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong class="msg-guest-name">{{ rsvp.fullName }}</strong>
+                    <span class="msg-time-badge" *ngIf="rsvp.timestamp">
+                      {{ (rsvp.timestamp.toDate() | date:'shortDate') }}
+                    </span>
+                  </div>
+                  <p class="msg-body">
+                    "{{ rsvp.message }}"
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
