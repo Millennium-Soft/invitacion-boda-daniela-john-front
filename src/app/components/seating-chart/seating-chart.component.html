@@ -223,7 +223,7 @@
             <!-- Chairs / Seats distributed around the center object -->
             <div 
               class="chair-spot" 
-              *ngFor="let seat of table.seats; let i = index" 
+              *ngFor="let seat of getSeatsArray(table); let i = index" 
               [ngStyle]="getSeatStyle(i, table.capacity, table.shape)"
               (dragover)="onDragOver($event)"
               (drop)="onDropOnSeat($event, table.id || '', i)"
@@ -264,6 +264,12 @@
                   </button>
                 </div>
               </div>
+              
+              <!-- Static Guest Name Label (always visible, critical for print) -->
+              <span class="seat-guest-name-label" [ngClass]="getNameLabelPositionClass(i, table.capacity, table.shape)" *ngIf="seat !== null">
+                <span class="name-line">{{ getFirstNamePart(getGuest(seat)?.name) }}</span>
+                <span class="name-line second" *ngIf="getSecondNamePart(getGuest(seat)?.name)">{{ getSecondNamePart(getGuest(seat)?.name) }}</span>
+              </span>
             </div>
           </div>
         </div>

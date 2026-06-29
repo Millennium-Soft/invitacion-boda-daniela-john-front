@@ -50,7 +50,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
   statsMenuAssigned = { adult: 0, child: 0 };
   statsMenuTotal = { adult: 0, child: 0 };
 
-  constructor(private weddingService: WeddingDataService) {}
+  constructor(private weddingService: WeddingDataService) { }
 
   ngOnInit(): void {
     this.loadTables();
@@ -136,7 +136,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     activeGuests.forEach(guest => {
       const isAssigned = assignedIds.has(guest.id || '');
       const gender = guest.gender || 'H';
-      
+
       // Auto-infer menu based on gender if not explicitly defined
       const menu = guest.menuType || (gender === 'N' ? 'nino' : 'adulto');
 
@@ -149,7 +149,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
         } else if (gender === 'N') {
           this.statsAssigned.children++;
         }
-        
+
         // Menu breakdown
         if (menu === 'nino') {
           this.statsMenuAssigned.child++;
@@ -165,7 +165,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
         } else if (gender === 'N') {
           this.statsUnassigned.children++;
         }
-        
+
         // Menu breakdown
         if (menu === 'nino') {
           this.statsMenuUnassigned.child++;
@@ -280,12 +280,13 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // If capacity changed, adapt seats array
-    const newCapacity = this.selectedTable.capacity;
-    const oldCapacity = originalTable.capacity;
+    const newCapacity = Number(this.selectedTable.capacity);
+    this.selectedTable.capacity = newCapacity;
+    const oldCapacity = Number(originalTable.capacity);
 
     if (newCapacity !== oldCapacity) {
       const newSeats = Array(newCapacity).fill(null);
-      
+
       // Copy existing occupants up to the new capacity limits
       const limit = Math.min(newCapacity, oldCapacity);
       for (let i = 0; i < limit; i++) {
@@ -405,6 +406,18 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     return this.guests.find(g => g.id === guestId) || null;
   }
 
+  // Get the first two words/names from the guest's full name for visual display
+  getShortName(fullName: string | undefined): string {
+    if (!fullName) {
+      return '';
+    }
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length <= 2) {
+      return fullName;
+    }
+    return `${parts[0]} ${parts[1]}`;
+  }
+
   // Native HTML5 Drag and Drop Event Handlers
   onDragStart(event: DragEvent, guest: Guest): void {
     if (event.dataTransfer && guest.id) {
@@ -451,11 +464,11 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Check if seat is already occupied
-    const currentOccupantId = targetTable.seats[targetSeatIndex];
+    const currentOccupantId = this.getSeatsArray(targetTable)[targetSeatIndex];
 
     if (source === 'sidebar') {
       // Placing a guest from the sidebar to an empty seat
-      const updatedSeats = [...targetTable.seats];
+      const updatedSeats = [...this.getSeatsArray(targetTable)];
       updatedSeats[targetSeatIndex] = guestId;
 
       this.weddingService.updateTable(targetTableId, { seats: updatedSeats })
@@ -476,8 +489,8 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
       }
 
       // Reordering or swapping guests
-      const updatedTargetSeats = [...targetTable.seats];
-      const updatedSourceSeats = [...sourceTable.seats];
+      const updatedTargetSeats = [...this.getSeatsArray(targetTable)];
+      const updatedSourceSeats = [...this.getSeatsArray(sourceTable)];
 
       if (sourceTableId === targetTableId) {
         // Rearranging seats within the same table
@@ -515,7 +528,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
 
       const sourceTable = this.tables.find(t => t.id === sourceTableId);
       if (sourceTable) {
-        const updatedSeats = [...sourceTable.seats];
+        const updatedSeats = [...this.getSeatsArray(sourceTable)];
         updatedSeats[sourceSeatIndex] = null;
 
         this.weddingService.updateTable(sourceTableId, { seats: updatedSeats })
@@ -530,7 +543,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
   removeGuestFromSeat(tableId: string, seatIndex: number): void {
     const table = this.tables.find(t => t.id === tableId);
     if (table) {
-      const updatedSeats = [...table.seats];
+      const updatedSeats = [...this.getSeatsArray(table)];
       updatedSeats[seatIndex] = null;
       this.weddingService.updateTable(tableId, { seats: updatedSeats })
         .then(() => {
@@ -541,8 +554,10 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
 
   // Return style layout configurations for seats surrounding the geometric table shapes
   getSeatStyle(index: number, capacity: number, shape: 'circular' | 'square' | 'rectangular'): { [key: string]: string } {
+    const numericCapacity = Number(capacity) || 8;
+
     if (shape === 'circular') {
-      const angle = (2 * Math.PI / capacity) * index - Math.PI / 2;
+      const angle = (2 * Math.PI / numericCapacity) * index - Math.PI / 2;
       const radius = 53; // Closer to circular table edge
       const left = 50 + radius * Math.cos(angle);
       const top = 50 + radius * Math.sin(angle);
@@ -557,11 +572,11 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
       // Symmetrical distribution on 4 sides
       const side = index % 4;
       const pos = Math.floor(index / 4);
-      const totalInSide = Math.floor((capacity - 1 - side) / 4) + 1;
+      const totalInSide = Math.floor((numericCapacity - 1 - side) / 4) + 1;
 
       // Vertical/Horizontal limits aligned with table border
-      const start = 30;
-      const end = 70;
+      const start = 38;
+      const end = 62;
       const span = totalInSide > 1 ? (end - start) / (totalInSide - 1) : 0;
       const position = totalInSide > 1 ? start + pos * span : 50;
 
@@ -581,8 +596,8 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Rectangular Distribution
-    const shortSideChairs = Math.max(1, Math.floor(capacity * 0.22));
-    const longSideChairs = Math.max(1, Math.round((capacity - 2 * shortSideChairs) / 2));
+    const shortSideChairs = Math.max(1, Math.floor(numericCapacity * 0.22));
+    const longSideChairs = Math.max(1, Math.round((numericCapacity - 2 * shortSideChairs) / 2));
 
     // Determine target side and relative index
     let side = 0;
@@ -656,7 +671,7 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
 
     event.preventDefault();
     this.draggingTable = table;
-    
+
     // Calculate difference between click position and current table coordinate
     this.dragOffset.x = event.clientX - (table.positionX || 0);
     this.dragOffset.y = event.clientY - (table.positionY || 0);
@@ -695,6 +710,86 @@ export class SeatingChartComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.draggingTable = null;
+  }
+
+  // Return seats array matching capacity defensively
+  getSeatsArray(table: SeatingTable): (string | null)[] {
+    const capacity = Number(table.capacity) || 8;
+    const seats = table.seats || [];
+    if (seats.length === capacity) {
+      return seats;
+    }
+    const fixedSeats = Array(capacity).fill(null);
+    const limit = Math.min(capacity, seats.length);
+    for (let i = 0; i < limit; i++) {
+      fixedSeats[i] = seats[i];
+    }
+    return fixedSeats;
+  }
+
+  // Get the first word of the guest's name (limited to max 6 chars)
+  getFirstNamePart(fullName: string | undefined): string {
+    if (!fullName) {
+      return '';
+    }
+    const parts = fullName.trim().split(/\s+/);
+    const name = parts[0] || '';
+    return name.length > 7 ? name.substring(0, 7) : name;
+  }
+
+  // Get the second word/name or first surname (limited to max 6 chars)
+  getSecondNamePart(fullName: string | undefined): string {
+    if (!fullName) {
+      return '';
+    }
+    const parts = fullName.trim().split(/\s+/);
+    const name = parts.length > 1 ? parts[1] : '';
+    return name.length > 7 ? name.substring(0, 7) : name;
+  }
+
+  // Get dynamic name position class to place label on opposite side of table center (top, bottom, left, right)
+  getNameLabelPositionClass(index: number, capacity: number, shape: 'circular' | 'square' | 'rectangular'): 'pos-top' | 'pos-bottom' | 'pos-left' | 'pos-right' {
+    const numericCapacity = Number(capacity) || 8;
+
+    if (shape === 'circular') {
+      const angle = (2 * Math.PI / numericCapacity) * index - Math.PI / 2;
+      const cosAngle = Math.cos(angle);
+      const sinAngle = Math.sin(angle);
+
+      // Determine dominant direction (left, right, top, bottom) to avoid overlapping table body
+      if (Math.abs(cosAngle) > Math.abs(sinAngle)) {
+        return cosAngle > 0.4 ? 'pos-right' : 'pos-left';
+      } else {
+        return sinAngle < 0 ? 'pos-top' : 'pos-bottom';
+      }
+    }
+
+    if (shape === 'square') {
+      const side = index % 4;
+      if (side === 0) {
+        return 'pos-top';
+      } else if (side === 1) {
+        return 'pos-right';
+      } else if (side === 2) {
+        return 'pos-bottom';
+      } else {
+        return 'pos-left';
+      }
+    }
+
+    // Rectangular
+    const shortSideChairs = Math.max(1, Math.floor(numericCapacity * 0.22));
+    const longSideChairs = Math.max(1, Math.round((numericCapacity - 2 * shortSideChairs) / 2));
+
+    if (index < longSideChairs) {
+      return 'pos-top'; // Top side
+    } else if (index < longSideChairs + shortSideChairs) {
+      return 'pos-right'; // Right side
+    } else if (index < 2 * longSideChairs + shortSideChairs) {
+      return 'pos-bottom'; // Bottom side
+    } else {
+      return 'pos-left'; // Left side
+    }
   }
 
   // Generate structured state JSON

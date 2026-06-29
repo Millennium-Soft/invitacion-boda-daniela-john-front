@@ -1093,3 +1093,57 @@
   color: #b8860b;
   border-color: rgba(218, 165, 32, 0.15);
 }
+
+/* Static name labels for printing seating charts */
+.seat-guest-name-label {
+  position: absolute;
+  font-size: 8px !important;
+  font-weight: 600;
+  color: #3e2723; /* Very dark brown, highly legible */
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(93, 64, 55, 0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.seat-guest-name-label.pos-bottom {
+  top: 36px; /* Positioned below the chair */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.seat-guest-name-label.pos-top {
+  bottom: 36px; /* Positioned above the chair */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.seat-guest-name-label.pos-left {
+  right: 36px; /* Positioned to the left of the chair */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.seat-guest-name-label.pos-right {
+  left: 36px; /* Positioned to the right of the chair */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.seat-guest-name-label .name-line {
+  display: block;
+  line-height: 1.1;
+}
+
+.seat-guest-name-label .name-line.second {
+  font-size: 7.5px !important;
+  font-weight: 500;
+  opacity: 0.9;
+}
