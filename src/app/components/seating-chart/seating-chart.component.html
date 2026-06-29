@@ -1,0 +1,351 @@
+<div class="seating-chart-container">
+  <!-- SIDEBAR: UNASSIGNED GUESTS -->
+  <aside class="seating-sidebar" (dragover)="onDragOver($event)" (drop)="onDropOnSidebar($event)">
+    <div class="sidebar-header">
+      <i class="material-icons text-gold mr-2">person_add</i>
+      <h2>Invitados Pendientes</h2>
+    </div>
+
+    <!-- Drop Zone Indicator in Sidebar -->
+    <div class="sidebar-dropzone-hint">
+      <i class="material-icons">delete_sweep</i>
+      <span>Arrastra aquí para quitar de la mesa</span>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="sidebar-filters">
+      <div class="form-group mb-2">
+        <div class="input-group-prepend-icon">
+          <i class="material-icons search-icon">search</i>
+          <input 
+            type="text" 
+            class="form-control-custom" 
+            placeholder="Buscar por nombre..." 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="applySidebarFilters()">
+        </div>
+      </div>
+
+      <div class="row no-gutters">
+        <div class="col-6 pr-1">
+          <div class="form-group mb-2">
+            <select class="form-control-custom select-custom" [(ngModel)]="filterFamilyId" (ngModelChange)="applySidebarFilters()">
+              <option value="all">Todas las Familias</option>
+              <option *ngFor="let family of families" [value]="family.id">
+                {{ family.familyName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-6 pl-1">
+          <div class="form-group mb-2">
+            <select class="form-control-custom select-custom" [(ngModel)]="filterGender" (ngModelChange)="applySidebarFilters()">
+              <option value="all">Todos los Perfiles</option>
+              <option value="H">Hombres</option>
+              <option value="M">Mujeres</option>
+              <option value="N">Niños</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending breakdown stats -->
+    <div class="sidebar-gender-stats mb-3">
+      <div class="stat-mini-pill pill-man" title="Hombres pendientes">
+        <i class="material-icons">face</i>
+        <span>Hombres: <strong>{{ statsUnassigned.men }}</strong></span>
+      </div>
+      <div class="stat-mini-pill pill-woman" title="Mujeres pendientes">
+        <i class="material-icons">face_3</i>
+        <span>Mujeres: <strong>{{ statsUnassigned.women }}</strong></span>
+      </div>
+      <div class="stat-mini-pill pill-child" title="Niños pendientes">
+        <i class="material-icons">child_care</i>
+        <span>Niños: <strong>{{ statsUnassigned.children }}</strong></span>
+      </div>
+    </div>
+
+    <!-- Unassigned Guests List -->
+    <div class="sidebar-guest-list">
+      <div 
+        class="guest-item-card" 
+        *ngFor="let guest of filteredUnassignedGuests" 
+        draggable="true" 
+        (dragstart)="onDragStart($event, guest)">
+        <div class="guest-card-left">
+          <div class="guest-avatar" [class.avatar-man]="guest.gender === 'H' || !guest.gender" [class.avatar-woman]="guest.gender === 'M'" [class.avatar-child]="guest.gender === 'N'">
+            <i class="material-icons" *ngIf="guest.gender === 'H' || !guest.gender">face</i>
+            <i class="material-icons" *ngIf="guest.gender === 'M'">face_3</i>
+            <i class="material-icons" *ngIf="guest.gender === 'N'">child_care</i>
+          </div>
+          <div class="guest-card-details">
+            <span class="guest-name">{{ guest.name }}</span>
+            <span class="guest-family-tag">{{ getFamilyName(guest.familyId) }}</span>
+          </div>
+        </div>
+        
+        <!-- Quick Profile Gender Chooser -->
+        <div class="gender-quick-chooser">
+          <button class="btn-gender" [class.active]="guest.gender === 'H' || !guest.gender" (click)="changeGuestGender(guest, 'H')" title="Hombre">
+            <i class="material-icons">face</i>
+          </button>
+          <button class="btn-gender" [class.active]="guest.gender === 'M'" (click)="changeGuestGender(guest, 'M')" title="Mujer">
+            <i class="material-icons">face_3</i>
+          </button>
+          <button class="btn-gender" [class.active]="guest.gender === 'N'" (click)="changeGuestGender(guest, 'N')" title="Niño">
+            <i class="material-icons">child_care</i>
+          </button>
+        </div>
+
+        <!-- Quick Menu Chooser -->
+        <div class="menu-quick-chooser ml-2">
+          <button class="btn-menu" [class.active]="guest.menuType === 'adulto' || (!guest.menuType && guest.gender !== 'N')" (click)="changeGuestMenu(guest, 'adulto')" title="Menú Adulto">
+            <i class="material-icons">restaurant</i>
+          </button>
+          <button class="btn-menu" [class.active]="guest.menuType === 'nino' || (!guest.menuType && guest.gender === 'N')" (click)="changeGuestMenu(guest, 'nino')" title="Menú Infantil">
+            <i class="material-icons">lunch_dining</i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-guest-state" *ngIf="filteredUnassignedGuests.length === 0">
+        <i class="material-icons">celebration</i>
+        <p *ngIf="unassignedGuests.length > 0">No se encontraron resultados para los filtros seleccionados.</p>
+        <p *ngIf="unassignedGuests.length === 0">¡Todos los invitados confirmados ya tienen una mesa asignada!</p>
+      </div>
+    </div>
+
+    <!-- Summary Box -->
+    <div class="sidebar-summary-box">
+      <span class="summary-label">Pendientes por sentar:</span>
+      <span class="summary-badge">{{ unassignedGuests.length }}</span>
+    </div>
+  </aside>
+
+  <!-- CANVAS MAIN WORKSPACE -->
+  <main class="seating-canvas-wrapper">
+    <!-- TOOLBAR -->
+    <header class="canvas-toolbar">
+      <div class="toolbar-left">
+        <h2 class="toolbar-title">Diseño del Salón</h2>
+        <span class="toolbar-subtitle">Organiza las mesas y arrastra los invitados a sus puestos</span>
+      </div>
+
+      <!-- Salon stats summary -->
+      <div class="salon-gender-stats-container">
+        <span class="salon-stat-title">Distribución:</span>
+        <div class="salon-stat-badges">
+          <span class="salon-badge badge-man" title="Hombres sentados / total confirmados">
+            <i class="material-icons">face</i>
+            <span>Hombres: <strong>{{ statsAssigned.men }}</strong><span class="badge-total">/{{ statsTotal.men }}</span></span>
+          </span>
+          <span class="salon-badge badge-woman" title="Mujeres sentadas / total confirmadas">
+            <i class="material-icons">face_3</i>
+            <span>Mujeres: <strong>{{ statsAssigned.women }}</strong><span class="badge-total">/{{ statsTotal.women }}</span></span>
+          </span>
+          <span class="salon-badge badge-child" title="Niños sentados / total confirmados">
+            <i class="material-icons">child_care</i>
+            <span>Niños: <strong>{{ statsAssigned.children }}</strong><span class="badge-total">/{{ statsTotal.children }}</span></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Salon catering stats summary -->
+      <div class="salon-gender-stats-container ml-2">
+        <span class="salon-stat-title">Menús:</span>
+        <div class="salon-stat-badges">
+          <span class="salon-badge badge-adult-menu" title="Menús de Adulto sentados / total confirmados">
+            <i class="material-icons text-gold-accent">restaurant</i>
+            <span>Adultos: <strong>{{ statsMenuAssigned.adult }}</strong><span class="badge-total">/{{ statsMenuTotal.adult }}</span></span>
+          </span>
+          <span class="salon-badge badge-child-menu" title="Menús de Niño sentados / total confirmados">
+            <i class="material-icons text-gold-accent">lunch_dining</i>
+            <span>Niños: <strong>{{ statsMenuAssigned.child }}</strong><span class="badge-total">/{{ statsMenuTotal.child }}</span></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="btn-toolbar btn-add-table" (click)="addTable()">
+          <i class="material-icons">add_circle</i>
+          <span>Agregar Mesa</span>
+        </button>
+        <button class="btn-toolbar btn-clear-all" [disabled]="tables.length === 0" (click)="clearAllAssignments()">
+          <i class="material-icons">restart_alt</i>
+          <span>Vaciar Todo</span>
+        </button>
+        <button class="btn-toolbar btn-json" (click)="showJsonViewer = !showJsonViewer">
+          <i class="material-icons">code</i>
+          <span>{{ showJsonViewer ? 'Ocultar JSON' : 'Ver JSON' }}</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CANVAS GRID AREA -->
+    <div class="canvas-grid-area">
+      <div class="tables-flex-container">
+        <!-- Render Tables Loop -->
+        <div 
+          class="table-card-wrapper" 
+          *ngFor="let table of tables" 
+          [class.table-circular]="table.shape === 'circular'" 
+          [class.table-square]="table.shape === 'square'" 
+          [class.table-rectangular]="table.shape === 'rectangular'"
+          [ngStyle]="{ 'position': 'absolute', 'left.px': table.positionX || 50, 'top.px': table.positionY || 50 }">
+          
+          <!-- Seating arrangement circle/square border layout -->
+          <div class="table-seating-container">
+            <!-- Central Table Body -->
+            <div 
+              class="table-center-object" 
+              [class.circular]="table.shape === 'circular'" 
+              [class.square]="table.shape === 'square'" 
+              [class.rectangular]="table.shape === 'rectangular'"
+              (mousedown)="onTableMouseDown($event, table)">
+              <div class="table-details">
+                <span class="table-name">{{ table.name }}</span>
+                <span class="table-occupancy">
+                  {{ getOccupiedCount(table.seats) }} / {{ table.capacity }}
+                </span>
+              </div>
+              <div class="table-actions-hover">
+                <button class="btn-table-action action-edit" (click)="editTable(table)" title="Configurar Mesa">
+                  <i class="material-icons">settings</i>
+                </button>
+                <button class="btn-table-action action-delete" (click)="deleteTable(table.id || '')" title="Eliminar Mesa">
+                  <i class="material-icons">delete</i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Chairs / Seats distributed around the center object -->
+            <div 
+              class="chair-spot" 
+              *ngFor="let seat of table.seats; let i = index" 
+              [ngStyle]="getSeatStyle(i, table.capacity, table.shape)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSeat($event, table.id || '', i)"
+              [class.occupied]="seat !== null"
+              [class.empty]="seat === null">
+              
+              <!-- Empty Seat -->
+              <div class="empty-seat-indicator" *ngIf="seat === null" title="Puesto vacío (Arrastra un invitado aquí)">
+                <i class="material-icons font-sm-icon">add</i>
+              </div>
+
+              <!-- Occupied Seat -->
+              <div 
+                class="occupied-seat-avatar" 
+                *ngIf="seat !== null" 
+                draggable="true" 
+                (dragstart)="onDragStartFromSeat($event, seat, table.id || '', i)"
+                [class.avatar-man]="getGuest(seat)?.gender === 'H' || !getGuest(seat)?.gender"
+                [class.avatar-woman]="getGuest(seat)?.gender === 'M'"
+                [class.avatar-child]="getGuest(seat)?.gender === 'N'"
+                [title]="getGuest(seat)?.name + ' (' + getFamilyName(getGuest(seat)?.familyId || '') + ') - Arrastra para mover'">
+                
+                <span class="guest-initial">{{ getGuest(seat)?.name?.charAt(0) }}</span>
+                <i class="material-icons guest-gender-badge" *ngIf="getGuest(seat)?.gender === 'H' || !getGuest(seat)?.gender">face</i>
+                <i class="material-icons guest-gender-badge" *ngIf="getGuest(seat)?.gender === 'M'">face_3</i>
+                <i class="material-icons guest-gender-badge" *ngIf="getGuest(seat)?.gender === 'N'">child_care</i>
+
+                <!-- Hover Details and Remove Quick Button -->
+                <div class="occupied-seat-tooltip">
+                  <span class="tooltip-guest-name">{{ getGuest(seat)?.name }}</span>
+                  <span class="tooltip-guest-family">{{ getFamilyName(getGuest(seat)?.familyId || '') }}</span>
+                  <span class="tooltip-guest-menu mt-1">
+                    <i class="material-icons text-gold-accent font-xs-icon mr-1">restaurant</i>
+                    Menú: {{ getGuest(seat)?.menuType === 'nino' || (!getGuest(seat)?.menuType && getGuest(seat)?.gender === 'N') ? 'Infantil' : 'Adulto' }}
+                  </span>
+                  <button class="btn-remove-seat" (click)="removeGuestFromSeat(table.id || '', i)">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty Tables State -->
+        <div class="empty-canvas-state" *ngIf="tables.length === 0">
+          <i class="material-icons display-icon">table_restaurant</i>
+          <h3>No hay mesas en el salón</h3>
+          <p>Comienza agregando una nueva mesa utilizando el botón superior.</p>
+          <button class="btn-primary-custom mt-3" (click)="addTable()">
+            <i class="material-icons mr-1">add_circle</i> Agregar Primera Mesa
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLLAPSIBLE JSON STATE VIEWER -->
+    <div class="json-state-viewer-panel" *ngIf="showJsonViewer">
+      <div class="viewer-header">
+        <div class="d-flex align-items-center">
+          <i class="material-icons text-purple mr-2">schema</i>
+          <h3>Estado JSON en Tiempo Real</h3>
+        </div>
+        <button class="btn-close-viewer" (click)="showJsonViewer = false">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      <div class="viewer-body">
+        <pre><code>{{ seatingJsonString }}</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- TABLE CONFIGURATION MODAL / EDITOR -->
+<div class="table-editor-overlay" *ngIf="selectedTable">
+  <div class="table-editor-card">
+    <div class="editor-header">
+      <h3>Configurar Mesa</h3>
+      <button class="btn-close-editor" (click)="selectedTable = null">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="editor-body">
+      <div class="form-group mb-3">
+        <label class="form-label">Nombre / Número de la Mesa</label>
+        <input type="text" class="form-control-custom" [(ngModel)]="selectedTable.name">
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-label">Forma Geométrica</label>
+            <select class="form-control-custom select-custom" [(ngModel)]="selectedTable.shape">
+              <option value="circular">Circular</option>
+              <option value="square">Cuadrada</option>
+              <option value="rectangular">Rectangular</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-label">Capacidad (Puestos)</label>
+            <select class="form-control-custom select-custom" [(ngModel)]="selectedTable.capacity">
+              <option *ngFor="let cap of [2,3,4,5,6,7,8,9,10,11,12]" [value]="cap">{{ cap }} Puestos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Indicator if capacity changes and some guests might be cut off -->
+      <div class="alert alert-warning-custom" *ngIf="selectedTable.capacity < getOriginalCapacity(selectedTable.id)">
+        <i class="material-icons alert-icon mr-2">warning</i>
+        <span>Al reducir la capacidad, los invitados en los puestos eliminados regresarán a la lista de pendientes.</span>
+      </div>
+    </div>
+    <div class="editor-footer">
+      <button class="btn-editor-action btn-cancel" (click)="selectedTable = null">Cancelar</button>
+      <button class="btn-editor-action btn-save" [disabled]="isSaving" (click)="saveTableConfig()">
+        <span *ngIf="!isSaving">Guardar Configuración</span>
+        <span *ngIf="isSaving">Guardando...</span>
+      </button>
+    </div>
+  </div>
+</div>

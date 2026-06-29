@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, doc, updateDoc, collectionData, query, where, Timestamp, docData, deleteDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { Family, Guest, Rsvp } from '../models/wedding-data.model';
+import { Family, Guest, Rsvp, SeatingTable } from '../models/wedding-data.model';
 import emailjs from '@emailjs/browser';
 import { environment } from 'src/environments/environment';
 
@@ -134,5 +134,26 @@ export class WeddingDataService {
     getRsvps(): Observable<Rsvp[]> {
         const rsvpsRef = collection(this.firestore, 'rsvps');
         return collectionData(rsvpsRef, { idField: 'id' }) as Observable<Rsvp[]>;
+    }
+
+    // Tables
+    addTable(table: SeatingTable) {
+        const tablesRef = collection(this.firestore, 'tables');
+        return addDoc(tablesRef, table);
+    }
+
+    getTables(): Observable<SeatingTable[]> {
+        const tablesRef = collection(this.firestore, 'tables');
+        return collectionData(tablesRef, { idField: 'id' }) as Observable<SeatingTable[]>;
+    }
+
+    updateTable(tableId: string, data: Partial<SeatingTable>) {
+        const tableDocRef = doc(this.firestore, `tables/${tableId}`);
+        return updateDoc(tableDocRef, data);
+    }
+
+    deleteTable(tableId: string) {
+        const tableDocRef = doc(this.firestore, `tables/${tableId}`);
+        return deleteDoc(tableDocRef);
     }
 }

@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   filteredFamilies: Family[] = [];
 
   // UI state
-  activeTab: 'resumen' | 'invitados' | 'familias' | 'musica' | 'alergias-mensajes' = 'resumen';
+  activeTab: 'resumen' | 'invitados' | 'familias' | 'musica' | 'alergias-mensajes' | 'mesas' = 'resumen';
   isLoading = true;
 
   // Search & Filter values

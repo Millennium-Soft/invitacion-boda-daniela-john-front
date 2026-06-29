@@ -20,6 +20,8 @@ export interface Guest {
     attendsCeremony?: boolean;
     attendsReception?: boolean;
     checkedIn?: boolean;
+    gender?: 'H' | 'M' | 'N'; // H: Man, M: Woman, N: Child
+    menuType?: 'adulto' | 'nino'; // adult or child menu choice
 }
 
 export interface Rsvp {
@@ -38,5 +40,15 @@ export interface Rsvp {
     dietaryRestrictions?: string; // Kept for backward compatibility if needed
     song?: string; // Kept for backward compatibility if needed
     phone?: string;
+}
+
+export interface SeatingTable {
+    id?: string;
+    name: string;
+    shape: 'circular' | 'square' | 'rectangular';
+    capacity: number;
+    seats: (string | null)[]; // Array of guest IDs representing individual chairs
+    positionX?: number; // X coordinate in pixels inside canvas
+    positionY?: number; // Y coordinate in pixels inside canvas
 }
 

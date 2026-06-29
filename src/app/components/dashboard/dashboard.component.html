@@ -114,6 +114,10 @@
         <i class="material-icons">warning</i>
         <span>Catering / Notas ({{ stats.allergiesCount }})</span>
       </button>
+      <button class="tab-btn" [class.active]="activeTab === 'mesas'" (click)="activeTab = 'mesas'">
+        <i class="material-icons">table_restaurant</i>
+        <span>Organizar Mesas</span>
+      </button>
     </nav>
 
     <!-- TAB: RESUMEN -->
@@ -459,6 +463,11 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- TAB: ORGANIZADOR DE MESAS -->
+    <div class="tab-content-panel" *ngIf="activeTab === 'mesas'">
+      <app-seating-chart [guests]="guests" [families]="families"></app-seating-chart>
     </div>
   </div>
 </div>
