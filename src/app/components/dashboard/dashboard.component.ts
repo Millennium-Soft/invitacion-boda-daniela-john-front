@@ -505,6 +505,66 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  getInsideCount(): number {
+    return this.guests.filter(g => g.checkedIn).length;
+  }
+
+  async resetAllCheckedIn(): Promise<void> {
+    const checkedInGuests = this.guests.filter(g => g.checkedIn);
+
+    if (checkedInGuests.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin registros',
+        text: 'No hay invitados registrados en el salón actualmente.',
+        confirmButtonColor: '#6A1B9A'
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: '¿Restablecer todos los ingresos?',
+      text: `Se limpiará el registro de ingreso al salón para los ${checkedInGuests.length} invitados que están dentro. Esto restablecerá el estado para hacer nuevas pruebas.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#DAA520',
+      cancelButtonColor: '#888',
+      confirmButtonText: 'Sí, limpiar todos',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: 'Limpiando registros...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
+        const promises = checkedInGuests.map(g => {
+          if (g.id) {
+            return this.weddingService.updateGuest(g.id, { checkedIn: false });
+          }
+          return Promise.resolve();
+        });
+
+        await Promise.all(promises);
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Registros limpios',
+          text: 'Se han restablecido todos los registros de ingreso al salón con éxito.',
+          confirmButtonColor: '#6A1B9A'
+        });
+      } catch (error) {
+        console.error('Error al limpiar registros de ingreso:', error);
+        Swal.fire('Error', 'No se pudo limpiar los registros de ingreso.', 'error');
+      }
+    }
+  }
+
   logout(): void {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/login']);

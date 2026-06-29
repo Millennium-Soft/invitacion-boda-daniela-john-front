@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'registro-datos', component: DataRegistrationComponent },
   { path: 'validate', component: GuestValidationComponent },
   { path: 'validate/:id', component: GuestValidationComponent },
+  { path: 'recepcion-boda-DJ2026', component: GuestValidationComponent, data: { isAdmin: true } },
   { path: 'dashboard', component: DashboardComponent },
 
   //REDIRECCIONAMIENTO COMOPONENTE POR DEFECTO PARA RUTAS INEXISTENTES EN EL NAVEGADOR

@@ -14,6 +14,10 @@
         <i class="material-icons">download</i>
         <span>Exportar Excel</span>
       </button>
+      <button class="btn-action-nav btn-reset mr-2" (click)="resetAllCheckedIn()" [disabled]="isLoading" title="Limpiar ingresos al salón (Pruebas)">
+        <i class="material-icons">restart_alt</i>
+        <span>Limpiar Ingresos</span>
+      </button>
       <button class="btn-action-nav btn-logout" (click)="logout()" title="Cerrar Sesión">
         <i class="material-icons">logout</i>
       </button>
@@ -145,6 +149,15 @@
                 </div>
                 <div class="progress-bar-flat">
                   <div class="bar-fill bg-warning" [style.width.%]="(stats.totalGuestsPending / (stats.totalGuestsInvited || 1)) * 100"></div>
+                </div>
+              </div>
+              <div class="breakdown-item mt-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Ingresados al salón (Asistencia física)</span>
+                  <strong class="text-info">{{ getInsideCount() }} invitados dentro</strong>
+                </div>
+                <div class="progress-bar-flat">
+                  <div class="bar-fill bg-info" [style.width.%]="(getInsideCount() / (stats.totalGuestsAttending || 1)) * 100"></div>
                 </div>
               </div>
             </div>

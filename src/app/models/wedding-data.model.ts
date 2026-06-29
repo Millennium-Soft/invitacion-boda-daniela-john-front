@@ -19,6 +19,7 @@ export interface Guest {
     favoriteSong?: string;
     attendsCeremony?: boolean;
     attendsReception?: boolean;
+    checkedIn?: boolean;
 }
 
 export interface Rsvp {

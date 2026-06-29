@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { MaterialModules } from './material.modules';
-
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -28,9 +27,6 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 
-// Importa el idioma español de date-fns
-import { es } from 'date-fns/locale';
-
 // Registra el idioma español para Angular
 registerLocaleData(localeEs);
 
@@ -43,8 +39,7 @@ registerLocaleData(localeEs);
     DataRegistrationComponent,
     RsvpComponent,
     GuestValidationComponent,
-    DashboardComponent,
-
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

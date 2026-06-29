@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WeddingDataService } from '../../services/wedding-data.service';
 import { Guest } from '../../models/wedding-data.model';
 import { Html5Qrcode } from 'html5-qrcode';
+import { take } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-guest-validation',
@@ -28,20 +30,62 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
     statusIcon = '';
     statusColor = '';
 
+    // Control de Asistencia General (Lista inferior)
+    listSearchTerm: string = '';
+    filterStatus: 'all' | 'inside' | 'pending' = 'all';
+    familiesMap: { [key: string]: string } = {};
+
+    isUserAuthenticated = false;
+
     private html5QrCode: Html5Qrcode | null = null;
 
     constructor(
         private route: ActivatedRoute,
-        private weddingService: WeddingDataService
+        private router: Router,
+        private weddingService: WeddingDataService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
         this.guestId = this.route.snapshot.paramMap.get('id');
-        this.loadAllGuests();
-        if (this.guestId) {
-            this.validateGuest(this.guestId);
+        
+        // Verificar si accedió a través de la ruta secreta del organizador
+        const routeDataAdmin = this.route.snapshot.data['isAdmin'];
+        if (routeDataAdmin === true) {
+            sessionStorage.setItem('isEventAdmin', 'true');
+        }
+
+        // Comprobar si tiene el permiso administrativo guardado en sessionStorage o Firebase
+        const isSessionAdmin = sessionStorage.getItem('isEventAdmin') === 'true';
+
+        if (isSessionAdmin) {
+            this.isUserAuthenticated = true;
+            this.loadAllGuests();
+            this.loadFamilies();
+            
+            if (this.guestId) {
+                this.validateGuest(this.guestId);
+            } else {
+                this.prepareManualValidation();
+            }
         } else {
-            this.prepareManualValidation();
+            // Si no es administrador por sesión, verificar de forma reactiva si el organizador ha iniciado sesión
+            this.authService.authState$.pipe(take(1)).subscribe({
+                next: (user) => {
+                    this.isUserAuthenticated = !!user;
+
+                    if (this.isUserAuthenticated) {
+                        this.loadAllGuests();
+                        this.loadFamilies();
+                    }
+                    
+                    if (this.guestId) {
+                        this.validateGuest(this.guestId);
+                    } else {
+                        this.prepareManualValidation();
+                    }
+                }
+            });
         }
     }
 
@@ -50,6 +94,19 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
             next: (guests) => {
                 this.allGuests = guests;
                 console.log('Total guests loaded for search:', guests.length);
+            }
+        });
+    }
+
+    loadFamilies() {
+        this.weddingService.getFamilies().subscribe({
+            next: (families) => {
+                families.forEach(f => {
+                    if (f.id) {
+                        this.familiesMap[f.id] = f.familyName;
+                    }
+                });
+                console.log('Families loaded mapping:', Object.keys(this.familiesMap).length);
             }
         });
     }
@@ -176,6 +233,9 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
         if (data.includes('/validate/')) {
             const parts = data.split('/validate/');
             id = parts[parts.length - 1];
+        } else if (data.includes('/ticket/')) {
+            const parts = data.split('/ticket/');
+            id = parts[parts.length - 1];
         }
 
         this.validateGuest(id.trim());
@@ -207,12 +267,12 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
         this.statusMessage = 'Verificando...';
         this.familyName = '';
 
-        this.weddingService.getGuestById(id).subscribe({
+        this.weddingService.getGuestById(id).pipe(take(1)).subscribe({
             next: (guest) => {
                 if (guest) {
                     this.guest = guest;
 
-                    this.weddingService.getFamilyById(guest.familyId).subscribe({
+                    this.weddingService.getFamilyById(guest.familyId).pipe(take(1)).subscribe({
                         next: (family) => {
                             if (family) {
                                 this.familyName = family.familyName;
@@ -221,7 +281,23 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
                     });
 
                     if (guest.confirmed && guest.attending) {
-                        this.setValid();
+                        if (this.isUserAuthenticated) {
+                            if (guest.checkedIn) {
+                                this.setInvalid('El invitado ya ingresó al salón.');
+                                this.statusIcon = 'assignment_turned_in';
+                                this.statusColor = '#f44336';
+                            } else {
+                                this.registerIngress(guest);
+                            }
+                        } else {
+                            if (guest.checkedIn) {
+                                this.setInvalid('Este boleto de entrada ya fue registrado.');
+                                this.statusIcon = 'assignment_turned_in';
+                                this.statusColor = '#f44336';
+                            } else {
+                                this.setValidGuestView(guest);
+                            }
+                        }
                     } else if (guest.confirmed && !guest.attending) {
                         this.setInvalid('El invitado declinó la asistencia.');
                         this.statusIcon = 'cancel';
@@ -240,6 +316,68 @@ export class GuestValidationComponent implements OnInit, OnDestroy, AfterViewIni
                 this.isLoading = false;
             }
         });
+    }
+
+    registerIngress(guest: Guest) {
+        if (!guest.id) return;
+        this.isLoading = true;
+        this.weddingService.updateGuest(guest.id, { checkedIn: true }).then(() => {
+            guest.checkedIn = true;
+            this.setValid();
+            this.isLoading = false;
+        }).catch(err => {
+            console.error('Error al registrar ingreso:', err);
+            this.setInvalid('Error al registrar el ingreso.');
+            this.isLoading = false;
+        });
+    }
+
+    setValidGuestView(guest: Guest) {
+        this.isValid = true;
+        this.statusMessage = 'BOLETO DE ENTRADA VÁLIDO';
+        this.statusIcon = 'confirmation_number';
+        this.statusColor = '#DAA520';
+    }
+
+    registerManualIngress(guest: Guest) {
+        if (!guest.id || guest.checkedIn) return;
+        this.weddingService.updateGuest(guest.id, { checkedIn: true }).then(() => {
+            guest.checkedIn = true;
+            console.log(`Ingreso manual registrado para ${guest.name}`);
+        }).catch(err => {
+            console.error('Error al registrar ingreso manual:', err);
+        });
+    }
+
+    get filteredListGuests(): Guest[] {
+        return this.allGuests.filter(guest => {
+            const matchesSearch = guest.name.toLowerCase().includes(this.listSearchTerm.toLowerCase()) ||
+                (guest.familyId && this.familiesMap[guest.familyId] && this.familiesMap[guest.familyId].toLowerCase().includes(this.listSearchTerm.toLowerCase()));
+
+            let matchesStatus = true;
+            if (this.filterStatus === 'inside') {
+                matchesStatus = !!guest.checkedIn;
+            } else if (this.filterStatus === 'pending') {
+                matchesStatus = !guest.checkedIn;
+            }
+
+            return matchesSearch && matchesStatus;
+        }).sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    get insideCount(): number {
+        return this.allGuests.filter(g => g.checkedIn).length;
+    }
+
+    get percentageInside(): number {
+        if (this.allGuests.length === 0) return 0;
+        const totalWithConfirm = this.allGuests.filter(g => g.confirmed && g.attending).length;
+        if (totalWithConfirm === 0) return 0;
+        return Math.round((this.insideCount / totalWithConfirm) * 100);
+    }
+
+    get totalConfirmedAttending(): number {
+        return this.allGuests.filter(g => g.confirmed && g.attending).length;
     }
 
     setValid() {

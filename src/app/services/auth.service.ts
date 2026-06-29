@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   User,
+  user,
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 
@@ -12,7 +13,11 @@ import { from, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  authState$: Observable<User | null>;
+
+  constructor(private auth: Auth) {
+    this.authState$ = user(this.auth);
+  }
 
   // Registro
   register(email: string, password: string): Observable<User> {

@@ -1,125 +1,339 @@
-<div class="validation-container">
-    <div class="validation-card shadow-lg">
-        <!-- Header -->
-        <div class="header">
-            <h2 class="title">Boda Daniela & John</h2>
-            <div class="date-badge">15.08.2026</div>
+<div class="validation-container" [class.unauthenticated]="!isUserAuthenticated">
+
+    <!-- ────────────────────────────────────────────────── -->
+    <!-- VISTA INVITADO (NO AUTENTICADO / MODO TICKET)       -->
+    <!-- ────────────────────────────────────────────────── -->
+    <div *ngIf="!isUserAuthenticated" class="ticket-wrapper">
+        
+        <!-- Estado de carga -->
+        <div class="loading-state" *ngIf="isLoading">
+            <div class="spinner-ring"></div>
+            <p>Verificando tu entrada...</p>
         </div>
 
-        <!-- Content -->
-        <div class="content">
-            <!-- Loading -->
-            <div *ngIf="isLoading" class="loader text-center">
-                <div class="spinner-border text-gold" role="status"></div>
-                <p class="mt-2">Verificando...</p>
+        <!-- Sin ID de Invitado en la URL -->
+        <div class="ticket-container not-found" *ngIf="!isLoading && !guest && !guestId">
+            <div class="ticket-seal invalid">
+                <i class="material-icons">qr_code_scanner</i>
+            </div>
+            <h2 class="ticket-title invalid-title">Pase de Entrada</h2>
+            <p class="ticket-subtitle">Por favor escanea el código QR de tu invitación digital para visualizar los detalles de tu boleto.</p>
+            <div class="ticket-instruction mt-3">
+                <i class="material-icons">info_outline</i>
+                <p>El registro de ingreso físico debe ser realizado por el personal organizador en la recepción del salón.</p>
+            </div>
+        </div>
+
+        <!-- Invitado NO encontrado -->
+        <div class="ticket-container not-found" *ngIf="!isLoading && !guest && guestId">
+            <div class="ticket-seal invalid">
+                <i class="material-icons">error_outline</i>
+            </div>
+            <h2 class="ticket-title invalid-title">Entrada No Válida</h2>
+            <p class="ticket-subtitle">Este código QR no corresponde a ningún invitado registrado.</p>
+            <p class="ticket-hint">Por favor contacta a los organizadores del evento.</p>
+        </div>
+
+        <!-- Invitado Encontrado / Detalle del Boleto -->
+        <div class="ticket-container found" *ngIf="!isLoading && guest">
+            
+            <!-- Encabezado decorativo -->
+            <div class="ticket-header">
+                <div class="ticket-ornament">❧</div>
+                <p class="ticket-event-label">Boda</p>
+                <h1 class="ticket-couple">Daniela &amp; John David</h1>
+                <p class="ticket-date-label">15 · Agosto · 2026</p>
+                <div class="ticket-ornament">❧</div>
             </div>
 
-            <!-- Manual/Camera Selection Mode -->
-            <div *ngIf="!isLoading && !isScanning && !guest" class="action-selection text-center fade-in">
-                <div class="status-icon" [style.color]="statusColor">
-                    <i class="material-icons">{{ statusIcon }}</i>
-                </div>
-                <h3 class="status-title" [style.color]="statusColor === '#f44336' ? '#f44336' : '#5D4037'">
-                    {{ statusMessage }}
-                </h3>
+            <!-- Separador de boleto -->
+            <div class="ticket-perforation">
+                <span class="perf-circle left"></span>
+                <div class="perf-line"></div>
+                <span class="perf-circle right"></span>
+            </div>
 
-                <!-- Mostrar ayuda si hay error de cámara -->
-                <div *ngIf="statusColor === '#f44336'" class="alert-camera-error mt-2">
-                    <small>💡 Tip: Verifica los permisos de cámara en tu navegador</small>
-                </div>
-
-                <div class="row g-2 mt-3" *ngIf="!isSearchingByName">
-                    <div class="col-6">
-                        <button class="btn btn-primary-gold w-100 h-100" (click)="startScanner()">
-                            <i class="material-icons d-block">photo_camera</i> ESCANEAR QR
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <button class="btn btn-primary-gold w-100 h-100" (click)="toggleNameSearch()">
-                            <i class="material-icons d-block">person_search</i> BUSCAR NOMBRE
-                        </button>
-                    </div>
+            <!-- Cuerpo del boleto -->
+            <div class="ticket-body">
+                <!-- Sello de validez -->
+                <div class="ticket-seal" [class.valid]="isValid" [class.invalid]="!isValid" [class.already-in]="guest.checkedIn">
+                    <i class="material-icons">{{ guest.checkedIn ? 'verified' : (isValid ? 'check_circle' : 'error_outline') }}</i>
                 </div>
 
-                <!-- Búsqueda por Nombre -->
-                <div *ngIf="isSearchingByName" class="name-search-container fade-in mt-3">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="material-icons text-gold">search</i>
-                        </span>
-                        <input type="text" class="form-control border-start-0 ps-0" [(ngModel)]="searchTerm"
-                            (input)="onSearchInput()" placeholder="Escribe nombre del invitado...">
-                        <button class="btn btn-outline-secondary" (click)="toggleNameSearch()">
-                            <i class="material-icons" style="font-size: 1.2rem;">close</i>
-                        </button>
+                <!-- Estado -->
+                <div class="ticket-status-badge" [class.checked-in]="guest.checkedIn" [class.invalid-badge]="!isValid">
+                    {{ guest.checkedIn ? '¡YA INGRESASTE!' : (isValid ? 'ENTRADA VÁLIDA' : 'NO VÁLIDO') }}
+                </div>
+
+                <!-- Mensaje de error/estado si no es válido -->
+                <p *ngIf="!isValid" class="ticket-error-msg">{{ statusMessage }}</p>
+
+                <!-- Nombre del invitado -->
+                <p class="ticket-guest-label">Invitado</p>
+                <h2 class="ticket-guest-name">{{ guest.name }}</h2>
+
+                <!-- Familia -->
+                <p class="ticket-family-label" *ngIf="familyName">
+                    <i class="material-icons" style="font-size:14px; vertical-align: middle;">group</i>
+                    Familia {{ familyName }}
+                </p>
+
+                <!-- Instrucción principal -->
+                <div class="ticket-instruction" [class.instruction-used]="guest.checkedIn">
+                    <i class="material-icons">{{ guest.checkedIn ? 'info_outline' : 'touch_app' }}</i>
+                    <p *ngIf="!guest.checkedIn && isValid">
+                        Presenta esta pantalla al personal de recepción para registrar tu ingreso al salón.
+                    </p>
+                    <p *ngIf="guest.checkedIn">
+                        Tu ingreso ya fue registrado. ¡Disfruta la celebración!
+                    </p>
+                    <p *ngIf="!isValid">
+                        Comunícate con el organizador en la entrada del salón.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pie del boleto -->
+            <div class="ticket-footer">
+                <div class="ticket-footer-text">
+                    <span>Tu código QR es tu pase de entrada</span>
+                    <span class="ticket-id">ID: {{ guest.id }}</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ────────────────────────────────────────────────── -->
+    <!-- VISTA ADMINISTRADOR (ORGANIZADOR AUTENTICADO)      -->
+    <!-- ────────────────────────────────────────────────── -->
+    <div *ngIf="isUserAuthenticated" class="validation-layout">
+        
+        <!-- Tarjeta de Validación de QR / Manual -->
+        <div class="validation-card shadow-lg">
+            <!-- Header -->
+            <div class="header">
+                <h2 class="title">Boda Daniela & John</h2>
+                <div class="date-badge">15.08.2026</div>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Loading -->
+                <div *ngIf="isLoading" class="loader text-center">
+                    <div class="spinner-border text-gold" role="status"></div>
+                    <p class="mt-2">Verificando...</p>
+                </div>
+
+                <!-- Manual/Camera Selection Mode -->
+                <div *ngIf="!isLoading && !isScanning && !guest" class="action-selection text-center fade-in">
+                    <div class="status-icon" [style.color]="statusColor">
+                        <i class="material-icons">{{ statusIcon }}</i>
+                    </div>
+                    <h3 class="status-title" [style.color]="statusColor === '#f44336' ? '#f44336' : '#5D4037'">
+                        {{ statusMessage }}
+                    </h3>
+
+                    <!-- Mostrar ayuda si hay error de cámara -->
+                    <div *ngIf="statusColor === '#f44336'" class="alert-camera-error mt-2">
+                        <small>💡 Tip: Verifica los permisos de cámara en tu navegador</small>
                     </div>
 
-                    <div *ngIf="filteredGuests.length > 0" class="search-results shadow-sm">
-                        <div *ngFor="let g of filteredGuests" class="search-item" (click)="selectGuestFromSearch(g)">
-                            <div class="search-item-name">{{ g.name }}</div>
-                            <i class="material-icons">chevron_right</i>
+                    <div class="row g-2 mt-3" *ngIf="!isSearchingByName">
+                        <div class="col-6">
+                            <button class="btn btn-primary-gold w-100 h-100" (click)="startScanner()">
+                                <i class="material-icons d-block">photo_camera</i> ESCANEAR QR
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary-gold w-100 h-100" (click)="toggleNameSearch()">
+                                <i class="material-icons d-block">person_search</i> BUSCAR NOMBRE
+                            </button>
                         </div>
                     </div>
-                    <div *ngIf="searchTerm.length >= 2 && filteredGuests.length === 0" class="no-results-small mt-2">
-                        No se encontraron resultados
+
+                    <!-- Búsqueda por Nombre -->
+                    <div *ngIf="isSearchingByName" class="name-search-container fade-in mt-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="material-icons text-gold">search</i>
+                            </span>
+                            <input type="text" class="form-control border-start-0 ps-0" [(ngModel)]="searchTerm"
+                                (input)="onSearchInput()" placeholder="Escribe nombre del invitado...">
+                            <button class="btn btn-outline-secondary" (click)="toggleNameSearch()">
+                                <i class="material-icons" style="font-size: 1.2rem;">close</i>
+                            </button>
+                        </div>
+
+                        <div *ngIf="filteredGuests.length > 0" class="search-results shadow-sm">
+                            <div *ngFor="let g of filteredGuests" class="search-item" (click)="selectGuestFromSearch(g)">
+                                <div class="search-item-name">{{ g.name }}</div>
+                                <i class="material-icons">chevron_right</i>
+                            </div>
+                        </div>
+                        <div *ngIf="searchTerm.length >= 2 && filteredGuests.length === 0" class="no-results-small mt-2">
+                            No se encontraron resultados
+                        </div>
+                    </div>
+
+                    <div class="divider" *ngIf="!isSearchingByName"><span>O INGRESA ID MANUAL</span></div>
+
+                    <div class="form-group" *ngIf="!isSearchingByName">
+                        <input type="text" class="form-control-minimal" [(ngModel)]="enteredId"
+                            placeholder="ID del invitado" (keyup.enter)="onManualSubmit()">
+                        <button class="btn btn-outline-gold w-100 mt-2" (click)="onManualSubmit()">
+                            VALIDAR POR ID
+                        </button>
                     </div>
                 </div>
 
-                <div class="divider" *ngIf="!isSearchingByName"><span>O INGRESA ID MANUAL</span></div>
+                <!-- Camera Scanner Mode -->
+                <div *ngIf="isScanning" class="scanner-wrapper fade-in">
+                    <div id="reader"></div>
+                    <button class="btn btn-outline-danger w-100 mt-3" (click)="stopScanner()">
+                        CANCELAR CÁMARA
+                    </button>
+                </div>
 
-                <div class="form-group" *ngIf="!isSearchingByName">
-                    <input type="text" class="form-control-minimal" [(ngModel)]="enteredId"
-                        placeholder="ID del invitado" (keyup.enter)="onManualSubmit()">
-                    <button class="btn btn-outline-gold w-100 mt-2" (click)="onManualSubmit()">
-                        VALIDAR POR ID
+                <!-- Result Mode -->
+                <div *ngIf="!isLoading && !isManualMode && !isScanning && guest" class="result-view text-center fade-in">
+                    <!-- Status Icon -->
+                    <div class="status-icon-small" [style.color]="statusColor">
+                        <i class="material-icons">{{ statusIcon }}</i>
+                    </div>
+
+                    <h3 class="result-status" [style.color]="statusColor">
+                        {{ isValid ? '¡BIENVENIDO!' : statusMessage }}
+                    </h3>
+
+                    <!-- Guest Info Interface -->
+                    <div class="guest-details-box mt-3" [class.already-in]="guest.checkedIn">
+                        <div class="detail-item">
+                            <span class="detail-label">INVITADO</span>
+                            <div class="detail-value">{{ guest.name }}</div>
+                        </div>
+
+                        <div *ngIf="familyName" class="detail-item">
+                            <div class="detail-value gold-italic">{{ familyName }}</div>
+                        </div>
+
+                        <!-- Badges de estado específicos -->
+                        <div *ngIf="guest.checkedIn" class="status-badge inside mt-2">
+                            <i class="material-icons">done_all</i> YA INGRESÓ AL SALÓN
+                        </div>
+                        <div *ngIf="!guest.checkedIn && guest.confirmed && guest.attending" class="status-badge pending mt-2">
+                            <i class="material-icons">check_circle</i> ASISTENCIA CONFIRMADA
+                        </div>
+                        <div *ngIf="guest.confirmed && !guest.attending" class="status-badge declined mt-2">
+                            <i class="material-icons">cancel</i> DECLINÓ ASISTENCIA
+                        </div>
+                        <div *ngIf="!guest.confirmed" class="status-badge no-rsvp mt-2">
+                            <i class="material-icons">help_outline</i> SIN RSVP
+                        </div>
+
+                        <div class="guest-id-small mt-2">ID: {{ guest.id }}</div>
+                    </div>
+
+                    <button class="btn btn-refresh mt-4" (click)="resetValidation()">
+                        <i class="material-icons">autorenew</i> OTRO INVITADO
                     </button>
                 </div>
             </div>
 
-            <!-- Camera Scanner Mode -->
-            <div *ngIf="isScanning" class="scanner-wrapper fade-in">
-                <div id="reader"></div>
-                <button class="btn btn-outline-danger w-100 mt-3" (click)="stopScanner()">
-                    CANCELAR CÁMARA
-                </button>
+            <div class="footer-simple mt-3 text-center">
+                <small>Sistema de Control de Acceso</small>
             </div>
+        </div>
 
-            <!-- Result Mode -->
-            <div *ngIf="!isLoading && !isManualMode && !isScanning" class="result-view text-center fade-in">
-                <!-- Status Icon -->
-                <div class="status-icon-small" [style.color]="statusColor">
-                    <i class="material-icons">{{ statusIcon }}</i>
-                </div>
-
-                <h3 class="result-status" [style.color]="statusColor">
-                    {{ isValid ? '¡BIENVENIDO!' : statusMessage }}
+        <!-- Tarjeta de Control de Asistencia y Listado Completo -->
+        <div class="assistance-card shadow-lg fade-in">
+            <div class="assistance-header">
+                <h3 class="assistance-title">
+                    <i class="material-icons">people</i> CONTROL DE ASISTENCIA
                 </h3>
+                <p class="assistance-subtitle">Monitoreo de invitados en tiempo real</p>
+            </div>
 
-                <!-- Guest Info Interface -->
-                <div *ngIf="guest" class="guest-details-box mt-3">
-                    <div class="detail-item">
-                        <span class="detail-label">INVITADO</span>
-                        <div class="detail-value">{{ guest.name }}</div>
-                    </div>
+            <!-- Estadísticas -->
+            <div class="stats-container">
+                <div class="stat-main">
+                    <span class="stat-number">{{ insideCount }}</span>
+                    <span class="stat-sep">/</span>
+                    <span class="stat-total">{{ totalConfirmedAttending }}</span>
+                </div>
+                <div class="stat-text">
+                    <span class="stat-label">Invitados adentro</span>
+                    <span class="stat-percentage">{{ percentageInside }}% de asistencia confirmada</span>
+                </div>
+            </div>
 
-                    <div *ngIf="familyName" class="detail-item">
-                        <div class="detail-value gold-italic">{{ familyName }}</div>
-                    </div>
+            <!-- Barra de Progreso Lineal -->
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" [style.width.%]="percentageInside"></div>
+            </div>
 
-                    <div *ngIf="isValid" class="access-tag mt-2">
-                        <i class="material-icons">done</i> ASISTENCIA CONFIRMADA
-                    </div>
-                    <div class="guest-id-small mt-2">ID: {{ guest.id }}</div>
+            <!-- Buscador y Filtros -->
+            <div class="list-controls mt-3">
+                <div class="input-group input-group-sm mb-3">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="material-icons text-gold">search</i>
+                    </span>
+                    <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar por nombre o familia..." 
+                        [(ngModel)]="listSearchTerm">
+                    <button *ngIf="listSearchTerm" class="btn btn-outline-secondary btn-sm" (click)="listSearchTerm = ''">
+                        <i class="material-icons" style="font-size: 1rem;">close</i>
+                    </button>
                 </div>
 
-                <button class="btn btn-refresh mt-4" (click)="resetValidation()">
-                    <i class="material-icons">autorenew</i> OTRO INVITADO
-                </button>
+                <div class="filter-tabs">
+                    <button class="filter-tab-btn" [class.active]="filterStatus === 'all'" (click)="filterStatus = 'all'">
+                        Todos ({{ allGuests.length }})
+                    </button>
+                    <button class="filter-tab-btn" [class.active]="filterStatus === 'inside'" (click)="filterStatus = 'inside'">
+                        Dentro ({{ insideCount }})
+                    </button>
+                    <button class="filter-tab-btn" [class.active]="filterStatus === 'pending'" (click)="filterStatus = 'pending'">
+                        Faltan ({{ totalConfirmedAttending - insideCount }})
+                    </button>
+                </div>
+            </div>
+
+            <!-- Listado de Invitados con scroll -->
+            <div class="guests-list-scroll mt-2">
+                <div *ngIf="filteredListGuests.length === 0" class="no-guests-found text-center py-4">
+                    <i class="material-icons text-muted">search_off</i>
+                    <p class="mt-2 mb-0">No se encontraron invitados.</p>
+                </div>
+
+                <div *ngFor="let g of filteredListGuests" class="guest-list-row" [class.guest-checked-in]="g.checkedIn">
+                    <div class="guest-list-info">
+                        <div class="guest-list-name">{{ g.name }}</div>
+                        <div class="guest-list-family" *ngIf="g.familyId && familiesMap[g.familyId]">
+                            Familia: {{ familiesMap[g.familyId] }}
+                        </div>
+                    </div>
+                    <div class="guest-list-actions">
+                        <!-- Estado Checked In (Verde) -->
+                        <span *ngIf="g.checkedIn" class="status-pill status-inside">
+                            <i class="material-icons">check_circle</i> Adentro
+                        </span>
+
+                        <!-- Estado Pendiente (Naranja/Gris) -->
+                        <button *ngIf="!g.checkedIn" class="btn-check-in-quick" (click)="registerManualIngress(g)" 
+                            [disabled]="!g.confirmed || !g.attending">
+                            <span *ngIf="g.confirmed && g.attending" class="status-pill status-pending">
+                                <i class="material-icons">login</i> Registrar
+                            </span>
+                            <span *ngIf="!g.confirmed || !g.attending" class="status-pill status-unconfirmed">
+                                <i class="material-icons">block</i> Sin RSVP
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="footer-simple mt-3 text-center">
-            <small>Sistema de Control de Acceso</small>
-        </div>
     </div>
+
 </div>
