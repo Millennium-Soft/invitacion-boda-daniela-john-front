@@ -8,6 +8,8 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  doc,
+  deleteDoc,
 } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
 import { Memory, DriveUploadResponse } from '../models/wedding-data.model';
@@ -148,5 +150,11 @@ export class MemoriesService {
     const memoriesRef = collection(this.firestore, 'memories');
     const q = query(memoriesRef, orderBy('createdAt', 'desc'));
     return collectionData(q, { idField: 'id' }) as Observable<Memory[]>;
+  }
+
+  // Deletes a memory document from Firestore (admin use only)
+  deleteMemory(memoryId: string): Promise<void> {
+    const memoryDocRef = doc(this.firestore, `memories/${memoryId}`);
+    return deleteDoc(memoryDocRef);
   }
 }

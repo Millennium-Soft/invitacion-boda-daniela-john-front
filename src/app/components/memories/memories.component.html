@@ -30,9 +30,9 @@
         <i class="material-icons">add_a_photo</i>
       </div>
 
-      <h2 class="mem-upload-title">Sube un Momento</h2>
+      <h2 class="mem-upload-title">Sube tus Momentos</h2>
       <p class="mem-upload-desc">
-        Tu foto se comprimirá automáticamente y se subirá a nuestra galería privada en Google Drive.
+        Puedes seleccionar <strong>varias fotos a la vez</strong>. Se comprimirán y subirán automáticamente a nuestra galería privada en Google Drive.
       </p>
 
       <!-- Guest autocomplete -->
@@ -95,7 +95,7 @@
         <!-- Selection confirmation message -->
         <p class="mem-ac-confirm-msg" *ngIf="isGuestSelected">
           <i class="material-icons">check</i>
-          ¡Hola, <strong>{{ selectedGuest?.name }}</strong>! Ya puedes subir tu foto.
+          ¡Hola, <strong>{{ selectedGuest?.name }}</strong>! Ya puedes subir tus fotos.
         </p>
         <p class="mem-ac-hint" *ngIf="!isGuestSelected && guestSearchCtrl.value">
           <i class="material-icons">info_outline</i>
@@ -103,14 +103,15 @@
         </p>
       </div>
 
-      <!-- Hidden file input -->
+      <!-- Hidden file input — multiple files enabled -->
       <input
         #photoInput
         type="file"
         accept="image/*"
+        multiple
         class="mem-hidden-input"
         (change)="onPhotoSelected($event)"
-        aria-label="Seleccionar foto desde cámara o galería" />
+        aria-label="Seleccionar una o varias fotos" />
 
       <!-- CTA Button -->
       <button
@@ -120,12 +121,23 @@
         [disabled]="isUploading"
         *ngIf="!isUploading">
         <i class="material-icons">cloud_upload</i>
-        Subir Foto de un Momento
+        Subir Foto(s) del Momento
       </button>
 
-      <!-- Progress indicator -->
+      <!-- Progress indicator — shows queue progress -->
       <div class="mem-progress" *ngIf="isUploading">
         <div class="mem-spinner"></div>
+        <div class="mem-upload-queue-info" *ngIf="totalToUpload > 1">
+          <span class="mem-queue-counter">{{ uploadedCount }} / {{ totalToUpload }}</span>
+          <span class="mem-queue-label">fotos subidas</span>
+          <!-- Mini progress bar -->
+          <div class="mem-queue-bar">
+            <div
+              class="mem-queue-bar-fill"
+              [style.width.%]="(uploadedCount / totalToUpload) * 100">
+            </div>
+          </div>
+        </div>
         <div class="mem-steps">
           <div class="mem-step">
             <div class="mem-step-dot"></div>
@@ -144,7 +156,7 @@
 
       <p class="mem-upload-hint">
         <i class="material-icons">info_outline</i>
-        Abre desde tu celular para tomar una foto directamente.
+        Abre desde tu celular para tomar fotos directamente o elegir varias de tu galería.
       </p>
     </div>
   </section>
@@ -173,31 +185,50 @@
         <p>Sé el primero en compartir un momento especial de este día tan bonito.</p>
       </div>
 
-      <!-- Photo masonry grid -->
-      <div class="mem-grid" *ngIf="memories.length > 0">
-        <div
-          class="mem-card"
-          *ngFor="let memory of memories"
-          (click)="openLightbox(memory)">
-          <div class="mem-card-img-wrap">
-            <img
-              [src]="'https://lh3.googleusercontent.com/d/' + memory.driveId + '=w400'"
-              [alt]="'Foto compartida por ' + memory.guest"
-              class="mem-card-img"
-              loading="lazy" />
-            <div class="mem-card-overlay">
-              <i class="material-icons">zoom_in</i>
+      <!-- Gallery grouped by guest -->
+      <div class="mem-grouped-gallery" *ngIf="memories.length > 0">
+        <div class="mem-guest-group" *ngFor="let group of groupedMemories">
+
+          <!-- Group header -->
+          <div class="mem-group-header">
+            <div class="mem-group-avatar">{{ group.avatar }}</div>
+            <div class="mem-group-info">
+              <span class="mem-group-name">{{ group.guestName }}</span>
+              <span class="mem-group-count">
+                {{ group.memories.length }} {{ group.memories.length === 1 ? 'foto' : 'fotos' }}
+              </span>
+            </div>
+            <i class="material-icons mem-group-icon">photo_library</i>
+          </div>
+
+          <!-- Photos grid for this guest -->
+          <div class="mem-grid">
+            <div
+              class="mem-card"
+              *ngFor="let memory of group.memories"
+              (click)="openLightbox(memory)">
+              <div class="mem-card-img-wrap">
+                <img
+                  [src]="'https://lh3.googleusercontent.com/d/' + memory.driveId + '=w400'"
+                  [alt]="'Foto compartida por ' + memory.guest"
+                  class="mem-card-img"
+                  loading="lazy" />
+                <div class="mem-card-overlay">
+                  <i class="material-icons">zoom_in</i>
+                </div>
+              </div>
+              <div class="mem-card-footer">
+                <span class="mem-card-guest">
+                  <i class="material-icons">favorite</i>
+                  {{ memory.guest }}
+                </span>
+                <span class="mem-card-date" *ngIf="memory.createdAt">
+                  {{ memory.createdAt.toDate() | date:'d MMM' }}
+                </span>
+              </div>
             </div>
           </div>
-          <div class="mem-card-footer">
-            <span class="mem-card-guest">
-              <i class="material-icons">favorite</i>
-              {{ memory.guest }}
-            </span>
-            <span class="mem-card-date" *ngIf="memory.createdAt">
-              {{ memory.createdAt.toDate() | date:'d MMM' }}
-            </span>
-          </div>
+
         </div>
       </div>
 
@@ -239,7 +270,7 @@
       <i class="material-icons">favorite</i>
       {{ lightboxMemory.guest }}
       <span *ngIf="lightboxMemory.createdAt" class="mem-lightbox-date">
-        · {{ lightboxMemory.createdAt.toDate() | date:'d \'de\' MMMM, yyyy' }}
+        · {{ lightboxMemory.createdAt.toDate() | date:"d 'de' MMMM, yyyy" }}
       </span>
     </div>
   </div>

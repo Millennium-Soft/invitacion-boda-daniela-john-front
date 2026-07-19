@@ -94,6 +94,17 @@
   box-shadow: 0 6px 12px rgba(106, 27, 154, 0.2);
 }
 
+.btn-pdf {
+  background-color: #D32F2F;
+  color: #FFFFFF;
+}
+
+.btn-pdf:hover {
+  background-color: #B71C1C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(211, 47, 47, 0.25);
+}
+
 .btn-reset {
   background-color: #DAA520;
   color: #FFFFFF;
@@ -1353,3 +1364,61 @@
     margin-right: 0;
   }
 }
+
+/* Admin: delete button on memory cards */
+.memory-delete-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(211, 47, 47, 0.88);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.22s ease, transform 0.22s ease, background 0.18s;
+  z-index: 10;
+}
+
+.memory-delete-btn .material-icons {
+  font-size: 1.2rem;
+}
+
+.memory-delete-btn:hover {
+  background: #b71c1c;
+  transform: scale(1.1);
+}
+
+/* Reveal delete button on card hover */
+.memory-card:hover .memory-delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Ensure the overlay uses relative/absolute properly */
+.memory-img-wrapper {
+  position: relative;
+}
+
+.memory-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.memory-card:hover .memory-overlay {
+  opacity: 1;
+}
+

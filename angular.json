@@ -34,7 +34,14 @@
               "sweetalert2",
               "qrcode",
               "exceljs",
-              "file-saver"
+              "file-saver",
+              "jspdf",
+              "jspdf-autotable",
+              "html2canvas",
+              "canvg",
+              "rgbcolor",
+              "raf",
+              "core-js"
             ]
           },
           "configurations": {

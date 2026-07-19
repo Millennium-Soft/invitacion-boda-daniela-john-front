@@ -14,6 +14,10 @@
         <i class="material-icons">download</i>
         <span>Exportar Excel</span>
       </button>
+      <button class="btn-action-nav btn-pdf mr-2" (click)="exportTablesPdf()" [disabled]="isLoading" title="Reporte PDF de Mesas y Menú">
+        <i class="material-icons">picture_as_pdf</i>
+        <span>PDF Mesas</span>
+      </button>
       <button class="btn-action-nav btn-reset mr-2" (click)="resetAllCheckedIn()" [disabled]="isLoading" title="Limpiar ingresos al salón (Pruebas)">
         <i class="material-icons">restart_alt</i>
         <span>Limpiar Ingresos</span>
@@ -573,6 +577,14 @@
                   <span class="memory-likes">
                     <i class="material-icons">favorite</i> {{ memory.likes }}
                   </span>
+                  <!-- Admin delete button -->
+                  <button
+                    class="memory-delete-btn"
+                    (click)="deleteMemory(memory)"
+                    title="Eliminar foto"
+                    aria-label="Eliminar foto">
+                    <i class="material-icons">delete</i>
+                  </button>
                 </div>
               </div>
               <div class="memory-card-footer">

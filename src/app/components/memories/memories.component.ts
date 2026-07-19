@@ -7,6 +7,12 @@ import { WeddingDataService } from 'src/app/services/wedding-data.service';
 import { Guest, Memory } from 'src/app/models/wedding-data.model';
 import Swal from 'sweetalert2';
 
+interface GuestGroup {
+  guestName: string;
+  avatar: string;
+  memories: Memory[];
+}
+
 @Component({
   selector: 'app-memories',
   templateUrl: './memories.component.html',
@@ -18,7 +24,14 @@ export class MemoriesComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   memories$!: Observable<Memory[]>;
+  memoriesList: Memory[] = [];
+
   private _isUploading = false;
+
+  // Multi-upload queue state
+  uploadQueue: File[] = [];
+  uploadedCount = 0;
+  totalToUpload = 0;
 
   // Using a getter/setter avoids the Angular [disabled] warning with reactive FormControl
   get isUploading(): boolean { return this._isUploading; }
@@ -47,12 +60,33 @@ export class MemoriesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.memories$ = this.memoriesService.getMemories();
+    // Keep a local copy so the grouped getter can work synchronously
+    this.memories$.pipe(takeUntil(this.destroy$)).subscribe((m) => {
+      this.memoriesList = m;
+    });
     this.loadGuests();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // Groups memories by guest name, sorted by the most recent upload
+  get groupedMemories(): GuestGroup[] {
+    const map = new Map<string, Memory[]>();
+    for (const mem of this.memoriesList) {
+      const key = mem.guest ?? 'Invitado';
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(mem);
+    }
+    return Array.from(map.entries())
+      .map(([guestName, memories]) => ({
+        guestName,
+        avatar: guestName.charAt(0).toUpperCase(),
+        memories,
+      }))
+      .sort((a, b) => a.guestName.localeCompare(b.guestName));
   }
 
   private loadGuests(): void {
@@ -127,28 +161,47 @@ export class MemoriesComponent implements OnInit, OnDestroy {
     if (!input.files || input.files.length === 0) return;
     if (!this.selectedGuest) return;
 
-    const file = input.files[0];
+    // Build queue from all selected files
+    this.uploadQueue = Array.from(input.files);
+    this.totalToUpload = this.uploadQueue.length;
+    this.uploadedCount = 0;
     input.value = '';
 
+    this.processNextInQueue();
+  }
+
+  private processNextInQueue(): void {
+    if (this.uploadQueue.length === 0) {
+      // All files processed
+      this.setUploading(false);
+      const total = this.totalToUpload;
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: total === 1
+          ? '¡Momento compartido! 📸'
+          : `¡${total} momentos compartidos! 📸`,
+        showConfirmButton: false,
+        timer: 3500,
+      });
+      return;
+    }
+
+    const file = this.uploadQueue.shift()!;
     this.setUploading(true);
 
     this.memoriesService
-      .uploadPhoto(file, this.selectedGuest.name)
+      .uploadPhoto(file, this.selectedGuest!.name)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          this.setUploading(false);
-          Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: '¡Momento compartido! 📸',
-            showConfirmButton: false,
-            timer: 3500,
-          });
+          this.uploadedCount++;
+          this.processNextInQueue();
         },
         error: (err) => {
           this.setUploading(false);
+          this.uploadQueue = [];
           console.error('Error uploading memory:', err);
           Swal.fire({
             icon: 'error',
@@ -170,4 +223,3 @@ export class MemoriesComponent implements OnInit, OnDestroy {
     document.body.style.overflow = 'auto';
   }
 }
-

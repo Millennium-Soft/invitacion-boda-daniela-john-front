@@ -882,6 +882,130 @@
 }
 
 /* =============================================
+   MULTI-UPLOAD QUEUE PROGRESS
+   ============================================= */
+.mem-upload-queue-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.mem-queue-counter {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--plum);
+  line-height: 1;
+}
+
+.mem-queue-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mem-queue-bar {
+  width: 100%;
+  max-width: 240px;
+  height: 6px;
+  background: var(--plum-light);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.mem-queue-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--plum), var(--gold));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* =============================================
+   GROUPED GALLERY
+   ============================================= */
+.mem-grouped-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 0 1rem;
+}
+
+.mem-guest-group {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid rgba(106, 27, 154, 0.07);
+  transition: var(--transition);
+}
+
+.mem-guest-group:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.mem-group-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, var(--plum-light) 0%, rgba(253, 246, 220, 0.6) 100%);
+  border-bottom: 1px solid rgba(106, 27, 154, 0.1);
+}
+
+.mem-group-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--plum), var(--plum-dark));
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(106, 27, 154, 0.25);
+}
+
+.mem-group-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.mem-group-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--plum-dark);
+  line-height: 1.2;
+}
+
+.mem-group-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.mem-group-icon {
+  color: var(--gold);
+  font-size: 1.4rem;
+  opacity: 0.8;
+}
+
+/* Grid inside a group */
+.mem-guest-group .mem-grid {
+  padding: 1.25rem;
+}
+
+/* =============================================
    RESPONSIVE
    ============================================= */
 @media (max-width: 640px) {
@@ -910,5 +1034,17 @@
 
   .mem-lightbox-inner {
     max-width: 98vw;
+  }
+
+  .mem-grouped-gallery {
+    padding: 0 0.5rem;
+  }
+
+  .mem-group-header {
+    padding: 0.9rem 1rem;
+  }
+
+  .mem-guest-group .mem-grid {
+    padding: 0.75rem;
   }
 }

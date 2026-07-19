@@ -3,12 +3,21 @@ import { Router } from '@angular/router';
 import { WeddingDataService } from 'src/app/services/wedding-data.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { MemoriesService } from 'src/app/services/memories.service';
-import { Family, Guest, Memory, Rsvp } from 'src/app/models/wedding-data.model';
+import { Family, Guest, Memory, Rsvp, SeatingTable } from 'src/app/models/wedding-data.model';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+// Guests who have a special beef menu
+const BEEF_MENU_GUESTS: string[] = [
+  'ANDRÉS ANAYA ISAZA',
+  'DANIELA ALARCÓN SEPULVEDA',
+  'DIEGO ANDRÉS CARVAJAL RUIZ'
+];
 
 interface DashboardStats {
   totalFamiliesInvited: number;
@@ -37,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   families: Family[] = [];
   guests: Guest[] = [];
   rsvps: Rsvp[] = [];
+  tables: SeatingTable[] = [];
 
   // Filtered lists
   filteredGuests: Guest[] = [];
@@ -81,6 +91,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadData();
     this.memories$ = this.memoriesService.getMemories();
+    this.weddingService.getTables()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(tables => { this.tables = tables || []; });
   }
 
   ngOnDestroy(): void {
@@ -574,6 +587,201 @@ export class DashboardComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/login']);
+    });
+  }
+
+  // Deletes a memory photo with admin confirmation
+  async deleteMemory(memory: Memory): Promise<void> {
+    if (!memory.id) return;
+
+    const result = await Swal.fire({
+      title: '¿Eliminar foto?',
+      html: `¿Deseas eliminar la foto de <strong>${memory.guest}</strong>? Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#888',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await this.memoriesService.deleteMemory(memory.id);
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Foto eliminada',
+        showConfirmButton: false,
+        timer: 2500
+      });
+    } catch (err) {
+      console.error('Error deleting memory:', err);
+      Swal.fire('Error', 'No se pudo eliminar la foto.', 'error');
+    }
+  }
+
+  // Checks if a guest name is in the beef menu special list
+  private isBeefMenuGuest(name: string): boolean {
+    const normalized = name.trim().toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return BEEF_MENU_GUESTS.some(b => {
+      const bNorm = b.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return normalized === bNorm;
+    });
+  }
+
+  // Generates and downloads a PDF with tables, guests and menu type
+  exportTablesPdf(): void {
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const margin = 14;
+
+    // ── Header ──────────────────────────────────────────────────────────────────
+    pdf.setFillColor(106, 27, 154); // plum
+    pdf.rect(0, 0, pageW, 32, 'F');
+
+    pdf.setTextColor(218, 165, 32); // gold
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(18);
+    pdf.text('Daniela & John David', pageW / 2, 12, { align: 'center' });
+
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.text('Distribución de Mesas y Menú — 15 de Agosto de 2026', pageW / 2, 21, { align: 'center' });
+
+    pdf.setFontSize(8);
+    pdf.text(`Generado el ${new Date().toLocaleDateString('es-CO', { dateStyle: 'long' })}`, pageW / 2, 28, { align: 'center' });
+
+    // ── Legend ──────────────────────────────────────────────────────────────────
+    let cursorY = 40;
+    pdf.setTextColor(60, 60, 60);
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(8.5);
+    pdf.setFillColor(255, 235, 238);
+    pdf.roundedRect(margin, cursorY - 4, pageW - margin * 2, 9, 2, 2, 'F');
+    pdf.setTextColor(180, 0, 0);
+    pdf.text(
+      '* Los invitados resaltados en rojo tienen menú especial con Carne de Res.',
+      margin + 3, cursorY + 2
+    );
+    cursorY += 12;
+
+    const sortedTables = [...this.tables].sort((a, b) => a.name.localeCompare(b.name));
+
+    if (sortedTables.length === 0) {
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.text('No hay mesas configuradas aún.', pageW / 2, cursorY + 20, { align: 'center' });
+    }
+
+    for (const table of sortedTables) {
+      // Collect guests seated at this table using the seat ID as the lookup key
+      const seatedGuests: Guest[] = (table.seats || [])
+        .filter((s): s is string => !!s && s.trim() !== '')
+        .map(id => this.guests.find(g => g.id === id))
+        .filter((g): g is Guest => g !== undefined);
+
+      // Sort by familyId so companions from the same family appear together
+      seatedGuests.sort((a, b) => {
+        const famCmp = a.familyId.localeCompare(b.familyId);
+        if (famCmp !== 0) return famCmp;
+        return a.name.localeCompare(b.name);
+      });
+
+      // ── Table title ──
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(11);
+      pdf.setTextColor(106, 27, 154);
+      const occupiedSeats = (table.seats || []).filter((s): s is string => !!s && s.trim() !== '').length;
+      const tableLabel = `Mesa: ${table.name}  (${occupiedSeats} / ${table.capacity} asientos)`;
+      pdf.text(tableLabel, margin, cursorY);
+      cursorY += 2;
+
+      // ── Build rows ──
+      const bodyRows: (string | { content: string; styles: object })[][] = [];
+
+      if (seatedGuests.length === 0) {
+        bodyRows.push([{
+          content: 'Sin invitados asignados',
+          styles: { textColor: [150, 150, 150], fontStyle: 'italic', halign: 'center', colSpan: 4 } as object
+        }]);
+      } else {
+        seatedGuests.forEach(g => {
+          const isBeef = this.isBeefMenuGuest(g.name);
+          // Mirror the seating chart logic: infer menu from gender when menuType is not set
+          const effectiveMenu = g.menuType || (g.gender === 'N' ? 'nino' : 'adulto');
+          const menuLabel = effectiveMenu === 'nino' ? 'Niño' : 'Adulto';
+          const observation = isBeef ? '* Carne de Res' : '';
+          const familyName = this.getFamilyName(g.familyId);
+
+          if (isBeef) {
+            bodyRows.push([
+              { content: g.name, styles: { textColor: [180, 0, 0], fontStyle: 'bold' } },
+              { content: familyName, styles: { textColor: [180, 0, 0] } },
+              { content: menuLabel, styles: { textColor: [180, 0, 0], fontStyle: 'bold', halign: 'center' } },
+              { content: observation, styles: { textColor: [180, 0, 0], fontStyle: 'bold', fillColor: [255, 235, 238], halign: 'center' } }
+            ]);
+          } else {
+            bodyRows.push([g.name, familyName, menuLabel, observation]);
+          }
+        });
+      }
+
+      autoTable(pdf, {
+        startY: cursorY + 1,
+        head: [['Nombre del Invitado', 'Familia', 'Tipo de Menú', 'Observación']],
+        body: bodyRows as any,
+        theme: 'grid',
+        headStyles: {
+          fillColor: [106, 27, 154],
+          textColor: 255,
+          fontStyle: 'bold',
+          fontSize: 9,
+          halign: 'center'
+        },
+        bodyStyles: { fontSize: 9, textColor: [40, 40, 40] },
+        columnStyles: {
+          0: { cellWidth: 65 },
+          1: { cellWidth: 50 },
+          2: { cellWidth: 25, halign: 'center' },
+          3: { cellWidth: 38, halign: 'center' }
+        },
+        margin: { left: margin, right: margin },
+        alternateRowStyles: { fillColor: [245, 237, 248] },
+        didDrawPage: (data: any) => {
+          // Page footer
+          const footerY = pdf.internal.pageSize.getHeight() - 8;
+          pdf.setFont('helvetica', 'italic');
+          pdf.setFontSize(7);
+          pdf.setTextColor(180, 180, 180);
+          pdf.text('Boda Daniela & John David — 15 Agosto 2026', pageW / 2, footerY, { align: 'center' });
+          pdf.text(`Pág. ${(pdf as any).internal.getCurrentPageInfo().pageNumber}`, pageW - margin, footerY, { align: 'right' });
+        }
+      });
+
+      cursorY = (pdf as any).lastAutoTable.finalY + 10;
+
+      // New page if near the bottom
+      if (cursorY > pdf.internal.pageSize.getHeight() - 40) {
+        pdf.addPage();
+        cursorY = 20;
+      }
+    }
+
+    pdf.save(`Mesas_Boda_Daniela_John_${new Date().toISOString().split('T')[0]}.pdf`);
+
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: '¡PDF generado exitosamente!',
+      showConfirmButton: false,
+      timer: 3000
     });
   }
 
