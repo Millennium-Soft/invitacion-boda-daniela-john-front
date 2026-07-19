@@ -1,0 +1,246 @@
+<!-- Floating petals background -->
+<div class="petals-bg" aria-hidden="true">
+  <span class="petal" *ngFor="let p of [1,2,3,4,5,6,7,8,9,10]"></span>
+</div>
+
+<div class="memories-page">
+
+  <!-- ====== HERO HEADER ====== -->
+  <header class="mem-header">
+    <div class="mem-header-inner">
+      <div class="mem-monogram">D &amp; J</div>
+      <h1 class="mem-headline">Nuestros Momentos</h1>
+      <p class="mem-tagline">
+        Comparte las fotos más especiales de nuestra boda.<br>
+        Cada imagen queda guardada para siempre en nuestra galería.
+      </p>
+      <div class="mem-date-badge">
+        <i class="material-icons">favorite</i>
+        15 · Agosto · 2026
+        <i class="material-icons">favorite</i>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== UPLOAD SECTION ====== -->
+  <section class="mem-upload-section">
+    <div class="mem-upload-card">
+
+      <div class="mem-upload-icon-wrap">
+        <i class="material-icons">add_a_photo</i>
+      </div>
+
+      <h2 class="mem-upload-title">Sube un Momento</h2>
+      <p class="mem-upload-desc">
+        Tu foto se comprimirá automáticamente y se subirá a nuestra galería privada en Google Drive.
+      </p>
+
+      <!-- Guest autocomplete -->
+      <div class="mem-field">
+        <label class="mem-field-label" for="guestSearchField">
+          <i class="material-icons">person_search</i> Busca tu nombre
+        </label>
+
+        <div class="mem-autocomplete-wrap" [class.mem-autocomplete-selected]="isGuestSelected">
+          <i class="material-icons mem-ac-icon-left">search</i>
+
+          <input
+            id="guestSearchField"
+            type="text"
+            class="mem-input mem-input-ac"
+            placeholder="Escribe tu nombre para buscarte…"
+            [formControl]="guestSearchCtrl"
+            [matAutocomplete]="guestAc"
+            (input)="onInputChange()"
+            autocomplete="off" />
+
+          <!-- Clear button (shown when something is typed) -->
+          <button
+            *ngIf="guestSearchCtrl.value"
+            class="mem-ac-clear-btn"
+            type="button"
+            (click)="clearSelection()"
+            aria-label="Limpiar selección">
+            <i class="material-icons">close</i>
+          </button>
+
+          <!-- Confirmed checkmark badge -->
+          <div class="mem-ac-confirmed-badge" *ngIf="isGuestSelected">
+            <i class="material-icons">check_circle</i>
+          </div>
+
+          <mat-autocomplete
+            #guestAc="matAutocomplete"
+            class="mem-ac-panel"
+            (optionSelected)="onGuestSelected($event.option.value)">
+            <mat-option
+              *ngFor="let guest of filteredGuests$ | async"
+              [value]="guest"
+              class="mem-ac-option">
+              <div class="mem-ac-option-inner">
+                <div class="mem-ac-avatar">{{ guest.name.charAt(0) }}</div>
+                <span>{{ guest.name }}</span>
+              </div>
+            </mat-option>
+            <!-- Empty state inside dropdown -->
+            <mat-option disabled *ngIf="(filteredGuests$ | async)?.length === 0" class="mem-ac-empty-opt">
+              <span class="mem-ac-no-results">
+                <i class="material-icons">sentiment_dissatisfied</i>
+                No se encontró ningún invitado
+              </span>
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+
+        <!-- Selection confirmation message -->
+        <p class="mem-ac-confirm-msg" *ngIf="isGuestSelected">
+          <i class="material-icons">check</i>
+          ¡Hola, <strong>{{ selectedGuest?.name }}</strong>! Ya puedes subir tu foto.
+        </p>
+        <p class="mem-ac-hint" *ngIf="!isGuestSelected && guestSearchCtrl.value">
+          <i class="material-icons">info_outline</i>
+          Selecciona tu nombre de la lista desplegable.
+        </p>
+      </div>
+
+      <!-- Hidden file input -->
+      <input
+        #photoInput
+        type="file"
+        accept="image/*"
+        class="mem-hidden-input"
+        (change)="onPhotoSelected($event)"
+        aria-label="Seleccionar foto desde cámara o galería" />
+
+      <!-- CTA Button -->
+      <button
+        id="btnShareMoment"
+        class="mem-btn-upload"
+        (click)="triggerFileInput()"
+        [disabled]="isUploading"
+        *ngIf="!isUploading">
+        <i class="material-icons">cloud_upload</i>
+        Subir Foto de un Momento
+      </button>
+
+      <!-- Progress indicator -->
+      <div class="mem-progress" *ngIf="isUploading">
+        <div class="mem-spinner"></div>
+        <div class="mem-steps">
+          <div class="mem-step">
+            <div class="mem-step-dot"></div>
+            <span>Comprimiendo imagen…</span>
+          </div>
+          <div class="mem-step">
+            <div class="mem-step-dot"></div>
+            <span>Subiendo a Google Drive…</span>
+          </div>
+          <div class="mem-step">
+            <div class="mem-step-dot"></div>
+            <span>Guardando en la galería…</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="mem-upload-hint">
+        <i class="material-icons">info_outline</i>
+        Abre desde tu celular para tomar una foto directamente.
+      </p>
+    </div>
+  </section>
+
+  <!-- ====== DIVIDER ====== -->
+  <div class="mem-divider">
+    <span class="mem-divider-icon">💍</span>
+  </div>
+
+  <!-- ====== GALLERY SECTION ====== -->
+  <section class="mem-gallery-section">
+    <div class="mem-gallery-header">
+      <h2 class="mem-gallery-title">
+        <i class="material-icons">collections</i>
+        Galería de Momentos
+      </h2>
+      <p class="mem-gallery-subtitle">Fotos compartidas por nuestros invitados en tiempo real</p>
+    </div>
+
+    <ng-container *ngIf="memories$ | async as memories">
+
+      <!-- Empty state -->
+      <div class="mem-empty" *ngIf="memories.length === 0">
+        <div class="mem-empty-icon">📷</div>
+        <h3>¡La galería te espera!</h3>
+        <p>Sé el primero en compartir un momento especial de este día tan bonito.</p>
+      </div>
+
+      <!-- Photo masonry grid -->
+      <div class="mem-grid" *ngIf="memories.length > 0">
+        <div
+          class="mem-card"
+          *ngFor="let memory of memories"
+          (click)="openLightbox(memory)">
+          <div class="mem-card-img-wrap">
+            <img
+              [src]="'https://lh3.googleusercontent.com/d/' + memory.driveId + '=w400'"
+              [alt]="'Foto compartida por ' + memory.guest"
+              class="mem-card-img"
+              loading="lazy" />
+            <div class="mem-card-overlay">
+              <i class="material-icons">zoom_in</i>
+            </div>
+          </div>
+          <div class="mem-card-footer">
+            <span class="mem-card-guest">
+              <i class="material-icons">favorite</i>
+              {{ memory.guest }}
+            </span>
+            <span class="mem-card-date" *ngIf="memory.createdAt">
+              {{ memory.createdAt.toDate() | date:'d MMM' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo count badge -->
+      <div class="mem-count-badge" *ngIf="memories.length > 0">
+        <i class="material-icons">photo_library</i>
+        {{ memories.length }} {{ memories.length === 1 ? 'momento compartido' : 'momentos compartidos' }}
+      </div>
+
+    </ng-container>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="mem-footer">
+    <div class="mem-footer-monogram">D &amp; J</div>
+    <p>Con amor · 15 de Agosto de 2026</p>
+    <p class="mem-footer-sub">Gracias por ser parte de este día tan especial</p>
+  </footer>
+
+</div>
+
+<!-- ====== LIGHTBOX ====== -->
+<div
+  class="mem-lightbox"
+  *ngIf="lightboxMemory"
+  (click)="closeLightbox()"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Vista ampliada de la foto">
+  <div class="mem-lightbox-inner" (click)="$event.stopPropagation()">
+    <button class="mem-lightbox-close" (click)="closeLightbox()" aria-label="Cerrar">
+      <i class="material-icons">close</i>
+    </button>
+    <img
+      [src]="'https://lh3.googleusercontent.com/d/' + lightboxMemory.driveId + '=w1200'"
+      [alt]="'Foto de ' + lightboxMemory.guest"
+      class="mem-lightbox-img" />
+    <div class="mem-lightbox-meta">
+      <i class="material-icons">favorite</i>
+      {{ lightboxMemory.guest }}
+      <span *ngIf="lightboxMemory.createdAt" class="mem-lightbox-date">
+        · {{ lightboxMemory.createdAt.toDate() | date:'d \'de\' MMMM, yyyy' }}
+      </span>
+    </div>
+  </div>
+</div>

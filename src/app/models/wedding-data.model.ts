@@ -52,3 +52,16 @@ export interface SeatingTable {
     positionY?: number; // Y coordinate in pixels inside canvas
 }
 
+export interface Memory {
+    id?: string;
+    driveId: string;
+    guest: string;
+    createdAt: Timestamp;
+    likes: number;
+}
+
+export interface DriveUploadResponse {
+    status: 'ok' | 'error';
+    driveId: string;
+    message?: string;
+}

@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { WeddingDataService } from 'src/app/services/wedding-data.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Family, Guest, Rsvp } from 'src/app/models/wedding-data.model';
-import { combineLatest, Subject } from 'rxjs';
+import { MemoriesService } from 'src/app/services/memories.service';
+import { Family, Guest, Memory, Rsvp } from 'src/app/models/wedding-data.model';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 import * as ExcelJS from 'exceljs';
@@ -29,6 +30,7 @@ interface DashboardStats {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('photoInput') photoInput!: ElementRef<HTMLInputElement>;
   private destroy$ = new Subject<void>();
 
   // Data lists
@@ -41,7 +43,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   filteredFamilies: Family[] = [];
 
   // UI state
-  activeTab: 'resumen' | 'invitados' | 'familias' | 'musica' | 'alergias-mensajes' | 'mesas' = 'resumen';
+  activeTab: 'resumen' | 'invitados' | 'familias' | 'musica' | 'alergias-mensajes' | 'mesas' | 'momentos' = 'resumen';
+
+  // Memories (Dots Memories)
+  memories$!: Observable<Memory[]>;
+  isUploadingPhoto = false;
+  guestNameForUpload = '';
   isLoading = true;
 
   // Search & Filter values
@@ -67,14 +74,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private weddingService: WeddingDataService,
     private authService: AuthService,
+    private memoriesService: MemoriesService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    // Check if user is authenticated
-    // If not authenticated, we could redirect, but for this setup we allow access or check.
-    // Let's assume auth is optional or simple. We will support it.
     this.loadData();
+    this.memories$ = this.memoriesService.getMemories();
   }
 
   ngOnDestroy(): void {
@@ -569,5 +575,58 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authService.logout().subscribe(() => {
       this.router.navigate(['/login']);
     });
+  }
+
+  // Opens the hidden file input for photo upload
+  triggerFileInput(): void {
+    this.photoInput?.nativeElement.click();
+  }
+
+  // Handles file selection: validates, compresses, uploads to Drive, saves to Firestore
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    input.value = ''; // Reset input so same file can be re-selected
+
+    const guestName = this.guestNameForUpload.trim();
+    if (!guestName) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Nombre requerido',
+        text: 'Por favor escribe tu nombre antes de subir una foto.',
+        confirmButtonColor: '#6A1B9A',
+      });
+      return;
+    }
+
+    this.isUploadingPhoto = true;
+
+    this.memoriesService.uploadPhoto(file, guestName)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isUploadingPhoto = false;
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '¡Foto subida con éxito! 📸',
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        },
+        error: (err) => {
+          this.isUploadingPhoto = false;
+          console.error('Error uploading memory photo:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al subir la foto',
+            text: 'No se pudo completar la subida. Por favor intenta de nuevo.',
+            confirmButtonColor: '#6A1B9A',
+          });
+        },
+      });
   }
 }

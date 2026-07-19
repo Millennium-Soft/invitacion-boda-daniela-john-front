@@ -18,6 +18,7 @@ import { RsvpComponent } from './components/rsvp/rsvp.component';
 import { GuestValidationComponent } from './components/guest-validation/guest-validation.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { SeatingChartComponent } from './components/seating-chart/seating-chart.component';
+import { MemoriesComponent } from './components/memories/memories.component';
 
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -41,7 +42,8 @@ registerLocaleData(localeEs);
     RsvpComponent,
     GuestValidationComponent,
     DashboardComponent,
-    SeatingChartComponent
+    SeatingChartComponent,
+    MemoriesComponent
   ],
   imports: [
     BrowserModule,

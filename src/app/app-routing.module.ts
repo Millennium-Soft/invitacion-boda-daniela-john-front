@@ -5,6 +5,7 @@ import { InicioComponent } from './components/inicio/inicio.component';
 import { DataRegistrationComponent } from './components/data-registration/data-registration.component';
 import { GuestValidationComponent } from './components/guest-validation/guest-validation.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MemoriesComponent } from './components/memories/memories.component';
 
 const routes: Routes = [
   //COMPONENTES DEL SISTEMA
@@ -17,6 +18,9 @@ const routes: Routes = [
   { path: 'validate/:id', component: GuestValidationComponent },
   { path: 'recepcion-boda-DJ2026', component: GuestValidationComponent, data: { isAdmin: true } },
   { path: 'dashboard', component: DashboardComponent },
+
+  // Public shareable route for guests — share via QR code
+  { path: 'momentos', component: MemoriesComponent },
 
   //REDIRECCIONAMIENTO COMOPONENTE POR DEFECTO PARA RUTAS INEXISTENTES EN EL NAVEGADOR
   { path: '**', component: InicioComponent },

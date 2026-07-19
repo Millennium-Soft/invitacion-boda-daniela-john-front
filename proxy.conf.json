@@ -1,0 +1,11 @@
+{
+  "/drive-upload": {
+    "target": "https://script.google.com",
+    "changeOrigin": true,
+    "secure": true,
+    "pathRewrite": {
+      "^/drive-upload": "/macros/s/AKfycbx4hZAkeBlcKk5YViTppzXfm9Hpr7LwlTmzxSV-dcRj4f5A6j4W5Nt1dUU4ymtdKa-B/exec"
+    },
+    "logLevel": "warn"
+  }
+}

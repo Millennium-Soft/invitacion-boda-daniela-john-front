@@ -118,6 +118,10 @@
         <i class="material-icons">table_restaurant</i>
         <span>Organizar Mesas</span>
       </button>
+      <button class="tab-btn tab-btn-memories" [class.active]="activeTab === 'momentos'" (click)="activeTab = 'momentos'">
+        <i class="material-icons">photo_library</i>
+        <span>Momentos ✨</span>
+      </button>
     </nav>
 
     <!-- TAB: RESUMEN -->
@@ -468,6 +472,122 @@
     <!-- TAB: ORGANIZADOR DE MESAS -->
     <div class="tab-content-panel" *ngIf="activeTab === 'mesas'">
       <app-seating-chart [guests]="guests" [families]="families"></app-seating-chart>
+    </div>
+
+    <!-- TAB: MOMENTOS (Dots Memories) -->
+    <div class="tab-content-panel memories-panel" *ngIf="activeTab === 'momentos'">
+
+      <!-- Section header -->
+      <div class="memories-hero text-center">
+        <h2 class="memories-title">Momentos Especiales</h2>
+        <p class="memories-subtitle">Comparte tus fotos favoritas de la boda con todos los invitados.
+          Las imágenes se guardan directamente en Google Drive.</p>
+      </div>
+
+      <!-- Upload card -->
+      <div class="memories-upload-card">
+        <div class="upload-card-inner">
+          <i class="material-icons upload-icon-hero">add_a_photo</i>
+          <h3 class="upload-card-title">Sube un Momento</h3>
+
+          <!-- Guest name input -->
+          <div class="upload-name-field">
+            <label for="guestNameInput" class="upload-label">
+              <i class="material-icons">person</i> Tu nombre
+            </label>
+            <input
+              id="guestNameInput"
+              type="text"
+              class="upload-name-input"
+              placeholder="¿Cómo te llamas?"
+              [(ngModel)]="guestNameForUpload"
+              [disabled]="isUploadingPhoto" />
+          </div>
+
+          <!-- Hidden file input -->
+          <input
+            #photoInput
+            type="file"
+            accept="image/*"
+            capture="environment"
+            class="photo-file-input"
+            (change)="onPhotoSelected($event)"
+            aria-label="Seleccionar foto para subir" />
+
+          <!-- Upload button / Spinner -->
+          <div class="upload-btn-wrapper" *ngIf="!isUploadingPhoto">
+            <button
+              id="btnUploadPhoto"
+              class="btn-upload-memory"
+              (click)="triggerFileInput()"
+              [disabled]="!guestNameForUpload.trim()">
+              <i class="material-icons">cloud_upload</i>
+              Subir Foto de un Momento
+            </button>
+          </div>
+
+          <!-- Upload progress indicator -->
+          <div class="upload-progress-wrapper" *ngIf="isUploadingPhoto">
+            <div class="upload-steps">
+              <div class="upload-step active">
+                <div class="step-dot"></div>
+                <span>Comprimiendo imagen…</span>
+              </div>
+              <div class="upload-step active">
+                <div class="step-dot"></div>
+                <span>Subiendo a Google Drive…</span>
+              </div>
+              <div class="upload-step active">
+                <div class="step-dot"></div>
+                <span>Guardando referencia…</span>
+              </div>
+            </div>
+            <div class="memories-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery section -->
+      <div class="memories-gallery-section">
+        <h3 class="memories-gallery-title">
+          <i class="material-icons">collections</i> Galería de Momentos
+        </h3>
+
+        <ng-container *ngIf="memories$ | async as memories">
+          <!-- Empty state -->
+          <div class="memories-empty" *ngIf="memories.length === 0">
+            <i class="material-icons">photo_camera</i>
+            <p>Aún no hay fotos. ¡Sé el primero en compartir un momento!</p>
+          </div>
+
+          <!-- Photo grid -->
+          <div class="memories-grid" *ngIf="memories.length > 0">
+            <div class="memory-card" *ngFor="let memory of memories">
+              <div class="memory-img-wrapper">
+                <img
+                  [src]="'https://lh3.googleusercontent.com/d/' + memory.driveId + '=w400'"
+                  [alt]="'Foto subida por ' + memory.guest"
+                  class="memory-img"
+                  loading="lazy" />
+                <div class="memory-overlay">
+                  <span class="memory-likes">
+                    <i class="material-icons">favorite</i> {{ memory.likes }}
+                  </span>
+                </div>
+              </div>
+              <div class="memory-card-footer">
+                <span class="memory-guest-name">
+                  <i class="material-icons">person</i> {{ memory.guest }}
+                </span>
+                <span class="memory-date" *ngIf="memory.createdAt">
+                  {{ memory.createdAt.toDate() | date:'d MMM' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
     </div>
   </div>
 </div>
