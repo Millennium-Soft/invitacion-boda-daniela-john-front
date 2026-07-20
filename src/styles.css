@@ -517,3 +517,478 @@ legend.scheduler-border {
   white-space: pre-wrap;
   /* Modern browsers */
 }
+
+/* ============================================
+   EVENT PLANNER MODULE — Global Style Overrides
+   These bypass ViewEncapsulation to guarantee
+   correct rendering despite global !important rules
+   ============================================ */
+
+.ep-shell {
+  display: block;
+  min-height: 100vh;
+  background: #F8F6F0;
+}
+
+.ep-shell .ep-header {
+  background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 60%, #8E24AA 100%) !important;
+  color: #ffffff !important;
+  padding: 16px 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  box-shadow: 0 4px 20px rgba(106, 27, 154, 0.35) !important;
+  flex-wrap: wrap !important;
+}
+
+.ep-shell .header-title {
+  color: #ffffff !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  margin: 0 !important;
+}
+
+.ep-shell .header-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.ep-shell .header-icon mat-icon {
+  color: #ffffff !important;
+  font-size: 24px !important;
+}
+
+.ep-shell .meta-chip {
+  background: rgba(218, 165, 32, 0.35) !important;
+  border: 1px solid rgba(218, 165, 32, 0.55) !important;
+  color: #FFE082 !important;
+  font-size: 11px !important;
+}
+
+.ep-shell .meta-date,
+.ep-shell .meta-venue,
+.ep-shell .meta-sep {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 12px !important;
+}
+
+.ep-shell .header-btn {
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  height: 34px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+}
+
+.ep-shell .header-btn:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+.ep-shell .header-btn mat-icon {
+  font-size: 16px !important;
+  height: 16px !important;
+  width: 16px !important;
+  color: #ffffff !important;
+}
+
+.ep-shell .add-activity-btn {
+  background: linear-gradient(135deg, #4A148C, #6A1B9A) !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 14px rgba(106, 27, 154, 0.4) !important;
+}
+
+.ep-shell .view-btn.active {
+  background: #6A1B9A !important;
+  color: #ffffff !important;
+}
+
+.ep-shell .view-btn {
+  color: #6A1B9A !important;
+}
+
+/* Nueva Actividad button — override global button styles */
+.ep-shell .add-activity-btn,
+.ep-shell .add-activity-btn.mat-mdc-raised-button,
+.ep-shell button.add-activity-btn {
+  background: linear-gradient(135deg, #4A148C, #6A1B9A) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(106, 27, 154, 0.4) !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+}
+
+.ep-shell .add-activity-btn mat-icon,
+.ep-shell .add-activity-btn .mat-icon {
+  color: #ffffff !important;
+  font-size: 18px !important;
+}
+
+/* View switcher buttons */
+.ep-shell .ep-toolbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid #E0D9C6 !important;
+  padding: 10px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.ep-shell .view-switcher {
+  background: #F3E5F5 !important;
+  border-radius: 10px !important;
+  padding: 3px !important;
+  border: 1px solid rgba(106,27,154,0.2) !important;
+  display: flex !important;
+  gap: 2px !important;
+}
+
+.ep-shell .view-btn {
+  background: transparent !important;
+  color: #6A1B9A !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+.ep-shell .view-btn.active {
+  background: #6A1B9A !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(106,27,154,0.35) !important;
+}
+
+.ep-shell .view-btn mat-icon {
+  font-size: 16px !important;
+  height: 16px !important;
+  width: 16px !important;
+}
+
+/* Search bar */
+.ep-shell .search-wrapper {
+  background: #F3E5F5 !important;
+  border: 1px solid rgba(106,27,154,0.25) !important;
+  border-radius: 10px !important;
+  padding: 6px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ep-shell .search-input {
+  background: transparent !important;
+  border: none !important;
+  font-size: 13px !important;
+  color: #3E2723 !important;
+}
+
+.ep-shell .search-icon {
+  color: #6A1B9A !important;
+}
+
+/* Material MDC button internal label — fixes white text on white button */
+.ep-shell .add-activity-btn .mdc-button__label,
+.ep-shell .add-activity-btn span.mdc-button__label {
+  color: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+
+/* Ensure the raised button ripple surface doesn't hide background */
+.ep-shell .add-activity-btn .mat-mdc-button-persistent-ripple,
+.ep-shell .add-activity-btn .mat-ripple {
+  border-radius: 10px !important;
+}
+
+/* Toolbar stroked buttons (Agregar multimedia, etc.) */
+.ep-shell .mat-mdc-outlined-button,
+.ep-shell [mat-stroked-button] {
+  color: #6A1B9A !important;
+  border-color: rgba(106,27,154,0.4) !important;
+}
+
+/* Dialog save buttons */
+.ep-shell-dialog .mat-mdc-raised-button[color="primary"],
+mat-dialog-container .mat-mdc-raised-button[color="primary"] {
+  background: linear-gradient(135deg, #4A148C, #6A1B9A) !important;
+  color: #ffffff !important;
+}
+
+mat-dialog-container .mat-mdc-raised-button[color="primary"] .mdc-button__label {
+  color: #ffffff !important;
+}
+
+/* ============================================
+   EP DIALOGS — Shared Form Design System
+   ============================================ */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+.ep-dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px 16px;
+  background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 100%);
+  border-bottom: 3px solid #DAA520;
+}
+.ep-dialog-header-media { background: linear-gradient(135deg, #4A148C 0%, #880E4F 100%) !important; }
+.ep-dialog-header-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 22px; color: #FFE082;
+}
+.ep-dialog-title {
+  margin: 0 !important; font-size: 17px !important; font-weight: 800 !important;
+  color: #ffffff !important; font-family: 'Playfair Display', serif !important;
+}
+.ep-dialog-subtitle {
+  margin: 3px 0 0 !important; font-size: 11px !important;
+  color: rgba(255,255,255,0.75) !important; font-family: 'Open Sans', sans-serif !important;
+  display: flex; align-items: center; gap: 5px;
+}
+.ep-dialog-body { padding: 20px 24px !important; max-height: 72vh !important; overflow-y: auto !important; }
+.ep-form { display: flex; flex-direction: column; gap: 14px; }
+.ep-field-row { display: flex; gap: 14px; }
+.ep-field-group { display: flex; flex-direction: column; gap: 5px; }
+.ep-field-full { width: 100%; }
+.ep-field-half { flex: 1; min-width: 0; }
+.ep-label {
+  font-size: 12px !important; font-weight: 700 !important; color: #4A148C !important;
+  font-family: 'Open Sans', sans-serif !important; display: flex; align-items: center; gap: 6px; margin: 0 !important;
+}
+.ep-label i { font-size: 12px; color: #6A1B9A; width: 14px; text-align: center; }
+.ep-required { color: #E91E63; font-size: 13px; }
+.ep-hint-inline { font-size: 10px; font-weight: 400; color: #8D6E63; margin-left: 4px; }
+.ep-input-wrapper {
+  position: relative; width: 100%; border: 1.5px solid #E0D9C6;
+  border-radius: 8px; background: #FDFBF7; transition: border-color 0.2s, box-shadow 0.2s; overflow: hidden;
+}
+.ep-input-wrapper:focus-within { border-color: #6A1B9A; box-shadow: 0 0 0 3px rgba(106,27,154,0.1); }
+.ep-input-wrapper.ep-input-error { border-color: #E91E63 !important; }
+.ep-input {
+  width: 100%; padding: 9px 12px !important; border: none !important; outline: none !important;
+  background: transparent !important; font-size: 13px !important; color: #3E2723 !important;
+  font-family: 'Open Sans', sans-serif !important; box-sizing: border-box;
+}
+.ep-input::placeholder { color: #BCAAA4 !important; }
+.ep-textarea { resize: vertical !important; min-height: 64px; }
+.ep-time-wrapper { display: flex; align-items: center; }
+.ep-input-icon { padding: 0 10px; color: #6A1B9A; font-size: 13px; flex-shrink: 0; }
+.ep-input-with-icon { padding-left: 4px !important; }
+.ep-select-wrapper {
+  position: relative; border: 1.5px solid #E0D9C6; border-radius: 8px; background: #FDFBF7;
+  transition: border-color 0.2s; overflow: hidden;
+}
+.ep-select-wrapper:focus-within { border-color: #6A1B9A; box-shadow: 0 0 0 3px rgba(106,27,154,0.1); }
+.ep-select {
+  width: 100%; padding: 9px 36px 9px 12px !important; border: none !important;
+  outline: none !important; background: transparent !important; font-size: 13px !important;
+  color: #3E2723 !important; font-family: 'Open Sans', sans-serif !important;
+  appearance: none; cursor: pointer;
+}
+.ep-select-chevron {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  color: #6A1B9A; font-size: 12px; pointer-events: none;
+}
+.ep-url-row { display: flex; gap: 8px; align-items: stretch; }
+.ep-url-input { flex: 1; }
+.ep-preview-btn {
+  width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid #6A1B9A;
+  background: #F3E5F5; color: #6A1B9A; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;
+}
+.ep-preview-btn:hover:not([disabled]) { background: #6A1B9A; color: #fff; }
+.ep-preview-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ep-url-hint { font-size: 11px; color: #8D6E63; display: flex; align-items: center; gap: 4px; }
+.ep-hint { font-size: 10px; color: #8D6E63; }
+.ep-error-msg {
+  font-size: 11px !important; color: #E91E63 !important;
+  display: flex; align-items: center; gap: 5px; margin-top: 1px;
+}
+.ep-duration-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #F3E5F5, #EDE7F6);
+  border: 1px solid rgba(106,27,154,0.25); border-radius: 10px;
+  padding: 8px 14px; font-size: 13px; color: #4A148C; font-weight: 600;
+}
+.ep-duration-chip i { color: #6A1B9A; }
+.ep-auto-badge {
+  margin-left: auto; background: #6A1B9A; color: #fff;
+  font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 6px; letter-spacing: 0.08em;
+}
+.ep-alert { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.ep-alert-error { background: #FCE4EC; color: #880E4F; border: 1px solid #F48FB1; }
+.ep-toggle-row { padding: 6px 0; border-top: 1px solid #F3E5F5; margin-top: 4px; }
+.ep-toggle-label { font-size: 12px !important; color: #3E2723 !important; display: flex; align-items: center; gap: 6px; }
+.ep-toggle-label i { color: #4CAF50; }
+.ep-dialog-actions {
+  padding: 12px 24px 16px !important; display: flex !important;
+  justify-content: flex-end !important; gap: 8px !important;
+  border-top: 1px solid #F3E5F5 !important; background: #FDFBF7 !important;
+}
+.ep-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
+  border-radius: 8px; font-size: 12px !important; font-weight: 700 !important;
+  font-family: 'Open Sans', sans-serif !important; cursor: pointer; border: none;
+  transition: all 0.2s ease; height: 36px; white-space: nowrap;
+}
+.ep-btn i { font-size: 12px; }
+.ep-btn-primary {
+  background: linear-gradient(135deg, #4A148C, #6A1B9A) !important;
+  color: #ffffff !important; box-shadow: 0 3px 10px rgba(106,27,154,0.3);
+}
+.ep-btn-primary:hover:not([disabled]) { box-shadow: 0 5px 16px rgba(106,27,154,0.45); transform: translateY(-1px); }
+.ep-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.ep-btn-secondary {
+  background: #E91E63 !important; color: #ffffff !important;
+  box-shadow: 0 3px 8px rgba(233,30,99,0.25);
+}
+.ep-btn-secondary:hover:not([disabled]) { background: #C2185B !important; transform: translateY(-1px); }
+.ep-btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+.ep-btn-ghost {
+  background: transparent !important; color: #6A1B9A !important;
+  border: 1.5px solid rgba(106,27,154,0.35) !important;
+}
+.ep-btn-ghost:hover { background: #F3E5F5 !important; }
+@media (max-width: 520px) {
+  .ep-field-row { flex-direction: column; }
+  .ep-dialog-actions { flex-wrap: wrap; }
+}
+
+/* ============================================
+   EP VIEWS — Icon Buttons (Font Awesome)
+   ============================================ */
+.tv-icon-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 7px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  transition: background 0.15s ease, transform 0.1s ease !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+.tv-icon-btn:hover { transform: translateY(-1px) !important; }
+.tv-icon-btn:active { transform: scale(0.92) !important; }
+
+.tv-btn-add    { color: #4CAF50 !important; }
+.tv-btn-add:hover  { background: rgba(76,175,80,0.12) !important; }
+.tv-btn-edit   { color: #6A1B9A !important; }
+.tv-btn-edit:hover { background: rgba(106,27,154,0.1) !important; }
+.tv-btn-dup    { color: #DAA520 !important; }
+.tv-btn-dup:hover  { background: rgba(218,165,32,0.12) !important; }
+.tv-btn-toggle { color: #6A1B9A !important; font-size: 16px !important; }
+.tv-btn-toggle:hover { background: rgba(106,27,154,0.08) !important; }
+.tv-btn-del    { color: #E91E63 !important; }
+.tv-btn-del:hover  { background: rgba(233,30,99,0.1) !important; }
+.tv-btn-preview { color: #0288D1 !important; }
+.tv-btn-preview:hover { background: rgba(2,136,209,0.12) !important; }
+
+.action-group,
+.media-action-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.tv-add-media-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 12px !important;
+  border-radius: 7px !important;
+  border: 1.5px solid rgba(106,27,154,0.35) !important;
+  background: transparent !important;
+  color: #6A1B9A !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  font-family: 'Open Sans', sans-serif !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.tv-add-media-btn:hover { background: #6A1B9A !important; color: #fff !important; border-color: #6A1B9A !important; }
+.tv-add-media-btn i { font-size: 11px !important; }
+
+.media-expansion-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, #F3E5F5, #EDE7F6);
+  border-bottom: 1px solid rgba(106,27,154,0.15);
+}
+.media-expansion-header span { flex: 1; font-size: 13px; font-weight: 600; color: #4A148C; }
+
+.url-cell { text-align: center; }
+.url-link { color: #6A1B9A; font-size: 13px; }
+.url-link:hover { color: #E91E63; }
+
+.media-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #F3E5F5;
+}
+.media-item:last-child { border-bottom: none; }
+.media-details { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.media-desc-small { font-size: 10px; color: #BCAAA4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.media-actions { display: flex; align-items: center; gap: 1px; flex-shrink: 0; }
+
+.media-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #F3E5F5;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4A148C;
+  user-select: none;
+  transition: background 0.15s;
+}
+.media-section-header:hover { background: #EDE7F6; }
+.media-section-header i { font-size: 12px; color: #6A1B9A; }
+.media-section-header .fa-chevron-up,
+.media-section-header .fa-chevron-down { margin-left: auto; }

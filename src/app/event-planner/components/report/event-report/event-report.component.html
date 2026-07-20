@@ -1,0 +1,194 @@
+<div class="report-wrapper" id="event-report-print">
+
+  <!-- Action Bar (no print) -->
+  <div class="report-action-bar no-print">
+    <div class="action-bar-left">
+      <mat-icon>description</mat-icon>
+      <span>Reporte del Evento</span>
+    </div>
+    <button mat-raised-button (click)="printReport()">
+      <mat-icon>print</mat-icon> Imprimir / Exportar PDF
+    </button>
+  </div>
+
+  <div class="report-content" *ngIf="plan && summary">
+
+    <!-- ===== PORTADA ===== -->
+    <div class="report-cover">
+      <div class="cover-logo">📅</div>
+      <h1 class="cover-title">{{ plan.name }}</h1>
+      <div class="cover-type">{{ plan.eventType }}</div>
+      <div class="cover-meta">
+        <div *ngIf="plan.date" class="cover-meta-item">
+          <mat-icon>calendar_today</mat-icon> {{ eventDateFormatted }}
+        </div>
+        <div *ngIf="plan.venue" class="cover-meta-item">
+          <mat-icon>place</mat-icon> {{ plan.venue }}
+        </div>
+        <div *ngIf="plan.description" class="cover-meta-item">
+          <mat-icon>notes</mat-icon> {{ plan.description }}
+        </div>
+      </div>
+      <div class="cover-generated">
+        Generado el {{ today | date:'dd/MM/yyyy' }} a las {{ today | date:'HH:mm' }}
+      </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===== RESUMEN EJECUTIVO ===== -->
+    <section class="report-section">
+      <div class="section-title">
+        <mat-icon>bar_chart</mat-icon> Resumen Ejecutivo
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-box">
+          <div class="kpi-val">{{ summary.activeActivityCount }}</div>
+          <div class="kpi-lbl">Actividades activas</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ formatDuration(summary.totalScheduledSeconds) }}</div>
+          <div class="kpi-lbl">Duración total del evento</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ summary.totalMediaItems }}</div>
+          <div class="kpi-lbl">Elementos multimedia</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ formatDuration(summary.totalMediaSeconds) }}</div>
+          <div class="kpi-lbl">Tiempo total multimedia</div>
+        </div>
+        <div class="kpi-box kpi-ok">
+          <div class="kpi-val">{{ formatDuration(summary.totalFreeSeconds) }}</div>
+          <div class="kpi-lbl">Tiempo libre total</div>
+        </div>
+        <div class="kpi-box" [class.kpi-warn]="summary.totalExceededSeconds > 0">
+          <div class="kpi-val">{{ formatDuration(summary.totalExceededSeconds) }}</div>
+          <div class="kpi-lbl">Tiempo excedido total</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ summary.musicCount }}</div>
+          <div class="kpi-lbl">Canciones</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ summary.videoCount }}</div>
+          <div class="kpi-lbl">Videos</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">{{ formatDuration(summary.averageMediaDurationSeconds) }}</div>
+          <div class="kpi-lbl">Duración promedio multimedia</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CRONOGRAMA ===== -->
+    <section class="report-section">
+      <div class="section-title">
+        <mat-icon>schedule</mat-icon> Cronograma Completo
+      </div>
+
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hora inicio</th>
+            <th>Hora fin</th>
+            <th>Actividad</th>
+            <th>Duración</th>
+            <th>Multimedia</th>
+            <th>T. Multimedia</th>
+            <th>T. Libre</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let activity of activeActivities">
+            <td class="td-center">{{ activity.order }}</td>
+            <td class="td-mono">{{ activity.startTime || '—' }}</td>
+            <td class="td-mono">{{ activity.endTime || '—' }}</td>
+            <td>
+              <strong>{{ activity.title }}</strong>
+              <small *ngIf="activity.description" class="td-desc">{{ activity.description }}</small>
+            </td>
+            <td class="td-mono">{{ formatDuration(activity.durationSeconds) }}</td>
+            <td class="td-center">{{ activity.mediaItems.length }}</td>
+            <td class="td-mono">{{ formatDuration(getStats(activity.id)?.totalMediaSeconds || 0) }}</td>
+            <td class="td-mono" [class.text-red]="(getStats(activity.id)?.remainingSeconds || 0) < 0">
+              {{ formatDuration(getStats(activity.id)?.remainingSeconds || 0) }}
+            </td>
+            <td>{{ getStatusLabel(activity.id) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== DETALLE POR ACTIVIDAD ===== -->
+    <section class="report-section" *ngFor="let activity of activeActivities">
+      <div class="activity-detail-header">
+        <div class="detail-order">{{ activity.order }}</div>
+        <div class="detail-info">
+          <div class="detail-title">{{ activity.title }}</div>
+          <div class="detail-meta">
+            <span *ngIf="activity.startTime">{{ activity.startTime }} → {{ activity.endTime }}</span>
+            <span> | Duración: {{ formatDuration(activity.durationSeconds) }}</span>
+            <span> | {{ getStatusLabel(activity.id) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <p *ngIf="activity.description" class="detail-desc">{{ activity.description }}</p>
+      <p *ngIf="activity.observations" class="detail-obs">
+        <strong>Observaciones:</strong> {{ activity.observations }}
+      </p>
+
+      <div *ngIf="activity.mediaItems.length > 0">
+        <table class="media-report-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tipo</th>
+              <th>Título</th>
+              <th>Descripción</th>
+              <th>Duración</th>
+              <th>Enlace</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of activity.mediaItems">
+              <td class="td-center">{{ m.order }}</td>
+              <td>{{ m.type }}</td>
+              <td><strong>{{ m.title }}</strong></td>
+              <td>{{ m.description || '—' }}</td>
+              <td class="td-mono"><strong>{{ formatDuration(m.durationSeconds) }}</strong></td>
+              <td>
+                <a *ngIf="m.url" [href]="m.url" target="_blank" class="report-link">Ver enlace</a>
+                <span *ngIf="!m.url">—</span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="media-total-row">
+              <td colspan="4"><strong>Total multimedia — {{ activity.title }}</strong></td>
+              <td class="td-mono"><strong>{{ formatDuration(getStats(activity.id)?.totalMediaSeconds || 0) }}</strong></td>
+              <td>
+                <strong>Disponible: {{ formatDuration(getStats(activity.id)?.remainingSeconds || 0) }}</strong>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div *ngIf="activity.mediaItems.length === 0" class="no-media-report">
+        Esta actividad no tiene multimedia registrada.
+      </div>
+    </section>
+
+    <!-- ===== PIE DE PÁGINA ===== -->
+    <div class="report-footer">
+      <div>{{ plan.name }} | {{ plan.eventType }}</div>
+      <div>Millennium Soft — Planificador de Eventos</div>
+      <div>{{ today | date:'dd/MM/yyyy HH:mm' }}</div>
+    </div>
+  </div>
+</div>

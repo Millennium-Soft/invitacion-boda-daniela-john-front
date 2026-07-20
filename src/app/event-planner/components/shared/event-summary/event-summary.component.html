@@ -1,0 +1,64 @@
+<div class="summary-wrapper" *ngIf="summary">
+  <div class="summary-header" (click)="toggleCollapsed()">
+    <span class="summary-title">
+      <mat-icon>bar_chart</mat-icon> Resumen del Evento
+    </span>
+    <mat-icon class="toggle-icon" [class.rotated]="collapsed">expand_less</mat-icon>
+  </div>
+
+  <div class="summary-grid" [class.collapsed]="collapsed">
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#006983">schedule</mat-icon>
+      <div class="kpi-value">{{ formatDuration(summary.totalScheduledSeconds) }}</div>
+      <div class="kpi-label">Duración total</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#7c3aed">event_note</mat-icon>
+      <div class="kpi-value">{{ summary.activeActivityCount }} / {{ summary.activityCount }}</div>
+      <div class="kpi-label">Actividades activas</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#0284c7">library_music</mat-icon>
+      <div class="kpi-value">{{ summary.totalMediaItems }}</div>
+      <div class="kpi-label">Elementos multimedia</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#0891b2">play_circle</mat-icon>
+      <div class="kpi-value">{{ formatDuration(summary.totalMediaSeconds) }}</div>
+      <div class="kpi-label">Tiempo multimedia</div>
+    </div>
+
+    <div class="kpi-card" [class.kpi-green]="summary.totalFreeSeconds > 0">
+      <mat-icon class="kpi-icon" style="color:#16a34a">hourglass_empty</mat-icon>
+      <div class="kpi-value">{{ formatDuration(summary.totalFreeSeconds) }}</div>
+      <div class="kpi-label">Tiempo libre</div>
+    </div>
+
+    <div class="kpi-card" [class.kpi-red]="summary.totalExceededSeconds > 0">
+      <mat-icon class="kpi-icon" style="color:#dc2626">warning</mat-icon>
+      <div class="kpi-value">{{ formatDuration(summary.totalExceededSeconds) }}</div>
+      <div class="kpi-label">Tiempo excedido</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#7c3aed">music_note</mat-icon>
+      <div class="kpi-value">{{ summary.musicCount }}</div>
+      <div class="kpi-label">Canciones</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#0284c7">videocam</mat-icon>
+      <div class="kpi-value">{{ summary.videoCount }}</div>
+      <div class="kpi-label">Videos</div>
+    </div>
+
+    <div class="kpi-card">
+      <mat-icon class="kpi-icon" style="color:#d97706">timer</mat-icon>
+      <div class="kpi-value">{{ formatDuration(summary.averageMediaDurationSeconds) }}</div>
+      <div class="kpi-label">Duración promedio</div>
+    </div>
+  </div>
+</div>

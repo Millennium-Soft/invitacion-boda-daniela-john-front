@@ -1,0 +1,14 @@
+<div *ngIf="stats"
+     class="traffic-light"
+     [class.compact]="compact"
+     [class.tl-available]="stats.status === ActivityStatus.AVAILABLE"
+     [class.tl-adjusted]="stats.status === ActivityStatus.ADJUSTED"
+     [class.tl-exceeded]="stats.status === ActivityStatus.EXCEEDED">
+  <span class="tl-emoji">{{ statusEmoji }}</span>
+  <span *ngIf="!compact" class="tl-message">{{ stats.statusMessage }}</span>
+</div>
+
+<div *ngIf="!stats" class="traffic-light tl-empty">
+  <span class="tl-emoji">⚪</span>
+  <span *ngIf="!compact" class="tl-message">Sin duración definida</span>
+</div>

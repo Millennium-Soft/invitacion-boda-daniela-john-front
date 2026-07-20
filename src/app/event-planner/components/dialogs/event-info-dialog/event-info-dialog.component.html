@@ -1,0 +1,47 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>event</mat-icon>
+  Información del Evento
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="dialog-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre del evento *</mat-label>
+      <input matInput formControlName="name" placeholder="Ej: Boda de Juan y María">
+      <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es obligatorio</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('minlength')">Mínimo 2 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tipo de evento *</mat-label>
+      <mat-select formControlName="eventType">
+        <mat-option *ngFor="let t of eventTypes" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('eventType')?.hasError('required')">Seleccione un tipo</mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Fecha del evento</mat-label>
+        <input matInput type="date" formControlName="date">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Lugar / Salón</mat-label>
+        <input matInput formControlName="venue" placeholder="Ej: Salón Dorado">
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Notas adicionales del evento..."></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+    <mat-icon>save</mat-icon> Guardar
+  </button>
+</mat-dialog-actions>

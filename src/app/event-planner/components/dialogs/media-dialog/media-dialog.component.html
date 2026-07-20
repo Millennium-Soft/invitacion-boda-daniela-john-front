@@ -1,0 +1,132 @@
+<div class="ep-dialog-header ep-dialog-header-media">
+  <div class="ep-dialog-header-icon">
+    <i [class]="mode === 'create' ? 'fa-solid fa-music' : 'fa-solid fa-pen-to-square'"></i>
+  </div>
+  <div>
+    <h2 class="ep-dialog-title">{{ mode === 'create' ? 'Nuevo Multimedia' : 'Editar Multimedia' }}</h2>
+    <p class="ep-dialog-subtitle">
+      <i class="fa-solid fa-layer-group"></i> {{ data.activityTitle }}
+    </p>
+  </div>
+</div>
+
+<mat-dialog-content class="ep-dialog-body">
+  <form [formGroup]="form" class="ep-form">
+
+    <!-- Tipo + Duración en la misma fila -->
+    <div class="ep-field-row">
+      <div class="ep-field-group ep-field-half">
+        <label class="ep-label">
+          <i class="fa-solid fa-tag"></i> Tipo <span class="ep-required">*</span>
+        </label>
+        <div class="ep-select-wrapper">
+          <i class="fa-solid fa-chevron-down ep-select-chevron"></i>
+          <select class="ep-select" formControlName="type">
+            <option *ngFor="let t of mediaTypes" [value]="t">{{ getTypeLabel(t) }}</option>
+          </select>
+        </div>
+        <span class="ep-error-msg" *ngIf="form.get('type')?.hasError('required') && form.get('type')?.touched">
+          <i class="fa-solid fa-circle-exclamation"></i> Seleccione un tipo
+        </span>
+      </div>
+
+      <div class="ep-field-group ep-field-half">
+        <label class="ep-label">
+          <i class="fa-solid fa-stopwatch"></i> Duración (MM:SS) <span class="ep-required">*</span>
+        </label>
+        <div class="ep-input-wrapper ep-time-wrapper">
+          <i class="fa-solid fa-stopwatch ep-input-icon"></i>
+          <input class="ep-input ep-input-with-icon" formControlName="duration" placeholder="4:30">
+        </div>
+        <span class="ep-hint">Formato: 4:30 ó 1:02:15</span>
+        <span class="ep-error-msg" *ngIf="form.get('duration')?.hasError('required') && form.get('duration')?.touched">
+          <i class="fa-solid fa-circle-exclamation"></i> La duración es obligatoria
+        </span>
+        <span class="ep-error-msg" *ngIf="form.get('duration')?.hasError('invalidDuration') && form.get('duration')?.touched">
+          <i class="fa-solid fa-circle-exclamation"></i> Formato inválido — use MM:SS
+        </span>
+        <span class="ep-error-msg" *ngIf="form.get('duration')?.hasError('zeroDuration') && form.get('duration')?.touched">
+          <i class="fa-solid fa-circle-exclamation"></i> La duración debe ser mayor a 0
+        </span>
+      </div>
+    </div>
+
+    <!-- Título -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-heading"></i> Título <span class="ep-required">*</span>
+      </label>
+      <div class="ep-input-wrapper" [class.ep-input-error]="form.get('title')?.invalid && form.get('title')?.touched">
+        <input class="ep-input" formControlName="title" placeholder="Ej: Canción de apertura, Video bienvenida...">
+      </div>
+      <span class="ep-error-msg" *ngIf="form.get('title')?.hasError('required') && form.get('title')?.touched">
+        <i class="fa-solid fa-circle-exclamation"></i> El título es obligatorio
+      </span>
+    </div>
+
+    <!-- Artista / Descripción -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-user-music"></i> Artista / Descripción
+      </label>
+      <div class="ep-input-wrapper">
+        <input class="ep-input" formControlName="description" placeholder="Artista, álbum, año...">
+      </div>
+    </div>
+
+    <!-- URL -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-link"></i> URL / Enlace
+      </label>
+      <div class="ep-url-row">
+        <div class="ep-input-wrapper ep-url-input" [class.ep-input-error]="form.get('url')?.invalid && form.get('url')?.touched">
+          <i class="fa-brands fa-youtube ep-input-icon" *ngIf="isYouTube(form.get('url')?.value)"></i>
+          <i class="fa-brands fa-google-drive ep-input-icon" *ngIf="isGoogleDrive(form.get('url')?.value)"></i>
+          <i class="fa-solid fa-globe ep-input-icon" *ngIf="!isYouTube(form.get('url')?.value) && !isGoogleDrive(form.get('url')?.value)"></i>
+          <input class="ep-input ep-input-with-icon" formControlName="url" placeholder="https://youtube.com/... o drive.google.com/...">
+        </div>
+        <button type="button" class="ep-preview-btn" (click)="openPreview()"
+          [disabled]="!form.get('url')?.value || form.get('url')?.invalid"
+          matTooltip="Vista previa">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+      <span class="ep-error-msg" *ngIf="form.get('url')?.hasError('invalidUrl') && form.get('url')?.touched">
+        <i class="fa-solid fa-circle-exclamation"></i> El enlace no tiene un formato válido
+      </span>
+      <span class="ep-url-hint" *ngIf="isYouTube(form.get('url')?.value)">
+        <i class="fa-brands fa-youtube" style="color:#E91E63"></i> YouTube detectado — puedes previsualizar
+      </span>
+      <span class="ep-url-hint" *ngIf="isGoogleDrive(form.get('url')?.value)">
+        <i class="fa-brands fa-google-drive" style="color:#DAA520"></i> Google Drive detectado — puedes previsualizar
+      </span>
+    </div>
+
+    <!-- Observaciones DJ -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-headphones"></i> Notas para el DJ / Presentador
+      </label>
+      <div class="ep-input-wrapper">
+        <textarea class="ep-input ep-textarea" formControlName="observations" rows="2"
+          placeholder="Ej: Subir volumen al 80%, Fade in al inicio..."></textarea>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="ep-dialog-actions">
+  <button class="ep-btn ep-btn-ghost" (click)="onCancel()">
+    <i class="fa-solid fa-xmark"></i> Cancelar
+  </button>
+  <button class="ep-btn ep-btn-secondary" type="button" (click)="openPreview()"
+    [disabled]="!form.get('url')?.value || form.get('url')?.invalid">
+    <i class="fa-solid fa-eye"></i> Vista Previa
+  </button>
+  <button class="ep-btn ep-btn-primary" (click)="onSave()" [disabled]="form.invalid">
+    <i [class]="mode === 'create' ? 'fa-solid fa-plus' : 'fa-solid fa-floppy-disk'"></i>
+    {{ mode === 'create' ? 'Agregar' : 'Guardar' }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,101 @@
+<div class="ep-shell" *ngIf="plan">
+
+  <!-- ===== HEADER ===== -->
+  <header class="ep-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>event</mat-icon>
+      </div>
+      <div class="header-info">
+        <h1 class="header-title">{{ plan.name }}</h1>
+        <div class="header-meta">
+          <span class="meta-chip">{{ plan.eventType }}</span>
+          <span *ngIf="plan.date" class="meta-sep">•</span>
+          <span *ngIf="plan.date" class="meta-date">{{ eventDateFormatted }}</span>
+          <span *ngIf="plan.venue" class="meta-sep">•</span>
+          <span *ngIf="plan.venue" class="meta-venue">
+            <mat-icon style="font-size:12px;height:12px;width:12px;vertical-align:middle">place</mat-icon>
+            {{ plan.venue }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button mat-stroked-button class="header-btn" (click)="openEventInfoDialog()" matTooltip="Editar información del evento">
+        <mat-icon>edit</mat-icon>
+        <span class="btn-label">Editar</span>
+      </button>
+
+      <button mat-stroked-button class="header-btn" (click)="exportPlan()" matTooltip="Exportar plan como JSON">
+        <mat-icon>download</mat-icon>
+        <span class="btn-label">Exportar</span>
+      </button>
+
+      <label class="import-label header-btn" matTooltip="Importar plan desde JSON">
+        <mat-icon>upload</mat-icon>
+        <span class="btn-label">Importar</span>
+        <input type="file" accept=".json" (change)="importPlan($event)" hidden>
+      </label>
+
+      <button mat-stroked-button class="header-btn header-btn-danger" (click)="resetPlan()" matTooltip="Reiniciar todo el plan">
+        <mat-icon>restart_alt</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== KPI SUMMARY ===== -->
+  <app-event-summary></app-event-summary>
+
+  <!-- ===== TOOLBAR ===== -->
+  <div class="ep-toolbar">
+    <div class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar actividad..."
+        [value]="searchQuery"
+        (input)="onSearchChange($any($event.target).value)">
+      <button *ngIf="searchQuery" class="clear-btn" (click)="clearSearch()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- View switcher -->
+    <div class="view-switcher">
+      <button class="view-btn" [class.active]="viewMode === 'table'" (click)="setView('table')" matTooltip="Vista Tabla">
+        <mat-icon>table_chart</mat-icon>
+        <span>Tabla</span>
+      </button>
+      <button class="view-btn" [class.active]="viewMode === 'timeline'" (click)="setView('timeline')" matTooltip="Vista Timeline">
+        <mat-icon>timeline</mat-icon>
+        <span>Timeline</span>
+      </button>
+      <button class="view-btn" [class.active]="viewMode === 'cards'" (click)="setView('cards')" matTooltip="Vista Tarjetas">
+        <mat-icon>view_module</mat-icon>
+        <span>Tarjetas</span>
+      </button>
+      <button class="view-btn" [class.active]="viewMode === 'dj'" (click)="setView('dj')" matTooltip="Vista DJ">
+        <mat-icon>queue_music</mat-icon>
+        <span>DJ</span>
+      </button>
+    </div>
+
+    <!-- Add activity -->
+    <button mat-raised-button class="add-activity-btn" (click)="openActivityDialog()">
+      <mat-icon>add</mat-icon>
+      Nueva Actividad
+    </button>
+  </div>
+
+  <!-- ===== CONTENT VIEWS ===== -->
+  <main class="ep-content">
+    <ng-container [ngSwitch]="viewMode">
+      <app-table-view *ngSwitchCase="'table'"></app-table-view>
+      <app-timeline-view *ngSwitchCase="'timeline'"></app-timeline-view>
+      <app-cards-view *ngSwitchCase="'cards'"></app-cards-view>
+      <app-dj-view *ngSwitchCase="'dj'"></app-dj-view>
+    </ng-container>
+  </main>
+</div>

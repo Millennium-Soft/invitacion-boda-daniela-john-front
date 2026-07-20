@@ -1,0 +1,88 @@
+<div class="timeline-wrapper">
+  <div *ngIf="activities.length === 0" class="empty-state">
+    <mat-icon>timeline</mat-icon>
+    <p>No hay actividades en el cronograma.</p>
+  </div>
+
+  <div class="timeline-container" *ngIf="activities.length > 0">
+    <div class="timeline-line"></div>
+
+    <div *ngFor="let activity of activities; let i = index; trackBy: trackById"
+         class="timeline-item"
+         [class.item-inactive]="!activity.active">
+
+      <!-- Time label -->
+      <div class="timeline-time">
+        <span class="time-start">{{ activity.startTime || '--:--' }}</span>
+        <span class="time-end" *ngIf="activity.endTime">{{ activity.endTime }}</span>
+      </div>
+
+      <!-- Dot -->
+      <div class="timeline-dot"
+           [class.dot-available]="getStats(activity.id)?.status === 'available'"
+           [class.dot-adjusted]="getStats(activity.id)?.status === 'adjusted'"
+           [class.dot-exceeded]="getStats(activity.id)?.status === 'exceeded'">
+        <span class="dot-number">{{ activity.order }}</span>
+      </div>
+
+      <!-- Card -->
+      <div class="timeline-card" [class.card-inactive]="!activity.active">
+        <div class="card-header">
+          <div class="card-title-row">
+            <h3 class="card-title">{{ activity.title }}</h3>
+            <span *ngIf="!activity.active" class="inactive-badge">Inactiva</span>
+            <div class="card-actions">
+              <button mat-icon-button (click)="addMedia(activity)" matTooltip="Agregar multimedia">
+                <mat-icon>add_circle_outline</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editActivity(activity)" matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteActivity(activity)" matTooltip="Eliminar" class="delete-btn">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </div>
+          <p *ngIf="activity.description" class="card-desc">{{ activity.description }}</p>
+        </div>
+
+        <!-- Duration & Stats Row -->
+        <div class="card-stats-row">
+          <div class="stat-chip">
+            <mat-icon>timer</mat-icon>
+            {{ formatDuration(activity.durationSeconds) }}
+          </div>
+          <div class="stat-chip">
+            <mat-icon>library_music</mat-icon>
+            {{ activity.mediaItems.length }} elementos
+          </div>
+          <div class="stat-chip">
+            <mat-icon>play_circle</mat-icon>
+            {{ formatDuration(getStats(activity.id)?.totalMediaSeconds || 0) }}
+          </div>
+          <app-traffic-light [stats]="getStats(activity.id)" [compact]="true"></app-traffic-light>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-bar-wrapper" *ngIf="activity.durationSeconds > 0">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill"
+                 [style.width.%]="getProgressPercent(activity)"
+                 [style.background-color]="getProgressColor(activity)">
+            </div>
+          </div>
+          <span class="progress-label">{{ getProgressPercent(activity) }}%</span>
+        </div>
+
+        <!-- Media List -->
+        <div class="media-list" *ngIf="activity.mediaItems.length > 0">
+          <div *ngFor="let m of activity.mediaItems" class="media-row">
+            <mat-icon class="media-type-icon" [style.color]="getMediaColor(m.type)">{{ getMediaIcon(m.type) }}</mat-icon>
+            <span class="media-name">{{ m.title }}</span>
+            <span class="media-dur">{{ formatDuration(m.durationSeconds) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

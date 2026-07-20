@@ -1,0 +1,194 @@
+<div class="table-view-wrapper">
+  <div *ngIf="activities.length === 0" class="empty-state">
+    <i class="fa-solid fa-calendar-xmark"></i>
+    <p>No hay actividades. ¡Crea la primera!</p>
+  </div>
+
+  <div *ngIf="activities.length > 0" class="table-container mat-elevation-z2">
+    <table mat-table [dataSource]="activities" class="ep-table">
+
+      <!-- Order Column -->
+      <ng-container matColumnDef="order">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="order-badge" [class.inactive]="!a.active">{{ a.order }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Start Time -->
+      <ng-container matColumnDef="startTime">
+        <th mat-header-cell *matHeaderCellDef>Inicio</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="time-cell">{{ a.startTime || '--:--' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- End Time -->
+      <ng-container matColumnDef="endTime">
+        <th mat-header-cell *matHeaderCellDef>Fin</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="time-cell">{{ a.endTime || '--:--' }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Title -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Actividad</th>
+        <td mat-cell *matCellDef="let a">
+          <div class="title-cell" [class.inactive-text]="!a.active">
+            <span class="activity-title">{{ a.title }}</span>
+            <span *ngIf="!a.active" class="inactive-badge">Inactiva</span>
+            <small *ngIf="a.description" class="activity-desc">{{ a.description }}</small>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Duration -->
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef>Duración</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="duration-pill">{{ formatDuration(a.durationSeconds) }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Media Count -->
+      <ng-container matColumnDef="mediaCount">
+        <th mat-header-cell *matHeaderCellDef>Multimedia</th>
+        <td mat-cell *matCellDef="let a">
+          <button class="tv-icon-btn" (click)="toggleExpand(a.id)" [title]="isExpanded(a.id) ? 'Colapsar' : 'Ver multimedia'">
+            <i [class]="isExpanded(a.id) ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+          </button>
+          <span class="media-count-badge">{{ a.mediaItems.length }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Media Time -->
+      <ng-container matColumnDef="mediaTime">
+        <th mat-header-cell *matHeaderCellDef>T. Multimedia</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="media-time">{{ formatDuration((statsMap[a.id] || {totalMediaSeconds:0}).totalMediaSeconds) }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Remaining -->
+      <ng-container matColumnDef="remaining">
+        <th mat-header-cell *matHeaderCellDef>Disponible</th>
+        <td mat-cell *matCellDef="let a">
+          <span class="remaining" [class.exceeded]="(statsMap[a.id] || {remainingSeconds:0}).remainingSeconds < 0">
+            {{ formatDuration((statsMap[a.id] || {remainingSeconds:0}).remainingSeconds) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Status -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let a">
+          <app-traffic-light [stats]="statsMap[a.id]" [compact]="true"></app-traffic-light>
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let a">
+          <div class="action-group">
+            <button class="tv-icon-btn tv-btn-add" title="Agregar multimedia" (click)="addMedia(a)">
+              <i class="fa-solid fa-circle-plus"></i>
+            </button>
+            <button class="tv-icon-btn tv-btn-edit" title="Editar actividad" (click)="editActivity(a)">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="tv-icon-btn tv-btn-dup" title="Duplicar" (click)="duplicateActivity(a)">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+            <button class="tv-icon-btn tv-btn-toggle" [title]="a.active ? 'Desactivar' : 'Activar'" (click)="toggleActivity(a)">
+              <i [class]="a.active ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"></i>
+            </button>
+            <button class="tv-icon-btn tv-btn-del" title="Eliminar" (click)="deleteActivity(a)">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let a; columns: displayedColumns;" [class.row-inactive]="!a.active"></tr>
+    </table>
+
+    <!-- Expanded Row: Media Items -->
+    <ng-container *ngFor="let activity of activities; trackBy: trackById">
+      <div *ngIf="isExpanded(activity.id)" class="media-expansion-panel">
+        <div class="media-expansion-header">
+          <i class="fa-solid fa-music" style="color:#6A1B9A"></i>
+          <span>Multimedia de: <strong>{{ activity.title }}</strong></span>
+          <button class="tv-add-media-btn" (click)="addMedia(activity)">
+            <i class="fa-solid fa-plus"></i> Agregar
+          </button>
+        </div>
+
+        <div *ngIf="activity.mediaItems.length === 0" class="no-media">
+          <i class="fa-solid fa-music-slash"></i> No hay multimedia en esta actividad.
+        </div>
+
+        <div class="media-table-wrapper" *ngIf="activity.mediaItems.length > 0">
+          <table class="media-inner-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tipo</th>
+                <th>Título / Artista</th>
+                <th>Duración</th>
+                <th>Enlace</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let m of activity.mediaItems; trackBy: trackById">
+                <td>{{ m.order }}</td>
+                <td>
+                  <span class="type-chip" [style.background-color]="getMediaColor(m.type) + '20'" [style.color]="getMediaColor(m.type)">
+                    {{ m.type }}
+                  </span>
+                </td>
+                <td>
+                  <div class="media-title">{{ m.title }}</div>
+                  <small *ngIf="m.description" class="media-desc">{{ m.description }}</small>
+                </td>
+                <td><strong>{{ formatDuration(m.durationSeconds) }}</strong></td>
+                <td class="url-cell">
+                  <a *ngIf="m.url" [href]="m.url" target="_blank" class="url-link" [title]="m.url">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                  <span *ngIf="!m.url" class="no-url">—</span>
+                </td>
+                <td>
+                  <div class="media-action-group">
+                    <button class="tv-icon-btn tv-btn-preview" *ngIf="m.url" title="Vista previa" (click)="previewMedia(m)">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <button class="tv-icon-btn tv-btn-edit" title="Editar" (click)="editMedia(activity, m.id)">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="tv-icon-btn tv-btn-del" title="Eliminar" (click)="deleteMedia(activity.id, m.id, m.title)">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="media-totals">
+                <td colspan="3">Total multimedia</td>
+                <td><strong>{{ formatDuration((statsMap[activity.id] || {totalMediaSeconds:0}).totalMediaSeconds) }}</strong></td>
+                <td colspan="2">
+                  <app-traffic-light [stats]="statsMap[activity.id]"></app-traffic-light>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

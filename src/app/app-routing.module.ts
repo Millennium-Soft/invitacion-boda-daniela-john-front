@@ -22,6 +22,12 @@ const routes: Routes = [
   // Public shareable route for guests — share via QR code
   { path: 'momentos', component: MemoriesComponent },
 
+  // Event planner module (lazy-loaded)
+  {
+    path: 'planificador-eventos',
+    loadChildren: () => import('./event-planner/event-planner.module').then(m => m.EventPlannerModule)
+  },
+
   //REDIRECCIONAMIENTO COMOPONENTE POR DEFECTO PARA RUTAS INEXISTENTES EN EL NAVEGADOR
   { path: '**', component: InicioComponent },
 ];

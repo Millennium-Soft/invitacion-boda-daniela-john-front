@@ -1,0 +1,131 @@
+<div class="cards-wrapper">
+  <div *ngIf="activities.length === 0" class="empty-state">
+    <i class="fa-solid fa-layer-group"></i>
+    <p>No hay actividades. ¡Crea la primera!</p>
+  </div>
+
+  <div class="drag-hint" *ngIf="activities.length > 1">
+    <i class="fa-solid fa-arrows-up-down"></i> Arrastra las tarjetas para reordenar las actividades
+  </div>
+
+  <div class="cards-grid" cdkDropList (cdkDropListDropped)="onDrop($event)">
+    <div *ngFor="let activity of activities; trackBy: trackById"
+         class="activity-card"
+         cdkDrag
+         [cdkDragDisabled]="false"
+         [class.card-inactive]="!activity.active"
+         [style.border-top-color]="getCardBorderColor(activity.id)">
+
+      <!-- Drag handle -->
+      <div class="drag-handle" cdkDragHandle title="Arrastrar para reordenar">
+        <i class="fa-solid fa-grip-lines"></i>
+      </div>
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <div class="card-order" [style.background-color]="getCardBorderColor(activity.id)">
+          {{ activity.order }}
+        </div>
+        <div class="card-info">
+          <div class="card-title-row">
+            <h3 class="card-title" [class.title-inactive]="!activity.active">{{ activity.title }}</h3>
+            <span *ngIf="!activity.active" class="badge-inactive">Inactiva</span>
+          </div>
+          <div class="card-times" *ngIf="activity.startTime || activity.endTime">
+            <i class="fa-regular fa-clock"></i>
+            {{ activity.startTime || '--:--' }} → {{ activity.endTime || '--:--' }}
+            <span class="duration-tag">{{ formatDuration(activity.durationSeconds) }}</span>
+          </div>
+          <p *ngIf="activity.description" class="card-desc">{{ activity.description }}</p>
+        </div>
+      </div>
+
+      <!-- Semaphore -->
+      <div class="card-semaphore">
+        <app-traffic-light [stats]="getStats(activity.id)"></app-traffic-light>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section" *ngIf="activity.durationSeconds > 0">
+        <div class="progress-labels">
+          <span>Multimedia: {{ formatDuration(getStats(activity.id)?.totalMediaSeconds || 0) }}</span>
+          <span>{{ getProgressPercent(activity) }}%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill"
+               [style.width.%]="getProgressPercent(activity)"
+               [style.background-color]="getCardBorderColor(activity.id)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Section -->
+      <div class="media-section">
+        <div class="media-section-header" (click)="toggleMediaExpand(activity.id)">
+          <i class="fa-solid fa-music"></i>
+          <span>{{ activity.mediaItems.length }} elemento(s) multimedia</span>
+          <i class="fa-solid chevron" [class.fa-chevron-up]="isMediaExpanded(activity.id)" [class.fa-chevron-down]="!isMediaExpanded(activity.id)"></i>
+        </div>
+
+        <div class="media-list" *ngIf="isMediaExpanded(activity.id)">
+          <div *ngIf="activity.mediaItems.length === 0" class="no-media">
+            <i class="fa-solid fa-ban"></i> No hay multimedia
+          </div>
+          <div *ngFor="let m of activity.mediaItems; trackBy: trackById" class="media-item">
+            <div class="media-type-dot" [style.background-color]="getMediaColor(m.type)">
+              <i class="fa-solid fa-music" *ngIf="m.type === 'Música'"></i>
+              <i class="fa-solid fa-video" *ngIf="m.type === 'Video'"></i>
+              <i class="fa-solid fa-volume-high" *ngIf="m.type === 'Audio'"></i>
+              <i class="fa-solid fa-display" *ngIf="m.type === 'Presentación'"></i>
+              <i class="fa-solid fa-paperclip" *ngIf="m.type === 'Otro'"></i>
+            </div>
+            <div class="media-details">
+              <span class="media-title">{{ m.title }}</span>
+              <span class="media-type-label">{{ m.type }}</span>
+              <small *ngIf="m.description" class="media-desc-small">{{ m.description }}</small>
+            </div>
+            <span class="media-duration">{{ formatDuration(m.durationSeconds) }}</span>
+            <div class="media-actions">
+              <button class="tv-icon-btn tv-btn-preview" *ngIf="m.url" title="Vista previa" (click)="previewMedia(m)">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="tv-icon-btn tv-btn-edit" title="Editar" (click)="editMedia(activity, m.id)">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button class="tv-icon-btn tv-btn-del" title="Eliminar" (click)="deleteMedia(activity.id, m.id, m.title)">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observations -->
+      <div class="observations" *ngIf="activity.observations">
+        <i class="fa-solid fa-note-sticky"></i>
+        <span>{{ activity.observations }}</span>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-footer-actions">
+        <button class="tv-add-media-btn" (click)="addMedia(activity)">
+          <i class="fa-solid fa-plus"></i> Multimedia
+        </button>
+        <div class="spacer"></div>
+        <button class="tv-icon-btn tv-btn-edit" title="Editar actividad" (click)="editActivity(activity)">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button class="tv-icon-btn tv-btn-dup" title="Duplicar" (click)="duplicateActivity(activity)">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+        <button class="tv-icon-btn tv-btn-toggle" [title]="activity.active ? 'Desactivar' : 'Activar'" (click)="toggleActivity(activity)">
+          <i [class]="activity.active ? 'fa-solid fa-toggle-on' : 'fa-solid fa-toggle-off'"
+             [style.color]="activity.active ? '#4CAF50' : '#94a3b8'"></i>
+        </button>
+        <button class="tv-icon-btn tv-btn-del" title="Eliminar" (click)="deleteActivity(activity)">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

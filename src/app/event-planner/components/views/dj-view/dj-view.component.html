@@ -1,0 +1,102 @@
+<div class="dj-wrapper" id="dj-print-section">
+  <!-- DJ Header -->
+  <div class="dj-header">
+    <div class="dj-event-info" *ngIf="plan">
+      <h1 class="dj-event-name">
+        <i class="fa-solid fa-headphones-simple" style="color:#DAA520; margin-right:8px;"></i>
+        {{ plan.name }}
+      </h1>
+      <div class="dj-event-meta">
+        <span><i class="fa-solid fa-calendar-days"></i> {{ plan.eventType }}</span>
+        <span *ngIf="plan.date"> &bull; {{ plan.date }}</span>
+        <span *ngIf="plan.venue"> &bull; <i class="fa-solid fa-location-dot"></i> {{ plan.venue }}</span>
+      </div>
+    </div>
+    <div class="dj-header-actions no-print">
+      <button class="dj-action-btn dj-action-print" (click)="printView()" title="Imprimir vista">
+        <i class="fa-solid fa-print"></i> Imprimir
+      </button>
+      <button class="dj-action-btn dj-action-pdf" (click)="exportDjPdf()" title="Descargar PDF">
+        <i class="fa-solid fa-file-pdf"></i> Exportar PDF
+      </button>
+    </div>
+  </div>
+
+
+  <div *ngIf="activities.length === 0" class="empty-state">
+    No hay actividades activas en el cronograma.
+  </div>
+
+  <!-- DJ Table -->
+  <table class="dj-table" *ngIf="activities.length > 0">
+    <thead>
+      <tr>
+        <th class="col-order">#</th>
+        <th class="col-time">Hora</th>
+        <th class="col-activity">Actividad</th>
+        <th class="col-duration">Duración</th>
+        <th class="col-status">Estado</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <ng-container *ngFor="let activity of activities; let i = index; trackBy: trackById">
+        <!-- Activity Row -->
+        <tr class="activity-row">
+          <td class="col-order">
+            <div class="order-circle">{{ activity.order }}</div>
+          </td>
+          <td class="col-time">
+            <div class="times">
+              <span class="t-start">{{ activity.startTime || '--:--' }}</span>
+              <span class="t-end" *ngIf="activity.endTime">{{ activity.endTime }}</span>
+            </div>
+          </td>
+          <td class="col-activity">
+            <strong class="act-title">{{ activity.title }}</strong>
+            <small *ngIf="activity.description" class="act-desc">{{ activity.description }}</small>
+          </td>
+          <td class="col-duration">
+            <span class="dur-tag">{{ formatDuration(activity.durationSeconds) }}</span>
+          </td>
+          <td class="col-status">
+            <span>{{ getStatusSymbol(activity.id) }}</span>
+            <small class="status-msg">{{ (statsMap[activity.id] || {statusMessage:''}).statusMessage }}</small>
+          </td>
+        </tr>
+
+        <!-- Media Rows -->
+        <tr *ngFor="let m of activity.mediaItems; trackBy: trackById" class="media-row">
+          <td></td>
+          <td></td>
+          <td class="media-cell">
+            <span class="media-bullet" [style.color]="getMediaColor(m.type)">●</span>
+            <span class="media-title">{{ m.title }}</span>
+            <span class="media-type">({{ m.type }})</span>
+            <span *ngIf="m.observations" class="media-obs"> — {{ m.observations }}</span>
+          </td>
+          <td class="media-dur">{{ formatDuration(m.durationSeconds) }}</td>
+          <td></td>
+        </tr>
+
+        <!-- Totals row -->
+        <tr class="totals-row" *ngIf="activity.mediaItems.length > 0">
+          <td colspan="2"></td>
+          <td><em>Total multimedia de "{{ activity.title }}"</em></td>
+          <td><strong>{{ formatDuration((statsMap[activity.id] || {totalMediaSeconds:0}).totalMediaSeconds) }}</strong></td>
+          <td><small>Libre: {{ formatDuration((statsMap[activity.id] || {remainingSeconds:0}).remainingSeconds) }}</small></td>
+        </tr>
+
+        <!-- Separator -->
+        <tr class="separator-row" *ngIf="i < activities.length - 1">
+          <td colspan="5"><div class="separator-line"></div></td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <div class="dj-footer">
+    <span>Generado el {{ today | date:'dd/MM/yyyy HH:mm' }}</span>
+    <span class="footer-brand">Millennium Soft — Planificador de Eventos</span>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<div class="ep-dialog-header">
+  <div class="ep-dialog-header-icon">
+    <i [class]="mode === 'create' ? 'fa-solid fa-calendar-plus' : 'fa-solid fa-calendar-pen'"></i>
+  </div>
+  <div>
+    <h2 class="ep-dialog-title">{{ mode === 'create' ? 'Nueva Actividad' : 'Editar Actividad' }}</h2>
+    <p class="ep-dialog-subtitle">Completa los datos para registrar esta actividad en el itinerario</p>
+  </div>
+</div>
+
+<mat-dialog-content class="ep-dialog-body">
+  <form [formGroup]="form" class="ep-form">
+
+    <!-- Título -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-heading"></i> Título de la actividad <span class="ep-required">*</span>
+      </label>
+      <div class="ep-input-wrapper" [class.ep-input-error]="form.get('title')?.invalid && form.get('title')?.touched">
+        <input class="ep-input" formControlName="title" placeholder="Ej: Cena de gala, Vals de los novios...">
+      </div>
+      <span class="ep-error-msg" *ngIf="form.get('title')?.hasError('required') && form.get('title')?.touched">
+        <i class="fa-solid fa-circle-exclamation"></i> El título es obligatorio
+      </span>
+      <span class="ep-error-msg" *ngIf="form.get('title')?.hasError('minlength') && form.get('title')?.touched">
+        <i class="fa-solid fa-circle-exclamation"></i> Mínimo 2 caracteres
+      </span>
+    </div>
+
+    <!-- Descripción -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-align-left"></i> Descripción
+      </label>
+      <div class="ep-input-wrapper">
+        <textarea class="ep-input ep-textarea" formControlName="description" rows="2"
+          placeholder="Describe brevemente esta actividad..."></textarea>
+      </div>
+    </div>
+
+    <!-- Horarios -->
+    <div class="ep-field-row">
+      <div class="ep-field-group ep-field-half">
+        <label class="ep-label">
+          <i class="fa-solid fa-clock"></i> Hora de inicio
+        </label>
+        <div class="ep-input-wrapper ep-time-wrapper">
+          <i class="fa-regular fa-clock ep-input-icon"></i>
+          <input class="ep-input ep-input-with-icon" type="time" formControlName="startTime">
+        </div>
+      </div>
+
+      <div class="ep-field-group ep-field-half">
+        <label class="ep-label">
+          <i class="fa-solid fa-clock-rotate-left"></i> Hora de finalización
+        </label>
+        <div class="ep-input-wrapper ep-time-wrapper">
+          <i class="fa-regular fa-clock ep-input-icon"></i>
+          <input class="ep-input ep-input-with-icon" type="time" formControlName="endTime">
+        </div>
+      </div>
+    </div>
+
+    <!-- Error horario -->
+    <div *ngIf="form.hasError('endBeforeStart')" class="ep-alert ep-alert-error">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      La hora de finalización debe ser posterior a la de inicio.
+    </div>
+
+    <!-- Duración calculada -->
+    <div class="ep-duration-chip" *ngIf="form.get('durationSeconds')?.value > 0">
+      <i class="fa-solid fa-stopwatch"></i>
+      <span>Duración calculada: <strong>{{ durationDisplay }}</strong></span>
+      <span class="ep-auto-badge">AUTO</span>
+    </div>
+
+    <!-- Duración manual -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-hourglass-half"></i> Duración (segundos)
+        <span class="ep-hint-inline">— se calcula automáticamente desde los horarios</span>
+      </label>
+      <div class="ep-input-wrapper">
+        <input class="ep-input" type="number" formControlName="durationSeconds" min="0"
+          placeholder="0">
+      </div>
+      <span class="ep-error-msg" *ngIf="form.get('durationSeconds')?.hasError('min') && form.get('durationSeconds')?.touched">
+        <i class="fa-solid fa-circle-exclamation"></i> La duración no puede ser negativa
+      </span>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="ep-field-group ep-field-full">
+      <label class="ep-label">
+        <i class="fa-solid fa-note-sticky"></i> Observaciones
+      </label>
+      <div class="ep-input-wrapper">
+        <textarea class="ep-input ep-textarea" formControlName="observations" rows="2"
+          placeholder="Notas adicionales, detalles de coordinación..."></textarea>
+      </div>
+    </div>
+
+    <!-- Toggle activo -->
+    <div class="ep-toggle-row">
+      <mat-slide-toggle formControlName="active" color="primary">
+        <span class="ep-toggle-label">
+          <i class="fa-solid fa-circle-check"></i> Actividad activa en el itinerario
+        </span>
+      </mat-slide-toggle>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="ep-dialog-actions">
+  <button class="ep-btn ep-btn-ghost" (click)="onCancel()">
+    <i class="fa-solid fa-xmark"></i> Cancelar
+  </button>
+  <button class="ep-btn ep-btn-primary" (click)="onSave()" [disabled]="form.invalid">
+    <i [class]="mode === 'create' ? 'fa-solid fa-plus' : 'fa-solid fa-floppy-disk'"></i>
+    {{ mode === 'create' ? 'Crear Actividad' : 'Guardar Cambios' }}
+  </button>
+</mat-dialog-actions>
